@@ -2,21 +2,28 @@
 
 ## 一、目录结构
 
-├── src                        # 源代码
+├── src                        
+
 │   ├── api                    # 所有请求
+
 │   ├── assets             
+
 │   ├── components   
+
 
 - configureUI 右侧边栏各个样式对应的编辑组件库
 
-										- designUI 左侧边栏各个模板对应的组件库
+  - designUI 左侧边栏各个模板对应的组件库
 
-										- publicUI 一些公共组件库，例如右侧边栏内部的导航栏以及tabs组件， 										
-										- functionality内存放一些功能组件，例如自定义的鼠标右击事件弹出的菜单栏
+  - publicUI 一些公共组件库，例如右侧边栏内部的导航栏以及tabs组件， 										
+  - functionality内存放一些功能组件，例如自定义的鼠标右击事件弹出的菜单栏
 
 │   ├── mixins				#控制一些全局样式的混入
+
 │   ├── mock                  #mock
+
 │   ├── router                 # 路由
+
 │   ├── store                 
 
 - charts.js 存储组件左侧边栏模板数据仓库，以及画布数据
@@ -24,6 +31,7 @@
 - other.js 一些额外的配置仓库，具体看注释信息	
 
 │   ├── styles                # 全局样式
+
 │   ├── utils                  # 全局公用方法
 
 - expirationTime.js 控制一些数据的持久化时间
@@ -31,7 +39,9 @@
 - request.js axios封装
 
 │   ├── views                  # views 所有页面
+
 │   ├── App.vue                # 入口页面
+
 │   ├── main.js                # 入口文件 加载组件 初始化等
 
 │   ├── defaultSettings                # 一些初始化时的默认配置，如vue-ls的基本配置项
