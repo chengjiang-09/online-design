@@ -1,0 +1,30 @@
+[
+  {
+    "name": "编辑模式",
+    "type": "edit"
+  },
+  {
+    "name": "阅览模式",
+    "type": "reading"
+  },
+  {
+    "name": "撤销",
+    "type": "revoke"
+  },
+  {
+    "name": "重做",
+    "type": "redo"
+  },
+  {
+    "name": "保存",
+    "type": "save"
+  },
+  {
+    "name": "实际阅览",
+    "type": "actualReading"
+  },
+  {
+    "name": "编辑画布",
+    "type": "editCanvas"
+  }
+]

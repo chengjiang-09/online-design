@@ -1,0 +1,431 @@
+[
+  {
+    "type": "layout",
+    "label": "布局",
+    "component": "chartList",
+    "icon": "el-icon-bell",
+    "items": [
+      {
+        "id": 2001,
+        "label": "容器盒子",
+        "type": "panel",
+        "imgPath": "",
+        "icon": "el-icon-box",
+        "component": "designPanel",
+        "default": [
+          {
+            "id": "panel",
+            "type": "configure",
+            "icon": "",
+            "component": "configureList",
+            "label": "容器配置",
+            "configure": [
+              {
+                "label": "标题",
+                "type": "title",
+                "component": "configureInput",
+                "value": "容器标题"
+              },
+              {
+                "label": "背景颜色",
+                "component": "configureColor",
+                "type": "backgroundColor",
+                "value": "rgba(0, 0, 0, 0)",
+                "predefineColors": [
+                  "#00ced1",
+                  "#1e90ff",
+                  "#c71585",
+                  "rgba(255, 69, 0, 0.68)",
+                  "rgb(255, 120, 0)",
+                  "hsv(51, 100, 98)"
+                ]
+              },
+              {
+                "label": "背景图片url",
+                "type": "backgroundImage",
+                "component": "configureInput",
+                "value": ""
+              },
+              {
+                "label": "背景透明度",
+                "component": "configureInput",
+                "type": "opacity",
+                "value": "1"
+              },
+              {
+                "label": "字体大小(px)",
+                "component": "configureInput",
+                "type": "fontSize",
+                "value": "16"
+              },
+              {
+                "label": "字体颜色",
+                "component": "configureColor",
+                "type": "color",
+                "value": "#000000",
+                "predefineColors": [
+                  "#00ced1",
+                  "#1e90ff",
+                  "#c71585",
+                  "rgba(255, 69, 0, 0.68)",
+                  "rgb(255, 120, 0)",
+                  "hsv(51, 100, 98)"
+                ]
+              }
+            ]
+          },
+          {
+            "id": "panel",
+            "type": "dataFrom",
+            "icon": "",
+            "component": "dataFromList",
+            "label": "数据源配置",
+            "configure": []
+          }
+        ]
+      },
+      {
+        "id": 2002,
+        "label": "布局盒子",
+        "type": "layout",
+        "imgPath": "",
+        "icon": "",
+        "component": "designLayout",
+        "default": [
+          {
+            "id": "layout",
+            "type": "configure",
+            "icon": "",
+            "component": "configureList",
+            "label": "布局配置",
+            "configure": [
+              {
+                "label": "布局类型",
+                "component": "configureLayoutConfig",
+                "type": "item",
+                "value": "scattered",
+                "default": [
+                  {
+                    "label": "散布局",
+                    "type": "scatteredLayout",
+                    "value": "scattered"
+                  },
+                  {
+                    "label": "左右布局",
+                    "type": "leftAndRightLayout",
+                    "value": "leftAndRight"
+                  },
+                  {
+                    "label": "网格布局",
+                    "type": "gridLayout",
+                    "value": "grid"
+                  }
+                ]
+              }
+            ]
+          }
+        ]
+      },
+      {
+        "id": 2003,
+        "label": "标题盒子",
+        "type": "title",
+        "imgPath": "https://img0.baidu.com/it/u=2102354730,4274661238&fm=253&fmt=auto&app=138&f=PNG?w=500&h=275",
+        "icon": "",
+        "component": "designTitle",
+        "default": [
+          {
+            "id": "title",
+            "type": "configure",
+            "icon": "",
+            "component": "configureList",
+            "label": "标题配置",
+            "configure": [
+              {
+                "label": "高度(%)",
+                "type": "height",
+                "component": "configureInput",
+                "value": "10"
+              },
+              {
+                "label": "标题",
+                "type": "title",
+                "component": "configureInput",
+                "value": "容器标题"
+              },
+              {
+                "label": "背景颜色",
+                "component": "configureColor",
+                "type": "backgroundColor",
+                "value": "rgba(0, 0, 0, 0)",
+                "predefineColors": [
+                  "#00ced1",
+                  "#1e90ff",
+                  "#c71585",
+                  "rgba(255, 69, 0, 0.68)",
+                  "rgb(255, 120, 0)",
+                  "hsv(51, 100, 98)"
+                ]
+              },
+              {
+                "label": "背景图片url",
+                "type": "backgroundImage",
+                "component": "configureInput",
+                "value": ""
+              },
+              {
+                "label": "背景透明度",
+                "component": "configureInput",
+                "type": "opacity",
+                "value": "1"
+              },
+              {
+                "label": "字体大小(px)",
+                "component": "configureInput",
+                "type": "fontSize",
+                "value": "16"
+              },
+              {
+                "label": "字体颜色",
+                "component": "configureColor",
+                "type": "color",
+                "value": "#000000",
+                "predefineColors": [
+                  "#00ced1",
+                  "#1e90ff",
+                  "#c71585",
+                  "rgba(255, 69, 0, 0.68)",
+                  "rgb(255, 120, 0)",
+                  "hsv(51, 100, 98)"
+                ]
+              }
+            ]
+          }
+        ]
+      }
+    ]
+  },
+  {
+    "type": "eCharts",
+    "label": "eCharts",
+    "component": "chartList",
+    "icon": "el-icon-menu",
+    "items": [
+      {
+        "id": 1000,
+        "label": "折线图",
+        "type": "lineChart",
+        "imgPath": "",
+        "icon": "",
+        "component": "designChart",
+        "default": [
+          {
+            "id": "lineChart",
+            "type": "configure",
+            "icon": "",
+            "component": "configureList",
+            "label": "折线图配置",
+            "configure": [
+              {
+                "label": "标题配置",
+                "type": "title",
+                "component": "configureChartList",
+                "value": [
+                  {
+                    "label": "标题",
+                    "type": "text",
+                    "component": "configureInput",
+                    "value": "折线图标题"
+                  },
+                  {
+                    "label": "显示",
+                    "type": "show",
+                    "component": "configureSwitch",
+                    "value": true
+                  },
+                  {
+                    "label": "标题超链接",
+                    "type": "link",
+                    "component": "configureInput",
+                    "value": ""
+                  },
+                  {
+                    "label": "标题样式",
+                    "type": "textStyle",
+                    "component": "configureChartList",
+                    "value": [
+                      {
+                        "label": "字体颜色",
+                        "component": "configureColor",
+                        "type": "color",
+                        "value": "#000000",
+                        "predefineColors": [
+                          "#00ced1",
+                          "#1e90ff",
+                          "#c71585",
+                          "rgba(255, 69, 0, 0.68)",
+                          "rgb(255, 120, 0)",
+                          "hsv(51, 100, 98)"
+                        ]
+                      }
+                    ]
+                  }
+                ]
+              }
+            ]
+          },
+          {
+            "id": "lineChart",
+            "type": "position",
+            "icon": "",
+            "component": "configureList",
+            "label": "定位配置",
+            "configure": [
+              {
+                "label": "宽度(px)",
+                "type": "width",
+                "component": "configureInput",
+                "value": 500,
+                "disabled":true
+              },
+              {
+                "label": "高度(px)",
+                "type": "height",
+                "component": "configureInput",
+                "value": 450,
+                "disabled":true
+              },
+              {
+                "label": "top(px)",
+                "type": "top",
+                "component": "configureInput",
+                "value": 0,
+                "disabled":true
+              },
+              {
+                "label": "left(px)",
+                "type": "left",
+                "component": "configureInput",
+                "value": 0,
+                "disabled":true
+              }
+            ]
+          },
+          {
+            "id": "lineChart",
+            "type": "dataFrom",
+            "icon": "",
+            "component": "dataFromList",
+            "label": "数据源配置",
+            "configure": [
+              {
+                "label": "数据源",
+                "component": "configurDataSource",
+                "type": "dataSource",
+                "value": "staticData",
+                "default": [
+                  {
+                    "label": "静态数据源",
+                    "type": "staticData",
+                    "url":"",
+                    "value": {
+                      "xAxis": {
+                        "type": "category",
+                        "data": ["Mon", "Tue", "Wed", "Thu", "Fri", "Sat", "Sun"]
+                      },
+                      "yAxis": {
+                        "type": "value"
+                      },
+                      "series": [
+                        {
+                          "data": [150, 230, 224, 218, 135, 147, 260],
+                          "type": "line"
+                        }
+                      ]
+                    }
+                  },
+                  {
+                    "label": "动态数据源url",
+                    "type": "dynamicDataUrl",
+                    "url":"",
+                    "value": ""
+                  }
+                ]
+              }
+            ]
+          }
+        ]
+      }
+    ]
+  },
+  {
+    "type": "decorate",
+    "label": "装饰",
+    "component": "chartList",
+    "icon": "el-icon-s-open",
+    "items": [
+      {
+        "id": 3000,
+        "label": "修狗图片",
+        "type": "img",
+        "imgPath": "",
+        "icon": "",
+        "component": "designImg",
+        "default": [
+          {
+            "id": "lineChart",
+            "type": "configure",
+            "icon": "",
+            "component": "configureList",
+            "label": "数据源配置",
+            "configure": [
+              {
+                "label": "图片url",
+                "type": "src",
+                "component": "configureInput",
+                "value": "https://img1.baidu.com/it/u=1795611050,2013221134&fm=253&fmt=auto&app=120&f=JPEG?w=1422&h=800"
+              }
+            ]
+          },
+          {
+            "id": "img",
+            "type": "position",
+            "icon": "",
+            "component": "configureList",
+            "label": "定位配置",
+            "configure": [
+              {
+                "label": "宽度(px)",
+                "type": "width",
+                "component": "configureInput",
+                "value": 500,
+                "disabled":true
+              },
+              {
+                "label": "高度(px)",
+                "type": "height",
+                "component": "configureInput",
+                "value": 450,
+                "disabled":true
+              },
+              {
+                "label": "top(px)",
+                "type": "top",
+                "component": "configureInput",
+                "value": 0,
+                "disabled":true
+              },
+              {
+                "label": "left(px)",
+                "type": "left",
+                "component": "configureInput",
+                "value": 0,
+                "disabled":true
+              }
+            ]
+          }
+        ]
+      }
+    ]
+  }
+]
