@@ -24,6 +24,7 @@ const app = {
     operatingMode: '', //阅览模式和编辑模式的模式控制
     menuOpened: false, // 鼠标右击对应组件时，右击菜单栏的打开控制
     editCanvasOpened: true, //画布创建弹窗的弹出控制
+    authMove: false, //控制登录界面登录组件的展开关闭
   },
   mutations: {
     SET_LEFT_SIDEBAR(state, value) {
@@ -48,6 +49,9 @@ const app = {
     SET_EDIT_CANVAS_OPENED(state, value) {
       state.editCanvasOpened = value
     },
+    SET_AUTH_MOVE(state, value) {
+      state.authMove = value
+    },
   },
   actions: {
     set_leftSidebar: ({ commit }, type) => {
@@ -67,6 +71,9 @@ const app = {
     },
     set_editCanvasOpened: ({ commit }, value) => {
       commit('SET_EDIT_CANVAS_OPENED', value)
+    },
+    set_authMove: ({ commit }, value) => {
+      commit('SET_AUTH_MOVE', value)
     },
   },
 }

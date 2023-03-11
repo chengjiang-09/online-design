@@ -1,6 +1,8 @@
 import Vue from 'vue'
 import VueRouter from 'vue-router'
 
+const authView = () => import('@/views/auth/authView.vue')
+
 const HomeView = () => import('@/views/home/homeView.vue')
 const ActualReadingView = () => import('@/views/home/actualReadingView.vue')
 
@@ -9,6 +11,11 @@ Vue.use(VueRouter)
 const routes = [
   {
     path: '/',
+    name: 'auth',
+    component: authView,
+  },
+  {
+    path: '/home',
     name: 'home',
     component: HomeView,
   },

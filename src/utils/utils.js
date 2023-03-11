@@ -62,3 +62,45 @@ export const isEmpty = (object) => {
   }
   return true
 }
+
+/**
+ *
+ * 生成随机数
+ *
+ * @param {*} min 最小值
+ * @param {*} max 最大值
+ * @returns
+ */
+export const randomNum = (min, max) => {
+  return Math.floor(Math.random() * (max - min) + min)
+}
+
+/**
+ * 生成随机颜色
+ *
+ * @returns
+ */
+export function randomRgb(min = 0, max = 256) {
+  let r = randomNum(min, max)
+  let g = randomNum(min, max)
+  let b = randomNum(min, max)
+
+  return `rgb(${r},${g},${b})`
+}
+
+/**
+ *
+ * 生成指定长度的随机字符串
+ *
+ * @param {*} len 随机字符串长度
+ * @returns 随机串
+ */
+export function randomStr(len) {
+  const str = 'ABCDEFGHJKMNPQRSTWXYZabcdefhijkmnprstwxyz0123456789'
+  const strLen = str.length
+  let code = ''
+  for (let i = 0; i < len; i++) {
+    code = code.concat(str.charAt(Math.floor(Math.random() * strLen)))
+  }
+  return code
+}
