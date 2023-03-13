@@ -45,7 +45,16 @@
           width: `${positionData.width}px`,
           height: `${positionData.height}px`,
         }"
-      ></div>
+      >
+        <img
+          class="imge"
+          :style="{
+            width: `${positionData.width}px`,
+            height: `${positionData.height}px`,
+          }"
+          :src="imgUrl"
+        />
+      </div>
       <div
         v-if="!actualReading"
         class="show"
