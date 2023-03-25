@@ -49,6 +49,19 @@ export default {
       type: Number,
       default: 4,
     },
+    sendFlag: {
+      type: Boolean,
+      default: false,
+    },
+  },
+  watch: {
+    sendFlag: {
+      handler: function (newData) {
+        if (newData) {
+          this.createdCode()
+        }
+      },
+    },
   },
   mounted() {
     this.createdCode()

@@ -104,3 +104,15 @@ export function randomStr(len) {
   }
   return code
 }
+
+/**
+ * 简单的校验封装
+ *
+ * @param value 需要校验的字段
+ * @param rules 正则校验规则
+ * @returns
+ */
+export function verifyRegularByRE(value, rules) {
+  let re = new RegExp(rules)
+  return re.test(value)
+}

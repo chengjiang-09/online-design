@@ -6,10 +6,43 @@
         <img src="../assets/online-design.png" alt="online-design" />
       </div>
       <div class="box">
-        <div class="box-title"></div>
-        <div class="box-email"></div>
+        <div class="box-email">
+          <h3 class="email">邮箱(email)</h3>
+          <VerifyInput
+            placeholder="邮箱"
+            :regExp="re.email"
+            keyData="email"
+            :propData="email"
+            autocomplete="inline"
+            @getData="getData"
+          />
+        </div>
         <div class="box-verify-code">
-          <RandomVerifyCode />
+          <VerifyInput
+            placeholder="验证码"
+            keyData="code"
+            @getData="getData"
+            :propData="code"
+          />
+          <RandomVerifyCode
+            @getVerifyCode="getVerifyCode"
+            :sendFlag="sendFlag"
+          />
+        </div>
+        <div class="box-email-code">
+          <h3 class="code">邮件验证码(email-code)</h3>
+          <VerifyInput
+            placeholder="邮件验证码"
+            keyData="emailCode"
+            :propData="emailCode"
+            @getData="getData"
+            ><el-button @click="sendCode" :disabled="sendCodeFlag">{{
+              sendCodeStr
+            }}</el-button></VerifyInput
+          >
+        </div>
+        <div class="box-footer">
+          <button type="button" @click="login">登录</button>
         </div>
       </div>
     </div>
@@ -18,6 +51,7 @@
 
 <script>
 import { mapState, mapActions } from 'vuex'
+import { getEmailCode, loginByEmailCode } from '@/apis/auth'
 export default {
   name: 'AuthRightBox',
   computed: {
@@ -25,12 +59,105 @@ export default {
       authMove: (state) => state.app.authMove,
     }),
   },
+  data: function () {
+    return {
+      code: '',
+      verifyCode: '',
+      email: '',
+      emailCode: '',
+      sendCodeStr: '发送',
+      sendCodeFlag: false,
+      sendFlag: false,
+      re: {
+        email: /^[a-zA-Z0-9._%+-]+@[a-zA-Z0-9.-]+\.[a-zA-Z]{2,}$/,
+      },
+    }
+  },
   methods: {
     ...mapActions({
       set_authMove: 'app/set_authMove',
     }),
+    sendCode() {
+      if (this.email) {
+        if (this.code.toLowerCase() !== this.verifyCode.toLowerCase()) {
+          this.sendFlag = true
+          this.$alert('4位验证码输入错误', '警告', {
+            confirmButtonText: '确定',
+          })
+          this.code = ''
+        } else {
+          console.log(this.email)
+          getEmailCode({
+            email: this.email,
+          })
+          this.sendCodeFlag = true
+          this.sendCodeStr = 60
+          let timer = null
+
+          timer = setInterval(() => {
+            this.sendCodeStr -= 1
+            if (this.sendCodeStr <= 0) {
+              this.sendFlag = true
+              this.sendCodeFlag = false
+              this.sendCodeStr = '发送'
+              clearInterval(timer)
+            }
+          }, 1000)
+        }
+      } else {
+        this.$alert('邮箱为空', '警告', {
+          confirmButtonText: '确定',
+        })
+      }
+    },
     closeAuth() {
       this.set_authMove(!this.authMove)
+    },
+    getVerifyCode(code) {
+      this.sendFlag = false
+      this.verifyCode = code
+    },
+    getData(data) {
+      const { key, value } = data
+
+      switch (key) {
+        case 'email':
+          this.email = value
+          break
+        case 'emailCode':
+          this.emailCode = value
+          break
+        case 'code':
+          this.code = value
+          break
+        default:
+          break
+      }
+    },
+    async login() {
+      if (this.email && this.emailCode) {
+        this.sendFlag = true
+        let { code, data } = await loginByEmailCode({
+          email: this.email,
+          code: this.emailCode,
+        })
+
+        if (code === 0) {
+          this.$ls.set('token', data.token)
+          this.$router.push('/home')
+        } else {
+          this.$alert('邮箱验证码错误', '提示', {
+            confirmButtonText: '确定',
+          })
+        }
+
+        this.emailCode = ''
+        this.code = ''
+      } else {
+        this.$alert('请检查邮箱或验证码', '提示', {
+          confirmButtonText: '确定',
+        })
+      }
     },
   },
 }
@@ -39,11 +166,11 @@ export default {
 <style lang="less" scoped>
 #authRightBox {
   position: fixed;
-  left: 0;
+  right: 0;
   top: 0;
-  width: 30vw;
-  height: 100vw;
-  transform: translateX(100vw);
+  width: 500px;
+  height: 100%;
+  transform: translateX(500px);
   transition: transform 1s;
   box-shadow: 0px 0px 20px 10px rgba(88, 88, 88, 0.5);
 
@@ -64,7 +191,7 @@ export default {
     .title {
       position: absolute;
       left: 50%;
-      top: 50px;
+      top: 10%;
       transform: translateX(-50%);
       width: 250px;
       height: 250px;
@@ -78,17 +205,80 @@ export default {
     .box {
       position: absolute;
       left: 50%;
-      top: 15%;
+      top: 38%;
       transform: translate(-50%, 0);
       width: 400px;
       height: 400px;
       display: flex;
       flex-direction: column;
+
+      div {
+        h3 {
+          color: #b6b6b6;
+          font-size: 16px;
+        }
+      }
+
+      &-title {
+        flex: 2;
+      }
+
+      &-email {
+        flex: 2;
+        .email {
+          margin-bottom: 8px;
+        }
+      }
+
+      &-verify-code {
+        flex: 1;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+
+        .input {
+          margin-right: 8px;
+        }
+      }
+
+      &-email-code {
+        flex: 2;
+        .code {
+          margin: 10px 0 8px;
+        }
+      }
+
+      &-footer {
+        flex: 2;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        button {
+          width: 100%;
+          height: 50%;
+          cursor: pointer;
+          border: 1px solid #c8c8c8;
+          border-radius: 20px;
+          background-color: #ffffff;
+          transition: background-color 0.3s, color 0.3s, border 0.3s;
+          color: #949494;
+          font-weight: 500;
+
+          &:active {
+            background-color: #5e5e5e;
+            color: #ffffff;
+          }
+
+          &:hover {
+            border: 1px solid #5e5e5e;
+          }
+        }
+      }
     }
   }
 }
 
 .move {
-  transform: translateX(70vw) !important;
+  transform: translateX(0) !important;
 }
 </style>

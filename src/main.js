@@ -22,7 +22,7 @@ import {
   ONLINE_HEADER,
 } from '@/store/style-types'
 
-import '@/mock'
+// import '@/mock'
 
 Vue.config.productionTip = false
 
@@ -45,7 +45,7 @@ new Vue({
       'app/SET_OPERATING_MODE',
       Vue.ls.get(OPERATING_MODE, config.operatingMode),
     )
-    console.log('记得修改lib-flexible源码,让其支持大屏适配,允许适配800-5400')
+    console.log('记得修改lib-flexible源码,让其支持大屏适配,允许适配1024-5400')
   },
   render: (h) => h(App),
 }).$mount('#app')
