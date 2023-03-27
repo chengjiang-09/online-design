@@ -1,5 +1,5 @@
 <template>
-  <div id="HomeView">
+  <div id="canvasView">
     <LeftSidebar />
     <RightSidebar />
     <OnlineHeader />
@@ -14,7 +14,7 @@ import OnlineHeader from '@/layouts/onlineHeader.vue'
 import CanvasBox from '@/layouts/canvasBox.vue'
 import { mapActions } from 'vuex'
 export default {
-  name: 'HomeView',
+  name: 'CanvasView',
   components: {
     LeftSidebar,
     RightSidebar,

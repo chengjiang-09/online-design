@@ -8,6 +8,7 @@ import 'element-ui/lib/theme-chalk/index.css'
 import 'lib-flexible'
 import 'animate.css'
 import * as echarts from 'echarts'
+import 'three'
 
 import '@/style/common.less'
 import '@/permission'
