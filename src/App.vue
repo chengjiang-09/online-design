@@ -1,12 +1,17 @@
 <template>
   <div id="app">
     <router-view />
+    <WaitingView />
   </div>
 </template>
 
 <script>
+import WaitingView from '@/views/waitingView.vue'
 export default {
   name: 'App',
+  components: {
+    WaitingView,
+  },
 }
 </script>
 

@@ -1,4 +1,4 @@
-import { getChartsList } from '@/apis/charts'
+import { getChartsList } from '@/apis/chartsApi'
 import { ALL_CHARTS_EX_TIME } from '@/utils/expirationTime'
 import Vue from 'vue'
 import { findChildChart } from '@/utils/utils'

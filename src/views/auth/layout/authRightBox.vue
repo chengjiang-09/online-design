@@ -3,7 +3,7 @@
     <div class="container">
       <i class="el-icon-close close" @click="closeAuth"></i>
       <div class="title">
-        <img src="../assets/online-design.png" alt="online-design" />
+        <img src="../../../assets/online-design.png" alt="online-design" />
       </div>
       <div class="box">
         <div class="box-email">
@@ -14,6 +14,7 @@
             keyData="email"
             :propData="email"
             autocomplete="inline"
+            chooseName="email"
             @getData="getData"
           />
         </div>
@@ -35,6 +36,7 @@
             placeholder="邮件验证码"
             keyData="emailCode"
             :propData="emailCode"
+            chooseName="code"
             @getData="getData"
             ><el-button @click="sendCode" :disabled="sendCodeFlag">{{
               sendCodeStr
@@ -51,7 +53,8 @@
 
 <script>
 import { mapState, mapActions } from 'vuex'
-import { getEmailCode, loginByEmailCode } from '@/apis/auth'
+import { getEmailCode, loginByEmailCode } from '@/apis/authApi'
+import { TOKEN_EX_TIME } from '@/utils/expirationTime'
 export default {
   name: 'AuthRightBox',
   computed: {
@@ -86,7 +89,6 @@ export default {
           })
           this.code = ''
         } else {
-          console.log(this.email)
           getEmailCode({
             email: this.email,
           })
@@ -118,6 +120,7 @@ export default {
       this.verifyCode = code
     },
     getData(data) {
+      console.log(data)
       const { key, value } = data
 
       switch (key) {
@@ -143,7 +146,25 @@ export default {
         })
 
         if (code === 0) {
-          this.$ls.set('token', data.token)
+          this.$ls.set('token', data.token, TOKEN_EX_TIME)
+
+          let chooseEmailList = this.$ls.get('email', [])
+
+          let target = chooseEmailList.find((email) => {
+            return this.email == email.value
+          })
+
+          if (!target) {
+            chooseEmailList.splice(2, 0, {
+              key: this.email,
+              value: this.email,
+            })
+            if (chooseEmailList.length >= 5) {
+              chooseEmailList.pop()
+            }
+            this.$ls.set('email', chooseEmailList)
+          }
+
           this.$router.push('/home')
         } else {
           this.$alert('邮箱验证码错误', '提示', {

@@ -19,6 +19,9 @@ export default {
     // 销毁渲染器
     this.renderer.dispose()
 
+    //销毁光源
+    this.light.dispose()
+
     //销毁组以及内容
     this.group.children.forEach((child) => {
       this.group.remove(child)
@@ -32,11 +35,7 @@ export default {
 
     // 销毁相机和场景
     this.camera = null
-    this.scene.dispose()
     this.scene = null
-
-    //销毁光源
-    this.light.dispose()
   },
   data: function () {
     return {
@@ -156,6 +155,7 @@ export default {
 
       // 相机位置和旋转角度
       this.camera.position.z = 5
+      this.camera.position.y = 1
       this.camera.lookAt(this.scene.position)
 
       // 创建 OrbitControls 控件
@@ -177,18 +177,20 @@ export default {
       this.animate()
     },
     animate() {
-      requestAnimationFrame(this.animate)
+      if (this.renderer && this.scene && this.camera) {
+        requestAnimationFrame(this.animate)
 
-      // 绕Y轴旋转
-      this.group.rotation.y += 0.02
+        // 绕Y轴旋转
+        this.group.rotation.y += 0.02
 
-      // 更新粒子位置数据
-      this.updateParticles()
+        // 更新粒子位置数据
+        this.updateParticles()
 
-      // 更新控件状态
-      this.controls.update()
+        // 更新控件状态
+        this.controls.update()
 
-      this.renderer.render(this.scene, this.camera)
+        this.renderer.render(this.scene, this.camera)
+      }
     },
     updateParticles() {
       for (let i = 0; i < this.particle.count; i++) {

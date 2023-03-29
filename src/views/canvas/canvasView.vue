@@ -8,10 +8,10 @@
 </template>
 
 <script>
-import LeftSidebar from '@/layouts/leftSidebar.vue'
-import RightSidebar from '@/layouts/rightSidebar.vue'
-import OnlineHeader from '@/layouts/onlineHeader.vue'
-import CanvasBox from '@/layouts/canvasBox.vue'
+import LeftSidebar from '@/views/canvas/layout/leftSidebar.vue'
+import RightSidebar from '@/views/canvas/layout/rightSidebar.vue'
+import OnlineHeader from '@/views/canvas/layout/onlineHeader.vue'
+import CanvasBox from '@/views/canvas/layout/canvasBox.vue'
 import { mapActions } from 'vuex'
 export default {
   name: 'CanvasView',

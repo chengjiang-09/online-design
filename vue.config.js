@@ -17,6 +17,14 @@ module.exports = defineConfig(() => {
       host: '127.0.0.1',
       https: false,
       open: true,
+      proxy: {
+        '/': {
+          target: 'http://127.0.0.1:8001',
+          changeOrigin: true,
+          ws: false,
+          secure: false,
+        },
+      },
     },
     chainWebpack: (config) => {
       config.resolve.alias.set('@', resolve('src'))

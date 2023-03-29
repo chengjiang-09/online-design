@@ -1,6 +1,7 @@
 import Vue from 'vue'
 import App from './App.vue'
 import router from './router'
+import '@/utils/reRouter'
 import store from './store'
 import Storage from 'vue-ls'
 import ElementUI from 'element-ui'
@@ -46,6 +47,12 @@ new Vue({
       'app/SET_OPERATING_MODE',
       Vue.ls.get(OPERATING_MODE, config.operatingMode),
     )
+
+    //做登录待选选项的初始化，默认登录账号和验证码
+    for (let key in config.chooseObject) {
+      Vue.ls.set(key, config.chooseObject[key])
+    }
+
     console.log('记得修改lib-flexible源码,让其支持大屏适配,允许适配1024-5400')
   },
   render: (h) => h(App),

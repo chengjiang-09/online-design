@@ -3,8 +3,11 @@ import VueRouter from 'vue-router'
 
 const authView = () => import('@/views/auth/authView.vue')
 
-const CanvasView = () => import('@/views/home/canvasView.vue')
-const ActualReadingView = () => import('@/views/home/actualReadingView.vue')
+const CanvasView = () => import('@/views/canvas/canvasView.vue')
+const ActualReadingView = () => import('@/views/canvas/actualReadingView.vue')
+
+const HomeView = () => import('@/views/home/homeView.vue')
+const TemplateList = () => import('@/views/home/templateList.vue')
 
 Vue.use(VueRouter)
 
@@ -13,6 +16,18 @@ const routes = [
     path: '/',
     name: 'auth',
     component: authView,
+  },
+  {
+    path: '/home',
+    name: 'home',
+    component: HomeView,
+    children: [
+      {
+        path: '/',
+        name: 'templateList',
+        component: TemplateList,
+      },
+    ],
   },
   {
     path: '/canvas',

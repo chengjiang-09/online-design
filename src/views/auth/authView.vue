@@ -6,8 +6,8 @@
 </template>
 
 <script>
-import AuthLeftBoxVue from '@/layouts/authLeftBox.vue'
-import AuthRightBoxVue from '@/layouts/authRightBox.vue'
+import AuthLeftBoxVue from '@/views/auth/layout/authLeftBox.vue'
+import AuthRightBoxVue from '@/views/auth/layout/authRightBox.vue'
 export default {
   name: 'AuthView',
   components: {

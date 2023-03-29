@@ -19,7 +19,7 @@
 </template>
 
 <script>
-import { getHeaderMenu } from '@/apis/charts'
+import { getHeaderMenu } from '@/apis/chartsApi'
 import { mapActions } from 'vuex'
 import { styleMixin } from '@/mixins/styleControl'
 import { deepCopy, isEmpty } from '@/utils/utils'

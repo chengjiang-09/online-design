@@ -1,21 +1,15 @@
 <template>
   <div id="authLeftBox" :class="[{ move: authMove }]">
     <div class="container">
-      <div v-if="loaded">
-        <WaitingCanvas />
-        <img
-          src="../assets/online-design-w.png"
-          alt="online-design"
-          class="title"
-        />
-      </div>
-      <div v-else class="waiting">
-        <img
-          class="waiting-img"
-          src="../assets/online-design.png"
-          alt="online-design"
-        />
-      </div>
+      <WaitingCanvas v-cloak />
+      <img
+        v-cloak
+        src="../../../assets/online-design-w.png"
+        alt="online-design"
+        class="title"
+        @click="openSign"
+      />
+      <div class=""></div>
     </div>
   </div>
 </template>
@@ -33,7 +27,7 @@ export default {
     ...mapActions({
       set_authMove: 'app/set_authMove',
     }),
-    test() {
+    openSign() {
       this.set_authMove(!this.authMove)
     },
   },
@@ -61,26 +55,12 @@ export default {
       top: 0;
       width: 800px;
       height: 400px;
-    }
-
-    .waiting {
-      width: 100%;
-      height: 100%;
-      background-color: #000000;
-
-      &-img {
-        position: absolute;
-        left: 50%;
-        height: 50%;
-        transform: translate(-50%, -50%);
-        width: 800px;
-        height: 400px;
-      }
+      cursor: pointer;
     }
   }
 }
 
 .move {
-  transform: translateX(-30vw) !important;
+  transform: translateX(-26vw) !important;
 }
 </style>

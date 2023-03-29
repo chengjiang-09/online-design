@@ -25,6 +25,7 @@ const app = {
     menuOpened: false, // 鼠标右击对应组件时，右击菜单栏的打开控制
     editCanvasOpened: true, //画布创建弹窗的弹出控制
     authMove: false, //控制登录界面登录组件的展开关闭
+    waiting: false, //控制等待页面的显示关闭
   },
   mutations: {
     SET_LEFT_SIDEBAR(state, value) {
@@ -52,6 +53,9 @@ const app = {
     SET_AUTH_MOVE(state, value) {
       state.authMove = value
     },
+    SET_WAITING(state, value) {
+      state.waiting = value
+    },
   },
   actions: {
     set_leftSidebar: ({ commit }, type) => {
@@ -74,6 +78,9 @@ const app = {
     },
     set_authMove: ({ commit }, value) => {
       commit('SET_AUTH_MOVE', value)
+    },
+    set_waiting: ({ commit }, value) => {
+      commit('SET_WAITING', value)
     },
   },
 }
