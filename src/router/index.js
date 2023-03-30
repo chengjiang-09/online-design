@@ -11,7 +11,7 @@ const TemplateList = () => import('@/views/home/templateList.vue')
 
 Vue.use(VueRouter)
 
-const routes = [
+export const baseRoutes = [
   {
     path: '/',
     name: 'auth',
@@ -21,9 +21,12 @@ const routes = [
     path: '/home',
     name: 'home',
     component: HomeView,
+    redirect: {
+      name: 'templateList',
+    },
     children: [
       {
-        path: '/',
+        path: 'templateList',
         name: 'templateList',
         component: TemplateList,
       },
@@ -42,10 +45,9 @@ const routes = [
 ]
 
 const router = new VueRouter({
-  mode: 'history',
-  base: process.env.BASE_URL,
+  mode: 'hash',
   scrollBehavior: () => ({ y: 0 }),
-  routes,
+  routes: baseRoutes,
 })
 
 export default router

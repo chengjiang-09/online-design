@@ -79,8 +79,10 @@ export default {
   methods: {
     ...mapActions({
       set_authMove: 'app/set_authMove',
+      set_routes: 'routerStore/set_routes',
     }),
     sendCode() {
+      //如果有邮箱信息，才发送验证码
       if (this.email) {
         if (this.code.toLowerCase() !== this.verifyCode.toLowerCase()) {
           this.sendFlag = true
@@ -89,6 +91,7 @@ export default {
           })
           this.code = ''
         } else {
+          //获取邮箱验证码
           getEmailCode({
             email: this.email,
           })
@@ -96,6 +99,7 @@ export default {
           this.sendCodeStr = 60
           let timer = null
 
+          //60秒倒计时
           timer = setInterval(() => {
             this.sendCodeStr -= 1
             if (this.sendCodeStr <= 0) {
@@ -112,15 +116,17 @@ export default {
         })
       }
     },
+    //控制右侧登录组件的展开关闭
     closeAuth() {
       this.set_authMove(!this.authMove)
     },
+    //四位图片验证码取值
     getVerifyCode(code) {
+      //sendFlag 为true时，刷新验证码图片
       this.sendFlag = false
       this.verifyCode = code
     },
     getData(data) {
-      console.log(data)
       const { key, value } = data
 
       switch (key) {
@@ -138,22 +144,25 @@ export default {
       }
     },
     async login() {
+      //邮箱和邮箱验证码拥有时才能登录，校验已在input组件中完成，此时只有input组件中校验通过，才会有值
       if (this.email && this.emailCode) {
         this.sendFlag = true
+
+        //登录
         let { code, data } = await loginByEmailCode({
           email: this.email,
           code: this.emailCode,
         })
 
         if (code === 0) {
+          //保存token,12小时
           this.$ls.set('token', data.token, TOKEN_EX_TIME)
 
+          //保存登录候选邮箱，只保存5个，将会插入后pop多余
           let chooseEmailList = this.$ls.get('email', [])
-
           let target = chooseEmailList.find((email) => {
             return this.email == email.value
           })
-
           if (!target) {
             chooseEmailList.splice(2, 0, {
               key: this.email,
@@ -165,7 +174,9 @@ export default {
             this.$ls.set('email', chooseEmailList)
           }
 
-          this.$router.push('/home')
+          //清空用作动态渲染导航栏的路由表
+          this.set_routes([])
+          this.$router.push('/home/templateList')
         } else {
           this.$alert('邮箱验证码错误', '提示', {
             confirmButtonText: '确定',

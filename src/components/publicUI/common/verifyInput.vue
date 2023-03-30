@@ -65,8 +65,8 @@ export default {
       handler: function (newData) {
         if (!newData) {
           this.value = ''
-          this.flag = true
         }
+        this.flag = true
       },
     },
   },
@@ -99,7 +99,7 @@ export default {
     verifyValue() {
       setTimeout(() => {
         this.focusFlag = false
-      }, 100)
+      }, 200)
 
       if (!this.value) {
         this.flag = false

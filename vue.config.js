@@ -17,6 +17,8 @@ module.exports = defineConfig(() => {
       host: '127.0.0.1',
       https: false,
       open: true,
+      hot: true,
+      historyApiFallback: true,
       proxy: {
         '/': {
           target: 'http://127.0.0.1:8001',
@@ -50,6 +52,15 @@ module.exports = defineConfig(() => {
           })
           .end()
       })
+
+      config
+        .entry('app')
+        .clear()
+        .add('./src/main.js')
+        .end()
+        .plugin('hmr')
+        .use(require('webpack').HotModuleReplacementPlugin)
+        .end()
     },
   }
 })

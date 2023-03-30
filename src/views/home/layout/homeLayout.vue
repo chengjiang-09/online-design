@@ -2,9 +2,10 @@
   <div id="homeLayout">
     <div class="container">
       <div class="item-list">
-        <HomeLeftBox />
+        <HomeLeftSidebar />
       </div>
       <div class="item-body">
+        <HomeRightNav />
         <HomeChildren />
       </div>
     </div>
@@ -13,12 +14,14 @@
 
 <script>
 import HomeChildren from './components/homeChildren.vue'
-import HomeLeftBox from './components/homeLeftBox.vue'
+import HomeRightNav from './components/homeRightNav.vue'
+import HomeLeftSidebar from './components/homeLeftSidebar.vue'
 export default {
   name: 'HomeLayout',
   components: {
     HomeChildren,
-    HomeLeftBox,
+    HomeLeftSidebar,
+    HomeRightNav,
   },
 }
 </script>
