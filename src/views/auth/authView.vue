@@ -8,11 +8,20 @@
 <script>
 import AuthLeftBoxVue from '@/views/auth/layout/authLeftBox.vue'
 import AuthRightBoxVue from '@/views/auth/layout/authRightBox.vue'
+import { mapActions } from 'vuex'
 export default {
   name: 'AuthView',
   components: {
     AuthLeftBoxVue,
     AuthRightBoxVue,
+  },
+  mounted() {
+    this.set_routesGroupAndRoutes([])
+  },
+  methods: {
+    ...mapActions({
+      set_routesGroupAndRoutes: 'routerStore/set_routesGroupAndRoutes',
+    }),
   },
 }
 </script>

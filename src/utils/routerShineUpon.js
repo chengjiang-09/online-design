@@ -2,7 +2,9 @@
 
 export default {
   templateList: {
-    name: '模版列表',
+    name: '画布列表',
     icon: 'el-icon-s-grid',
+    groupId: 'design',
+    groupName: '功能界面',
   },
 }

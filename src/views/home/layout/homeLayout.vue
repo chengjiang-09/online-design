@@ -1,25 +1,25 @@
 <template>
   <div id="homeLayout">
     <div class="container">
-      <div class="item-list">
+      <div class="item-list media">
         <HomeLeftSidebar />
       </div>
       <div class="item-body">
         <HomeRightNav />
-        <HomeChildren />
+        <HomeRightBox />
       </div>
     </div>
   </div>
 </template>
 
 <script>
-import HomeChildren from './components/homeChildren.vue'
+import HomeRightBox from './components/homeRightBox.vue'
 import HomeRightNav from './components/homeRightNav.vue'
 import HomeLeftSidebar from './components/homeLeftSidebar.vue'
 export default {
   name: 'HomeLayout',
   components: {
-    HomeChildren,
+    HomeRightBox,
     HomeLeftSidebar,
     HomeRightNav,
   },
@@ -37,14 +37,22 @@ export default {
     display: flex;
 
     .item-list {
-      flex: 1;
+      width: 300px;
       height: 100%;
+      transition: width 0.5s;
     }
 
     .item-body {
-      flex: 5;
+      flex: 1;
       height: 100%;
+      padding-left: 20px;
     }
+  }
+}
+
+@media screen and (max-width: 1360px) {
+  .media {
+    display: none;
   }
 }
 </style>

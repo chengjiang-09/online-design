@@ -10,12 +10,13 @@
       <div class="list">
         <ul class="list-box">
           <li
-            v-for="obj in routes"
-            :key="obj.name"
+            v-for="obj in routesGroup"
+            :key="obj.id"
             :class="[{ action: obj.action }]"
+            @click="selectThis(obj)"
           >
             <i :class="[obj.icon, 'icon']"></i>
-            <h5 class="label">{{ obj.label }}</h5>
+            <h5 class="label">{{ obj.name }}</h5>
           </li>
         </ul>
       </div>
@@ -24,13 +25,26 @@
 </template>
 
 <script>
-import { mapState } from 'vuex'
+import { mapState, mapActions } from 'vuex'
 export default {
   name: 'HomeLeftSidebar',
   computed: {
     ...mapState({
-      routes: (state) => state.routerStore.routes,
+      routesGroup: (state) => state.routerStore.routesGroup,
     }),
+  },
+  methods: {
+    ...mapActions({
+      update_routesGroup_action: 'routerStore/update_routesGroup_action',
+      set_routes: 'routerStore/set_routes',
+    }),
+    selectThis(route) {
+      this.update_routesGroup_action({ id: route.id })
+      this.set_routes({ id: route.id })
+      this.$router.push({
+        name: route.routes[0].name,
+      })
+    },
   },
 }
 </script>
@@ -41,6 +55,7 @@ export default {
   width: 100%;
   box-shadow: 5px 0px 10px 0px rgba(0, 0, 0, 0.5);
   padding: 5px 5px 5px 5px;
+  transition: width;
   .container {
     width: 100%;
     height: 100%;
@@ -65,8 +80,7 @@ export default {
         li {
           margin-bottom: 5px;
           position: relative;
-          display: flex;
-          height: 90px;
+          height: 60px;
           background-color: #ffffff;
           transition: background-color 0.5s;
           cursor: pointer;
@@ -80,16 +94,15 @@ export default {
             position: absolute;
             left: 15%;
             top: 50%;
-            font-size: 24px;
+            font-size: 20px;
             transform: translate(0, -50%);
           }
 
           .label {
-            display: block;
             position: absolute;
             left: 50%;
             top: 50%;
-            font-size: 24px;
+            font-size: 20px;
             transform: translate(-50%, -50%);
           }
         }
