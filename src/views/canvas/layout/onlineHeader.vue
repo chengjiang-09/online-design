@@ -19,11 +19,11 @@
 </template>
 
 <script>
-import html2canvas from 'html2canvas'
+// import html2canvas from 'html2canvas'
 import { getHeaderMenu } from '@/apis/chartsApi'
 import { mapActions } from 'vuex'
 import { styleMixin } from '@/mixins/styleControl'
-import { deepCopy, isEmpty, randomStr } from '@/utils/utils'
+import { deepCopy, isEmpty } from '@/utils/utils'
 import { HEADER_MENU_EX_TIME } from '@/utils/expirationTime'
 export default {
   name: 'OnlineHeader',
@@ -53,6 +53,7 @@ export default {
       set_targetChart: 'other/set_targetChart',
       set_actualReadingCanvas: 'other/set_actualReadingCanvas',
       add_canvasDataChild: 'charts/add_canvasDataChild',
+      set_submitCanvasOpened: 'app/set_submitCanvasOpened',
     }),
     choice(e, type) {
       //限制只有阅览模式和编辑模式按钮拥有激活状态的style
@@ -149,31 +150,39 @@ export default {
       await this.set_actualReadingCanvas(
         deepCopy(this.$store.state.charts.canvasData),
       )
-      this.$router.push('/actualReading')
-      this.$nextTick(() => {
-        this.$confirm('是否导出成图？', '提示', {
-          confirmButtonText: '确定',
-          cancelButtonText: '取消',
-          type: 'warning',
-        })
-          .then(async () => {
-            const canvasComponent = document.querySelector('#ActualReadingView')
+      await this.set_targetChart(null)
+      this.set_submitCanvasOpened(true)
 
-            await this.set_targetChart(null)
+      // this.$router.push('/actualReading')
+      // this.$nextTick(() => {
+      //   this.$confirm('是否导出成图？', '提示', {
+      //     confirmButtonText: '确定',
+      //     cancelButtonText: '取消',
+      //     type: 'warning',
+      //   })
+      //     .then(async () => {
+      //       const canvasComponent = document.querySelector('#ActualReadingView')
 
-            // 使用html2canvas将DOM元素转换为Canvas图像
-            const canvas = await html2canvas(canvasComponent, { useCORS: true })
-            // 将Canvas图像转换为图像URL
-            const image = canvas.toDataURL()
-            // 打开图像
-            const link = document.createElement('a')
-            link.href = image
-            link.download = `${randomStr(21)}.png`
-            link.target = '_blank' // 在新标签页中打开图像
-            link.click()
-          })
-          .catch(() => {})
-      })
+      //       await this.set_targetChart(null)
+
+      //       // 使用html2canvas将DOM元素转换为Canvas图像
+      //       const canvas = await html2canvas(canvasComponent, { useCORS: true })
+      //       // 将Canvas图像转换为图像URL
+      //       // const image = canvas.toDataURL()
+
+      //       canvas.toBlob((blob) => {
+      //         const file = new File([blob], `${randomStr(21)}.png`)
+      //         console.log(file)
+      //       })
+      //       // 打开图像
+      //       // const link = document.createElement('a')
+      //       // link.href = image
+      //       // link.download = `${randomStr(21)}.png`
+      //       // link.target = '_blank' // 在新标签页中打开图像
+      //       // link.click()
+      //     })
+      //     .catch(() => {})
+      // })
     },
     onlineHeaderControl() {
       this.set_onlineHeader(!this.onlineHeaderOpened)

@@ -8,21 +8,6 @@
         <li>
           <ItemCard />
         </li>
-        <li>
-          <ItemCard />
-        </li>
-        <li>
-          <ItemCard />
-        </li>
-        <li>
-          <ItemCard />
-        </li>
-        <li>
-          <ItemCard />
-        </li>
-        <li>
-          <ItemCard />
-        </li>
       </ul>
       <div class="footer"></div>
     </div>

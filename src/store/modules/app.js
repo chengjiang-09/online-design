@@ -24,6 +24,7 @@ const app = {
     operatingMode: '', //阅览模式和编辑模式的模式控制
     menuOpened: false, // 鼠标右击对应组件时，右击菜单栏的打开控制
     editCanvasOpened: true, //画布创建弹窗的弹出控制
+    submitCanvasOpened: false, //完成画布编辑弹窗的弹出控制
     authMove: false, //控制登录界面登录组件的展开关闭
     waiting: false, //控制等待页面的显示关闭
   },
@@ -50,6 +51,9 @@ const app = {
     SET_EDIT_CANVAS_OPENED(state, value) {
       state.editCanvasOpened = value
     },
+    SET_SUBMIT_CANVAS_OPENED(state, value) {
+      state.submitCanvasOpened = value
+    },
     SET_AUTH_MOVE(state, value) {
       state.authMove = value
     },
@@ -75,6 +79,9 @@ const app = {
     },
     set_editCanvasOpened: ({ commit }, value) => {
       commit('SET_EDIT_CANVAS_OPENED', value)
+    },
+    set_submitCanvasOpened: ({ commit }, value) => {
+      commit('SET_SUBMIT_CANVAS_OPENED', value)
     },
     set_authMove: ({ commit }, value) => {
       commit('SET_AUTH_MOVE', value)

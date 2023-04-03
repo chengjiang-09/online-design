@@ -92,6 +92,7 @@
         <el-button type="primary" @click="createCanvas">确 定</el-button>
       </span>
     </el-dialog>
+    <SaveCanvasDialogVue />
     <div class="block" :class="[{ blockRight: blockRight }]">
       <el-slider v-model="scaleProportion" :min="-100" vertical height="200px">
       </el-slider>
@@ -104,8 +105,12 @@
 import { mapState, mapActions } from 'vuex'
 import { styleMixin } from '@/mixins/styleControl'
 import { deepCopy } from '@/utils/utils'
+import SaveCanvasDialogVue from './components/saveCanvasDialog.vue'
 export default {
   name: 'CanvasBox',
+  components: {
+    SaveCanvasDialogVue,
+  },
   mixins: [styleMixin], //混入一些全局样式的控制
   data: function () {
     return {

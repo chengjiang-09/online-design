@@ -373,7 +373,7 @@
         "component": "designImg",
         "default": [
           {
-            "id": "lineChart",
+            "id": "img",
             "type": "configure",
             "icon": "",
             "component": "configureList",
