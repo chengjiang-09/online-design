@@ -31,7 +31,7 @@
 </template>
 
 <script>
-//导航栏切换内部页面组件显示。类似于Tabs 标签页功能，用于左侧侧边栏模板列表显示组件
+//画布导航栏切换内部页面组件显示。类似于Tabs 标签页功能，用于左侧侧边栏模板列表显示组件
 import ChartList from './components/chartList.vue'
 import ItemListTitle from './components/itemListTitle.vue'
 export default {

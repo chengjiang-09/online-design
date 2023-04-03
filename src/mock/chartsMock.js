@@ -4,7 +4,7 @@ import headerMenu from './assets/headerMenu.json'
 //左侧侧边栏模板列表数据
 export const getChartsList = (Mock) => {
   return Mock.mock(
-    'http://127.0.0.1:8000/onlineDesign/chartsList',
+    'http://127.0.0.1:8001/onlineDesign/chartsList',
     'get',
     () => {
       return {
@@ -21,7 +21,7 @@ export const getChartsList = (Mock) => {
 //头部导航栏选项列表
 export const getHeaderMenu = (Mock) => {
   return Mock.mock(
-    'http://127.0.0.1:8000/onlineDesign/headerMenu',
+    'http://127.0.0.1:8001/onlineDesign/headerMenu',
     'get',
     () => {
       return {

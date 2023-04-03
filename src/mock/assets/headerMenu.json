@@ -26,5 +26,9 @@
   {
     "name": "编辑画布",
     "type": "editCanvas"
+  },
+  {
+    "name": "完成绘制",
+    "type": "complete"
   }
 ]

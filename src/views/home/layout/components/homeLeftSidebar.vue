@@ -62,11 +62,11 @@ export default {
 
     .title {
       width: 100%;
-      height: 80px;
+      height: 50px;
 
       img {
         width: 100%;
-        height: 80px;
+        height: 50px;
       }
     }
     .list {
@@ -94,7 +94,7 @@ export default {
             position: absolute;
             left: 15%;
             top: 50%;
-            font-size: 20px;
+            font-size: 16px;
             transform: translate(0, -50%);
           }
 
@@ -102,7 +102,7 @@ export default {
             position: absolute;
             left: 50%;
             top: 50%;
-            font-size: 20px;
+            font-size: 16px;
             transform: translate(-50%, -50%);
           }
         }

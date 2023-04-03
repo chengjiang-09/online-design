@@ -35,7 +35,7 @@
 </template>
 
 <script>
-//右侧侧边栏自定义属性控制组件
+//画布右侧侧边栏自定义属性控制组件
 import ConfigureList from './components/configureList.vue'
 import ItemListTitle from './components/itemListTitle.vue'
 import DataFromList from './components/dataFromList.vue'

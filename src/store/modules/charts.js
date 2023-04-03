@@ -6,16 +6,16 @@ import { findChildChart } from '@/utils/utils'
 const charts = {
   namespaced: true,
   state: {
-    allCharts: [], //左侧边栏所有组件模板的存储
+    allCharts: [], //左侧边栏所有组件模板列表的存储
     chartsTypeList: [], //需要动态获取当前组件库的类型列表，用以保证拖拽事件能够动态获取不同类型的数据
     layoutTypeList: [], //用以在designPanel中动态限制组件插入类型
     //工作中的渲染树
     canvasData: {},
     //右侧边栏依赖的数据列表
-    configureList: [],
-    //相当于上方渲染树根节点的详细配置列表
+    configureList: {},
+    //上方渲染树根节点的详细配置列表
     //早期设计的遗留问题，原本想要将渲染树和渲染树对应的配置树分开存储，使得渲染树只专注于样式的保存，后来因架构设计的修改，方案大范围更改，但是一部分核心代码已使用该方案，所以此数据给予保留。
-    canvasConfigureList: [],
+    canvasConfigureList: {},
   },
   mutations: {
     SET_ALL_CHARTS(state, value) {
@@ -38,13 +38,18 @@ const charts = {
       state.configureList = value
     },
     SET_CANVAS_CONFIGURE_LIST(state, value) {
-      state.configureList = {
-        id: value[0].id, //id的作用在于修改配置信息时，通过递归动态找到对应id的节点
-        default: value,
-      }
-      state.canvasConfigureList = {
-        id: value[0].id,
-        default: value,
+      if (value && value.length !== 0) {
+        state.configureList = {
+          id: value[0].id, //id的作用在于修改配置信息时，通过递归动态找到对应id的节点
+          default: value,
+        }
+        state.canvasConfigureList = {
+          id: value[0].id,
+          default: value,
+        }
+      } else {
+        state.configureList = {}
+        state.canvasConfigureList = {}
       }
     },
     //早期设计的遗留问题，原本想要将渲染树和渲染树对应的配置树分开存储，使得渲染树只专注于样式的保存，后来因架构设计的修改，方案大范围更改，但是一部分核心代码已使用该方案，所以此数据给予保留。

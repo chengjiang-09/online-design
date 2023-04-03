@@ -37,7 +37,7 @@ export default {
     display: flex;
 
     .item-list {
-      width: 300px;
+      width: 200px;
       height: 100%;
       transition: width 0.5s;
     }

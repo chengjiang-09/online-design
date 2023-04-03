@@ -1,6 +1,18 @@
 <template>
-  <div id="ActualReadingView">
-    <div class="container">
+  <div
+    id="ActualReadingView"
+    :style="{
+      width: `${canvasData.width}px`,
+      height: `${canvasData.height}px`,
+    }"
+  >
+    <div
+      class="container"
+      :style="{
+        width: `${canvasData.width}px`,
+        height: `${canvasData.height}px`,
+      }"
+    >
       <div
         class="canvas"
         :style="{

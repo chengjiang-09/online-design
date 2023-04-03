@@ -38,6 +38,7 @@
           }"
         ></div>
         <div
+          id="workerCanvas"
           class="worker-canvas"
           :style="{
             width: `${canvasData.width}px`,
