@@ -5,7 +5,7 @@
         <div class="close-open" @click="onlineHeaderControl"></div>
         <ul>
           <li
-            v-for="obj in headerMenu"
+            v-for="obj in canvasHeaderMenu"
             :key="obj.type"
             :class="[{ action: obj.action }]"
             @click="choice($event, obj.type)"
@@ -20,11 +20,9 @@
 
 <script>
 // import html2canvas from 'html2canvas'
-import { getHeaderMenu } from '@/apis/chartsApi'
-import { mapActions } from 'vuex'
+import { mapActions, mapState } from 'vuex'
 import { styleMixin } from '@/mixins/styleControl'
 import { deepCopy, isEmpty } from '@/utils/utils'
-import { HEADER_MENU_EX_TIME } from '@/utils/expirationTime'
 export default {
   name: 'OnlineHeader',
   mixins: [styleMixin],
@@ -34,7 +32,12 @@ export default {
     }
   },
   mounted() {
-    this.getHeaderMenu()
+    this.set_canvasHeaderMenu()
+  },
+  computed: {
+    ...mapState({
+      canvasHeaderMenu: (state) => state.charts.canvasHeaderMenu,
+    }),
   },
   watch: {
     //监听模式修改控制侧边栏是否允许开启
@@ -54,16 +57,13 @@ export default {
       set_actualReadingCanvas: 'other/set_actualReadingCanvas',
       add_canvasDataChild: 'charts/add_canvasDataChild',
       set_submitCanvasOpened: 'app/set_submitCanvasOpened',
+      set_canvasHeaderMenu: 'charts/set_canvasHeaderMenu',
+      update_canvasHeaderMenu: 'charts/update_canvasHeaderMenu',
     }),
     choice(e, type) {
       //限制只有阅览模式和编辑模式按钮拥有激活状态的style
       if (type === 'reading' || type === 'edit') {
-        this.headerMenu.forEach((obj) => {
-          obj.action = false
-          if (obj.type === type) {
-            obj.action = true
-          }
-        })
+        this.update_canvasHeaderMenu({ type })
       }
       switch (type) {
         case 'edit':
@@ -186,32 +186,6 @@ export default {
     },
     onlineHeaderControl() {
       this.set_onlineHeader(!this.onlineHeaderOpened)
-    },
-    //初始化头部导航列表，由后端数据动态给定选项个数，并保存在本地存储，有有效期，可查看utils/expirationTime.js
-    async getHeaderMenu() {
-      const headerMenu = this.$ls.get('HeaderMenu', null)
-      if (!headerMenu) {
-        const { data, message, status } = await getHeaderMenu()
-        if (status === 0) {
-          this.headerMenu = data.headerMenu.map((obj) => {
-            obj.action = false
-            return obj
-          })
-          this.headerMenu[0].action = true
-          this.$ls.set('HeaderMenu', data.headerMenu, HEADER_MENU_EX_TIME)
-        } else {
-          this.$message({
-            message: message,
-            type: 'warning',
-          })
-        }
-      } else {
-        this.headerMenu = headerMenu.map((obj) => {
-          obj.action = false
-          return obj
-        })
-        this.headerMenu[0].action = true
-      }
     },
   },
 }

@@ -24,7 +24,7 @@ import {
   ONLINE_HEADER,
 } from '@/store/style-types'
 
-import '@/mock'
+// import '@/mock'
 
 Vue.config.productionTip = false
 

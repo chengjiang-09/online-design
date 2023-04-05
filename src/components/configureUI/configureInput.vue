@@ -6,7 +6,7 @@
       </div>
       <div class="input">
         <el-input
-          :disabled="disabled"
+          :disabled="disabled ? true : false"
           v-model="text"
           :placeholder="dataAll.label"
           @blur="blur"

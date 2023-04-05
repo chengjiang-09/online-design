@@ -39,12 +39,12 @@ export default {
     change() {
       this.$emit('dataChange', {
         key: this.dataAll.type,
-        value: this.flag,
+        value: this.flag ? 1 : 0,
       })
     },
     update() {
       this.dataAll = this.data
-      this.flag = this.dataAll.value
+      this.flag = this.dataAll.value ? true : false
     },
   },
 }

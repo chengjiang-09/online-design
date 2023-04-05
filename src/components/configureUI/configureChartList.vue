@@ -47,7 +47,6 @@ export default {
           obj.value = data.value
         }
       })
-      console.log(this.dataAll.value)
       this.$emit('dataChange', {
         key: this.dataAll.type,
         value: this.dataAll.value,
@@ -55,6 +54,10 @@ export default {
     },
     update() {
       this.dataAll = this.data
+
+      if (!this.dataAll.value && this.dataAll.values) {
+        this.dataAll.value = this.dataAll.values
+      }
     },
   },
 }

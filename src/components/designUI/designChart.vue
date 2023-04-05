@@ -320,13 +320,9 @@ export default {
           })
         } else if (obj.type === 'dataFrom') {
           obj.configure.forEach((config) => {
-            if (config.type === 'dataSource') {
-              this.dataSourceType = config.value
-              config.default.forEach((data) => {
-                if (data.type === 'staticData') {
-                  this.staticValue = data.value
-                }
-              })
+            if (config.type === 'staticData') {
+              this.dataSourceType = config.type
+              this.staticValue = config.jsonData
             }
           })
         } else if (obj.type === 'configure') {

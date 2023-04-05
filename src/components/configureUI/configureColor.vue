@@ -9,7 +9,7 @@
           @change="change"
           v-model="color"
           show-alpha
-          :predefine="predefineColors"
+          :predefine="jsonData"
         >
         </el-color-picker>
       </div>
@@ -39,7 +39,7 @@ export default {
     return {
       dataAll: {},
       color: '',
-      predefineColors: [],
+      jsonData: [],
     }
   },
   methods: {
@@ -53,7 +53,7 @@ export default {
     update() {
       this.dataAll = this.data
       this.color = this.dataAll.value
-      this.predefineColors = this.dataAll.predefineColors
+      this.jsonData = this.dataAll.jsonData
     },
   },
 }

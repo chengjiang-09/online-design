@@ -1,5 +1,11 @@
-import { getChartsList } from '@/apis/chartsApi'
-import { ALL_CHARTS_EX_TIME } from '@/utils/expirationTime'
+import {
+  getTemplateClassification,
+  getCanvasHeaderMenu,
+} from '@/apis/chartsApi'
+import {
+  ALL_CHARTS_EX_TIME,
+  CANVAS_HEADER_MENU_EX_TIME,
+} from '@/utils/expirationTime'
 import Vue from 'vue'
 import { findChildChart } from '@/utils/utils'
 
@@ -7,6 +13,7 @@ const charts = {
   namespaced: true,
   state: {
     allCharts: [], //左侧边栏所有组件模板列表的存储
+    canvasHeaderMenu: [], //头部导航栏选项列表
     chartsTypeList: [], //需要动态获取当前组件库的类型列表，用以保证拖拽事件能够动态获取不同类型的数据
     layoutTypeList: [], //用以在designPanel中动态限制组件插入类型
     //工作中的渲染树
@@ -29,6 +36,27 @@ const charts = {
         return obj.type
       })
       Vue.ls.set('ALL_CHARTS', state.allCharts, ALL_CHARTS_EX_TIME)
+    },
+    SET_CANVAS_HEADER_MENU(state, value) {
+      state.canvasHeaderMenu = value
+      Vue.ls.set(
+        'CANVAS_HEADER_MENU',
+        state.canvasHeaderMenu,
+        CANVAS_HEADER_MENU_EX_TIME,
+      )
+    },
+    UPDATE_CANVAS_HEADER_MENU(state, { type }) {
+      state.canvasHeaderMenu.forEach((obj) => {
+        obj.action = false
+        if (obj.type === type) {
+          obj.action = true
+        }
+      })
+      Vue.ls.set(
+        'CANVAS_HEADER_MENU',
+        state.canvasHeaderMenu,
+        CANVAS_HEADER_MENU_EX_TIME,
+      )
     },
     SET_CANVAS_DATA(state, value) {
       state.canvasData = value
@@ -54,7 +82,7 @@ const charts = {
     },
     //早期设计的遗留问题，原本想要将渲染树和渲染树对应的配置树分开存储，使得渲染树只专注于样式的保存，后来因架构设计的修改，方案大范围更改，但是一部分核心代码已使用该方案，所以此数据给予保留。
     //只用于修改画布的属性值
-    MODIFY_CANVAS_DATA(state, { type, data }) {
+    UPDATE_CANVAS_DATA(state, { type, data }) {
       state.canvasData[data.key] = data.value
 
       let canvasConfigureListLength = state.canvasConfigureList.default.length
@@ -100,7 +128,7 @@ const charts = {
       Vue.ls.set('CANVAS_DATA', state.canvasData)
     },
     //找到并修改对应节点对应的某个属性值
-    MODIFY_CANVAS_DATA_CHILD(state, { id, type, data, fatherId }) {
+    UPDATE_CANVAS_DATA_CHILD(state, { id, type, data, fatherId }) {
       let targetChild = findChildChart(state.canvasData.children, id)
       if (fatherId === 'canvas') {
         if (
@@ -183,18 +211,42 @@ const charts = {
     async set_allCharts({ commit }) {
       let allCharts = Vue.ls.get('ALL_CHARTS', null)
       if (!allCharts) {
-        const { data, message, status } = await getChartsList()
+        const { data, msg, code } = await getTemplateClassification()
 
-        if (status === 0) {
-          return commit('SET_ALL_CHARTS', data.chartsList)
+        if (code === 0) {
+          return commit('SET_ALL_CHARTS', data)
         } else {
           Vue.$message({
-            message: message,
+            message: msg,
             type: 'warning',
           })
         }
       }
       commit('SET_ALL_CHARTS', allCharts)
+    },
+    async set_canvasHeaderMenu({ commit }) {
+      let canvasHeaderMenu = Vue.ls.get('Canvas_Header_Menu', [])
+      if (canvasHeaderMenu.length === 0) {
+        const { code, msg, data } = await getCanvasHeaderMenu()
+
+        if (code === 0) {
+          canvasHeaderMenu = data.map((obj) => {
+            obj.action = false
+            return obj
+          })
+          canvasHeaderMenu[0].action = true
+          return commit('SET_CANVAS_HEADER_MENU', canvasHeaderMenu)
+        } else {
+          Vue.$message({
+            message: msg,
+            type: 'warning',
+          })
+        }
+      }
+      commit('SET_CANVAS_HEADER_MENU', canvasHeaderMenu)
+    },
+    update_canvasHeaderMenu({ commit }, payload) {
+      commit('UPDATE_CANVAS_HEADER_MENU', payload)
     },
     set_canvasData({ commit }, payload) {
       commit('SET_CANVAS_DATA', payload)
@@ -206,13 +258,13 @@ const charts = {
       commit('SET_CANVAS_CONFIGURE_LIST', payload)
     },
     modify_canvasData({ commit }, payload) {
-      commit('MODIFY_CANVAS_DATA', payload)
+      commit('UPDATE_CANVAS_DATA', payload)
     },
     add_canvasDataChild({ commit }, payload) {
       commit('ADD_CANVAS_DATA_CHILD', payload)
     },
     modify_canvasDataChild({ commit }, payload) {
-      commit('MODIFY_CANVAS_DATA_CHILD', payload)
+      commit('UPDATE_CANVAS_DATA_CHILD', payload)
     },
     add_chart({ commit }, payload) {
       commit('ADD_CHART', payload)
