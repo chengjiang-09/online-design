@@ -213,7 +213,7 @@ const charts = {
       if (!allCharts) {
         const { data, msg, code } = await getTemplateClassification()
 
-        if (code === 0) {
+        if (code === 1) {
           return commit('SET_ALL_CHARTS', data)
         } else {
           Vue.$message({

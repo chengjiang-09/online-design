@@ -166,7 +166,7 @@ export default {
           code: this.emailCode,
         })
 
-        if (code === 0) {
+        if (code === 1) {
           // 如果登录成功
           //保存token,12小时
           this.$ls.set('token', data.token, TOKEN_EX_TIME)

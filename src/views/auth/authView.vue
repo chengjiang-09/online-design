@@ -19,7 +19,7 @@ export default {
     this.set_routesGroupAndRoutes([])
 
     this.$alert(
-      '<div>可用默认登录用户名:chengjiang_09@163.com</div><div>可用默认登录验证码:999999</div><h4>（可直接通过点击输入框选择默认提供的邮箱和验证码登录）</h4>',
+      '<div>可用默认登录用户名:<h4 style="display: inline-block">chengjiang_09@163.com<h4/></div><div>可用默认登录验证码:<h4 style="display: inline-block">999999<h4/></div><h4>（可直接通过点击输入框选择默认提供的邮箱和验证码登录）</h4>',
       '提示',
       {
         dangerouslyUseHTMLString: true,
