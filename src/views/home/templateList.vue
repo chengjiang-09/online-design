@@ -5,7 +5,7 @@
         <li @click="createCanvas">
           <ItemCard :titleDisplayFlag="true" :imgDisplayFlag="true" />
         </li>
-        <li>
+        <li v-for="template in templateList" :key="template.id">
           <ItemCard />
         </li>
       </ul>
@@ -15,15 +15,28 @@
 </template>
 
 <script>
-import { mapActions } from 'vuex'
+import { mapActions, mapState } from 'vuex'
 export default {
   name: 'TemplateList',
+  created() {
+    this.set_tmplateListALL({
+      limit: 9,
+      page: 1,
+    })
+  },
+  computed: {
+    ...mapState({
+      templateList: (state) => state.templateList.templateList,
+    }),
+  },
   methods: {
     ...mapActions({
       set_canvasData: 'charts/set_canvasData',
       set_editCanvasOpened: 'app/set_editCanvasOpened',
       set_canvasConfigureList: 'charts/set_canvasConfigureList',
+      set_tmplateListALL: 'templateList/set_tmplateListALL',
     }),
+    //点击创建画布会清空可能存在的原画布
     createCanvas() {
       this.set_canvasData([])
       this.set_editCanvasOpened(true)

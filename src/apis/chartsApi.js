@@ -7,3 +7,10 @@ export const getTemplateClassification = () => {
 export const getCanvasHeaderMenu = () => {
   return request('/design/canvasHeaderMenu', 'get')
 }
+
+export const getChartsList = (limit, page) => {
+  return request('design/template/list', 'get', {
+    limit,
+    page,
+  })
+}

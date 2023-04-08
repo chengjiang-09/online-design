@@ -26,17 +26,17 @@
         <!--图片验证码-->
         <div class="box-verify-code">
           <!--输入图片验证码组件-->
+          <h3 class="code">图片验证码(verify-code)</h3>
           <VerifyInput
             placeholder="验证码"
             keyData="code"
             @getData="getData"
             :propData="code"
-          />
-          <!--图片验证码组件-->
-          <RandomVerifyCode
-            @getVerifyCode="getVerifyCode"
-            :sendFlag="sendFlag"
-          />
+            ><!--图片验证码组件-->
+            <RandomVerifyCode
+              @getVerifyCode="getVerifyCode"
+              :sendFlag="sendFlag"
+          /></VerifyInput>
         </div>
         <!--邮箱验证码-->
         <div class="box-email-code">
@@ -278,13 +278,10 @@ export default {
       }
 
       &-verify-code {
-        flex: 1;
-        display: flex;
-        align-items: center;
-        justify-content: space-between;
+        flex: 2;
 
         .input {
-          margin-right: 8px;
+          margin: 10px 0 8px;
         }
       }
 

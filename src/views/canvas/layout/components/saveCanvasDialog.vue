@@ -114,7 +114,4 @@ export default {
 }
 </script>
 
-<style lang="less" scoped>
-.online-design-dialog {
-}
-</style>
+<style lang="less" scoped></style>

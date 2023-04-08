@@ -18,6 +18,7 @@
       >
       </i
     ></el-input>
+    <!-- 用来提供input标签的默认值 -->
     <div class="chooseList" v-if="hasChooseList" v-show="focusFlag">
       <ul class="chooseList-box">
         <li
@@ -140,6 +141,7 @@ export default {
 .verify-input {
   display: flex;
   position: relative;
+  width: 100%;
 
   .chooseList {
     position: absolute;
