@@ -116,3 +116,32 @@ export function verifyRegularByRE(value, rules) {
   let re = new RegExp(rules)
   return re.test(value)
 }
+
+/**
+ * 将JSON数据转换为FormData，允许传入多层嵌套对象
+ *
+ * @param {Object} obj 传入需要转换的json数据
+ * @return {String} 返回FormData数据
+ */
+export function JSONSwitchFormData(JSONData) {
+  let formData = new FormData()
+
+  function switchFn(JSONData) {
+    Object.keys(JSONData).forEach((key) => {
+      if (Array.isArray(JSONData[key])) {
+        JSONData[key].forEach((val) => {
+          formData.append(key, val)
+        })
+      } else if (
+        Object.prototype.toString.call(JSONData[key]) == '[object Object]'
+      ) {
+        switchFn(JSONData[key])
+      } else {
+        formData.set(key, JSONData[key])
+      }
+    })
+  }
+
+  switchFn(JSONData)
+  return formData
+}

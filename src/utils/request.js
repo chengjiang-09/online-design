@@ -40,6 +40,6 @@ export default (url, method, requestData, options) => {
     url,
     method,
     [method.toLowerCase() === 'get' ? 'params' : 'data']: requestData,
-    options,
+    ...options,
   })
 }

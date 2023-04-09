@@ -14,7 +14,12 @@
         class="title"
         :class="[{ action: action }]"
         :style="{ display: titleDisplay }"
-      ></div>
+      >
+        <h4>{{ title }}</h4>
+        <h5>
+          {{ context }}
+        </h5>
+      </div>
       <div class="switch-component" v-if="titleDisplayFlag">
         <div class="switch-component-body">
           <i class="el-icon-plus icon"></i>
@@ -180,6 +185,26 @@ export default {
       backdrop-filter: blur(6px);
       border-top: 1px solid #b8b8b8;
       border-radius: 5px 5px 0 0;
+      padding: 5px 8px 4px 8px;
+      display: flex;
+      flex-direction: column;
+
+      h4 {
+        flex: 1;
+        font-size: 20px;
+        overflow: hidden;
+        text-overflow: ellipsis;
+        white-space: nowrap;
+      }
+
+      h5 {
+        flex: 3;
+        margin-top: 8px;
+        font-size: 16px;
+        overflow: hidden;
+        text-overflow: ellipsis;
+        white-space: nowrap;
+      }
     }
 
     .action {

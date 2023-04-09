@@ -6,7 +6,12 @@
           <ItemCard :titleDisplayFlag="true" :imgDisplayFlag="true" />
         </li>
         <li v-for="template in templateList" :key="template.id">
-          <ItemCard />
+          <ItemCard
+            :imgPath="`${templateImgBaseUrl}${template.imgValue.img_path}/${template.imgValue.name}`"
+            :imgTitle="template.title"
+            :title="template.title"
+            :context="template.context"
+          />
         </li>
       </ul>
       <div class="footer"></div>
@@ -27,6 +32,7 @@ export default {
   computed: {
     ...mapState({
       templateList: (state) => state.templateList.templateList,
+      templateImgBaseUrl: (state) => state.templateList.templateImgBaseUrl,
     }),
   },
   methods: {

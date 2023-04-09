@@ -12,6 +12,7 @@ import * as echarts from 'echarts'
 import 'three'
 
 import '@/style/common.less'
+import 'normalize.css'
 import '@/permission'
 import config from './defaultSettings'
 import DesignUI from '@/components/designUI'
@@ -25,7 +26,6 @@ import {
 } from '@/store/style-types'
 
 // import '@/mock'
-
 Vue.config.productionTip = false
 
 Vue.prototype.$echarts = echarts
@@ -46,6 +46,12 @@ new Vue({
     store.commit(
       'app/SET_OPERATING_MODE',
       Vue.ls.get(OPERATING_MODE, config.operatingMode),
+    )
+
+    //初始化图片请求路由
+    store.commit(
+      'templateList/SET_TEMPLATE_IMG_BASE_URL',
+      process.env.VUE_APP_BASE_URL,
     )
 
     //做登录待选选项的初始化，默认登录账号和验证码

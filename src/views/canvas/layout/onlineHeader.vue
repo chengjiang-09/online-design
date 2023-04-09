@@ -22,7 +22,7 @@
 // import html2canvas from 'html2canvas'
 import { mapActions, mapState } from 'vuex'
 import { styleMixin } from '@/mixins/styleControl'
-import { deepCopy, isEmpty } from '@/utils/utils'
+import { deepCopy } from '@/utils/utils'
 export default {
   name: 'OnlineHeader',
   mixins: [styleMixin],
@@ -78,9 +78,6 @@ export default {
         case 'redo':
           this.redo()
           break
-        case 'save':
-          this.save()
-          break
         case 'actualReading':
           this.actualReading()
           break
@@ -123,25 +120,12 @@ export default {
           })
         })
     },
-    async save() {
-      this.set_actualReadingCanvas(
+    async actualReading() {
+      await this.set_actualReadingCanvas(
         deepCopy(this.$store.state.charts.canvasData),
       )
 
-      this.$message({
-        message: '保存成功',
-        type: 'success',
-      })
-    },
-    actualReading() {
-      if (!isEmpty(this.$store.state.other.actualReadingCanvas)) {
-        this.$router.push('/actualReading')
-      } else {
-        this.$message({
-          message: '请保存后操作',
-          type: 'warning',
-        })
-      }
+      this.$router.push('/actualReading')
     },
     editCanvas() {
       this.set_editCanvasOpened(true)

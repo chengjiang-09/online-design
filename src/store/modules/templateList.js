@@ -1,4 +1,5 @@
 import Vue from 'vue'
+import { Message } from 'element-ui'
 import { getChartsList } from '@/apis/chartsApi'
 import { TEMPLATE_LIST_ALL } from '@/utils/expirationTime'
 
@@ -9,6 +10,7 @@ const templateList = {
     currentPage: 1,
     total: 0,
     totalPage: 0,
+    templateImgBaseUrl: '',
   },
   mutations: {
     SET_TEMPLATE_LIST(state, templateList) {
@@ -23,6 +25,9 @@ const templateList = {
     SET_TOTAL_PAGE(state, totalPage) {
       state.totalPage = totalPage
     },
+    SET_TEMPLATE_IMG_BASE_URL(state, url) {
+      state.templateImgBaseUrl = url
+    },
   },
   actions: {
     async set_tmplateListALL({ commit }, { limit, page }) {
@@ -32,8 +37,11 @@ const templateList = {
         total: 0,
         totalPage: 0,
       })
-
-      if (templateListAll.templateList[page]) {
+      //这里是保证能够获取新数据
+      if (
+        templateListAll.templateList[page] &&
+        templateListAll.templateList[page].length === 9
+      ) {
         commit('SET_TEMPLATE_LIST', templateListAll.templateList[page])
       } else {
         const { data, msg, code } = await getChartsList(limit, page)
@@ -51,12 +59,15 @@ const templateList = {
 
           Vue.ls.set('TEMPLATE_LIST_ALL', templateListAll, TEMPLATE_LIST_ALL)
         } else {
-          Vue.$message({
+          Message({
             message: msg,
             type: 'warning',
           })
         }
       }
+    },
+    set_templateImgBaseUrl({ commit }, url) {
+      commit('SET_TEMPLATE_IMG_BASE_URL', url)
     },
   },
 }

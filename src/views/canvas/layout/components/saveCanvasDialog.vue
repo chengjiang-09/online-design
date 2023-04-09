@@ -42,13 +42,14 @@
 <script>
 import { mapState, mapActions } from 'vuex'
 import html2canvas from 'html2canvas'
-import { randomStr } from '@/utils/utils'
+import { randomStr, JSONSwitchFormData } from '@/utils/utils'
+import { uploadFile } from '@/apis/publicApi'
 export default {
   name: 'SaveCanvasDialog',
   computed: {
     ...mapState({
       submitCanvasOpened: (state) => state.app.submitCanvasOpened,
-      actualReadingCanvas: (state) => state.charts.actualReadingCanvas,
+      actualReadingCanvas: (state) => state.other.actualReadingCanvas,
     }),
   },
   data: function () {
@@ -58,8 +59,8 @@ export default {
         canvasTitle: '',
         canvasContext: '',
         group: '',
-        file: null,
       },
+      file: null,
       rules: {
         canvasTitle: [
           { required: true, message: '请输入大屏标题', trigger: 'blur' },
@@ -80,6 +81,7 @@ export default {
   methods: {
     ...mapActions({
       set_submitCanvasOpened: 'app/set_submitCanvasOpened',
+      set_completeChart: 'charts/set_completeChart',
     }),
     handleClose() {
       this.set_submitCanvasOpened(false)
@@ -91,15 +93,31 @@ export default {
       this.$refs[formName].validate(async (valid) => {
         if (valid) {
           this.loading = true
+
+          const img = `${Date.now()}${randomStr(21)}.png`
+
+          await this.set_completeChart({
+            groupId: this.form.group,
+            title: this.form.canvasTitle,
+            context: this.form.canvasContext,
+            data: this.actualReadingCanvas,
+            img,
+          })
+
           const workerCanvas = document.querySelector('#workerCanvas')
           const canvas = await html2canvas(workerCanvas, { useCORS: true })
 
-          canvas.toBlob((blob) => {
-            const file = new File([blob], `${randomStr(21)}.png`, {
+          canvas.toBlob(async (blob) => {
+            const file = new File([blob], img, {
               type: 'image/png',
             })
-            this.form.file = file
-            console.log(this.form)
+
+            const formData = JSONSwitchFormData({
+              file: file,
+              name: img,
+            })
+
+            await uploadFile(formData)
 
             this.set_submitCanvasOpened(false)
             this.loading = false

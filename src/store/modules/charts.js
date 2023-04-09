@@ -1,13 +1,16 @@
 import {
   getTemplateClassification,
   getCanvasHeaderMenu,
+  saveChart,
 } from '@/apis/chartsApi'
 import {
   ALL_CHARTS_EX_TIME,
   CANVAS_HEADER_MENU_EX_TIME,
+  COMPLETE_CHART_EX_TIME,
 } from '@/utils/expirationTime'
 import Vue from 'vue'
 import { findChildChart } from '@/utils/utils'
+import { Message } from 'element-ui'
 
 const charts = {
   namespaced: true,
@@ -23,6 +26,7 @@ const charts = {
     //上方渲染树根节点的详细配置列表
     //早期设计的遗留问题，原本想要将渲染树和渲染树对应的配置树分开存储，使得渲染树只专注于样式的保存，后来因架构设计的修改，方案大范围更改，但是一部分核心代码已使用该方案，所以此数据给予保留。
     canvasConfigureList: {},
+    completeChart: {}, //存储完成绘制的模版，同时做一点简单的持久化
   },
   mutations: {
     SET_ALL_CHARTS(state, value) {
@@ -139,7 +143,7 @@ const charts = {
         ) {
           if (data.value > 40) {
             data.value = 40
-            alert('title高度超过40%，已设置为默认最大值')
+            Message('title高度超过40%，已设置为默认最大值')
           }
           let newHeight = 100 - data.value
           if (state.canvasData.children[1]) {
@@ -157,7 +161,7 @@ const charts = {
         ) {
           if (data.value > 40) {
             data.value = 40
-            alert('title高度超过40%，已设置为默认最大值')
+            Message('title高度超过40%，已设置为默认最大值')
           }
           let newHeight = 100 - data.value
           if (fatherNode.children[1]) {
@@ -206,6 +210,15 @@ const charts = {
       targetChild.children = value
       Vue.ls.set('CANVAS_DATA', state.canvasData)
     },
+    SET_COMPLETE_CHART(state, { data, id }) {
+      const completeChart = Vue.ls.get('COMPLETE_CHART', {})
+
+      if (!completeChart[id]) {
+        completeChart[id] = data
+        Vue.ls.set('COMPLETE_CHART', completeChart, COMPLETE_CHART_EX_TIME)
+      }
+      state.completeChart[id] = completeChart[id]
+    },
   },
   actions: {
     async set_allCharts({ commit }) {
@@ -216,20 +229,17 @@ const charts = {
         if (code === 1) {
           return commit('SET_ALL_CHARTS', data)
         } else {
-          Vue.$message({
-            message: msg,
-            type: 'warning',
-          })
+          Message(msg)
         }
       }
       commit('SET_ALL_CHARTS', allCharts)
     },
     async set_canvasHeaderMenu({ commit }) {
-      let canvasHeaderMenu = Vue.ls.get('Canvas_Header_Menu', [])
+      let canvasHeaderMenu = Vue.ls.get('CANVAS_HEADER_MENU', [])
       if (canvasHeaderMenu.length === 0) {
         const { code, msg, data } = await getCanvasHeaderMenu()
 
-        if (code === 0) {
+        if (code === 1) {
           canvasHeaderMenu = data.map((obj) => {
             obj.action = false
             return obj
@@ -237,10 +247,7 @@ const charts = {
           canvasHeaderMenu[0].action = true
           return commit('SET_CANVAS_HEADER_MENU', canvasHeaderMenu)
         } else {
-          Vue.$message({
-            message: msg,
-            type: 'warning',
-          })
+          Message(msg)
         }
       }
       commit('SET_CANVAS_HEADER_MENU', canvasHeaderMenu)
@@ -271,6 +278,16 @@ const charts = {
     },
     set_layoutChild({ commit }, payload) {
       commit('SET_LAYOUT_CHILD', payload)
+    },
+    async set_completeChart({ commit }, chartData) {
+      const { data, code, msg } = await saveChart(chartData)
+
+      if (code === 1) {
+        commit('SET_COMPLETE_CHART', data)
+        return data
+      } else {
+        Message(msg)
+      }
     },
   },
 }
