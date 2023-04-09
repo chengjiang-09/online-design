@@ -2,6 +2,7 @@ import {
   getTemplateClassification,
   getCanvasHeaderMenu,
   saveChart,
+  getChartById,
 } from '@/apis/chartsApi'
 import {
   ALL_CHARTS_EX_TIME,
@@ -11,22 +12,28 @@ import {
 import Vue from 'vue'
 import { findChildChart } from '@/utils/utils'
 import { Message } from 'element-ui'
+import {
+  rulesToChart,
+  basePermission,
+  batchAddPermission,
+  hasPermission,
+} from '@/utils/authorityManage'
 
 const charts = {
   namespaced: true,
   state: {
     allCharts: [], //左侧边栏所有组件模板列表的存储
+    configureList: {}, //右侧边栏依赖的数据列表
     canvasHeaderMenu: [], //头部导航栏选项列表
     chartsTypeList: [], //需要动态获取当前组件库的类型列表，用以保证拖拽事件能够动态获取不同类型的数据
     layoutTypeList: [], //用以在designPanel中动态限制组件插入类型
     //工作中的渲染树
     canvasData: {},
-    //右侧边栏依赖的数据列表
-    configureList: {},
     //上方渲染树根节点的详细配置列表
     //早期设计的遗留问题，原本想要将渲染树和渲染树对应的配置树分开存储，使得渲染树只专注于样式的保存，后来因架构设计的修改，方案大范围更改，但是一部分核心代码已使用该方案，所以此数据给予保留。
     canvasConfigureList: {},
-    completeChart: {}, //存储完成绘制的模版，同时做一点简单的持久化
+    completeChart: {}, //存储完成绘制的模版(由后端返回)，同时做一点简单的持久化
+    permissionId: '', //标识用户拥有的权限规则（与util/authorityManage.js中rulesToChart规则对应）
   },
   mutations: {
     SET_ALL_CHARTS(state, value) {
@@ -42,12 +49,16 @@ const charts = {
       Vue.ls.set('ALL_CHARTS', state.allCharts, ALL_CHARTS_EX_TIME)
     },
     SET_CANVAS_HEADER_MENU(state, value) {
+      if (state.permissionId) {
+        const rules = rulesToChart[state.permissionId]
+        let permission = basePermission
+        permission = batchAddPermission(permission, rules)
+
+        value = value.filter((menu) => {
+          return hasPermission(permission, menu.type)
+        })
+      }
       state.canvasHeaderMenu = value
-      Vue.ls.set(
-        'CANVAS_HEADER_MENU',
-        state.canvasHeaderMenu,
-        CANVAS_HEADER_MENU_EX_TIME,
-      )
     },
     UPDATE_CANVAS_HEADER_MENU(state, { type }) {
       state.canvasHeaderMenu.forEach((obj) => {
@@ -70,7 +81,7 @@ const charts = {
       state.configureList = value
     },
     SET_CANVAS_CONFIGURE_LIST(state, value) {
-      if (value && value.length !== 0) {
+      if (value && Array.isArray(value) && value.length !== 0) {
         state.configureList = {
           id: value[0].id, //id的作用在于修改配置信息时，通过递归动态找到对应id的节点
           default: value,
@@ -79,6 +90,12 @@ const charts = {
           id: value[0].id,
           default: value,
         }
+      } else if (
+        value &&
+        Object.prototype.toString.call(value) == '[object Object]'
+      ) {
+        state.configureList = value
+        state.canvasConfigureList = value
       } else {
         state.configureList = {}
         state.canvasConfigureList = {}
@@ -219,6 +236,9 @@ const charts = {
       }
       state.completeChart[id] = completeChart[id]
     },
+    SET_PERMISSION_ID(state, value) {
+      state.permissionId = value
+    },
   },
   actions: {
     async set_allCharts({ commit }) {
@@ -242,9 +262,16 @@ const charts = {
         if (code === 1) {
           canvasHeaderMenu = data.map((obj) => {
             obj.action = false
+            if (obj.type == 'edit') {
+              obj.action = true
+            }
             return obj
           })
-          canvasHeaderMenu[0].action = true
+          Vue.ls.set(
+            'CANVAS_HEADER_MENU',
+            canvasHeaderMenu,
+            CANVAS_HEADER_MENU_EX_TIME,
+          )
           return commit('SET_CANVAS_HEADER_MENU', canvasHeaderMenu)
         } else {
           Message(msg)
@@ -257,6 +284,25 @@ const charts = {
     },
     set_canvasData({ commit }, payload) {
       commit('SET_CANVAS_DATA', payload)
+    },
+    async set_canvasDataAndCanvasConfigureListToServer({ commit }, { id }) {
+      const { data, code, msg } = await getChartById(id)
+
+      if (code) {
+        commit('SET_CANVAS_DATA', data.data)
+        commit('SET_CANVAS_CONFIGURE_LIST', data.baseData)
+
+        return {
+          authorName: data.author_name,
+          authorId: data.author_id,
+        }
+      }
+
+      Message(msg)
+      return {
+        authorName: null,
+        authorId: null,
+      }
     },
     set_configureList({ commit }, payload) {
       commit('SET_CONFIGURE_LIST', payload)
@@ -288,6 +334,9 @@ const charts = {
       } else {
         Message(msg)
       }
+    },
+    set_permissionId({ commit }, payload) {
+      commit('SET_PERMISSION_ID', payload)
     },
   },
 }

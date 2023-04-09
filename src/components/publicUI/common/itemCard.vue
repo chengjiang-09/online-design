@@ -208,7 +208,7 @@ export default {
     }
 
     .action {
-      transform: translate(0, 0);
+      transform: translate(0, 1%);
     }
   }
 }

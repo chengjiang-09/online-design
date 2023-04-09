@@ -168,8 +168,9 @@ export default {
 
         if (code === 1) {
           // 如果登录成功
-          //保存token,12小时
+          //保存token和一部分用户信息,12小时
           this.$ls.set('token', data.token, TOKEN_EX_TIME)
+          this.$ls.set('user', data.user, TOKEN_EX_TIME)
 
           //保存登录候选邮箱，只保存5个，将会插入后pop多余
           let chooseEmailList = this.$ls.get('email', []) // 获取保存在localStorage中的邮箱列表
@@ -191,7 +192,14 @@ export default {
 
           //清空用作动态渲染导航栏的路由表
           this.set_routes([]) // 清空路由表
-          this.$router.push('/home') // 跳转到首页
+
+          const { redirect } = this.$route.query
+
+          if (redirect) {
+            this.$router.push(redirect)
+          } else {
+            this.$router.push('/home') // 跳转到首页
+          }
         } else {
           this.$alert('邮箱验证码错误', '提示', {
             confirmButtonText: '确定', // 提示框确定按钮文本

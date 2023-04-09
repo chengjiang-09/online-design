@@ -5,7 +5,11 @@
         <li @click="createCanvas">
           <ItemCard :titleDisplayFlag="true" :imgDisplayFlag="true" />
         </li>
-        <li v-for="template in templateList" :key="template.id">
+        <li
+          v-for="template in templateList"
+          :key="template.id"
+          @click="goThisTemplate(template.id)"
+        >
           <ItemCard
             :imgPath="`${templateImgBaseUrl}${template.imgValue.img_path}/${template.imgValue.name}`"
             :imgTitle="template.title"
@@ -14,7 +18,12 @@
           />
         </li>
       </ul>
-      <div class="footer"></div>
+      <div class="footer">
+        <PaginateComponent
+          @handleCurrentChange="handleCurrentChange"
+          :total="total"
+        />
+      </div>
     </div>
   </div>
 </template>
@@ -33,6 +42,7 @@ export default {
     ...mapState({
       templateList: (state) => state.templateList.templateList,
       templateImgBaseUrl: (state) => state.templateList.templateImgBaseUrl,
+      total: (state) => state.templateList.total,
     }),
   },
   methods: {
@@ -48,6 +58,15 @@ export default {
       this.set_editCanvasOpened(true)
       this.set_canvasConfigureList([])
       this.$router.push('/canvas')
+    },
+    handleCurrentChange(num) {
+      this.set_tmplateListALL({
+        limit: 9,
+        page: num,
+      })
+    },
+    goThisTemplate(id) {
+      this.$router.push(`/canvas/${id}`)
     },
   },
 }

@@ -7,10 +7,10 @@ const templateList = {
   namespaced: true,
   state: {
     templateList: [],
-    currentPage: 1,
+    currentPage: 1, //未启用
     total: 0,
-    totalPage: 0,
-    templateImgBaseUrl: '',
+    totalPage: 0, //未启用
+    templateImgBaseUrl: '', //初始化时，保存画布列表模板封面基础路由
   },
   mutations: {
     SET_TEMPLATE_LIST(state, templateList) {

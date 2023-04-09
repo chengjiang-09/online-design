@@ -18,3 +18,9 @@ export const getChartsList = (limit, page) => {
 export const saveChart = (chartData) => {
   return request('design/template', 'post', chartData)
 }
+
+export const getChartById = (id) => {
+  return request('design/template', 'get', {
+    id,
+  })
+}

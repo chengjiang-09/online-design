@@ -51,7 +51,7 @@ new Vue({
     //初始化图片请求路由
     store.commit(
       'templateList/SET_TEMPLATE_IMG_BASE_URL',
-      process.env.VUE_APP_BASE_URL,
+      process.env.VUE_APP_CHART_IMG_URL,
     )
 
     //做登录待选选项的初始化，默认登录账号和验证码

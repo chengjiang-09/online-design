@@ -50,6 +50,8 @@ export default {
     ...mapState({
       submitCanvasOpened: (state) => state.app.submitCanvasOpened,
       actualReadingCanvas: (state) => state.other.actualReadingCanvas,
+      originCanvasConfigureList: (state) =>
+        state.other.originCanvasConfigureList,
     }),
   },
   data: function () {
@@ -82,6 +84,7 @@ export default {
     ...mapActions({
       set_submitCanvasOpened: 'app/set_submitCanvasOpened',
       set_completeChart: 'charts/set_completeChart',
+      set_authMove: 'app/set_authMove',
     }),
     handleClose() {
       this.set_submitCanvasOpened(false)
@@ -92,36 +95,55 @@ export default {
     onSubmit(formName) {
       this.$refs[formName].validate(async (valid) => {
         if (valid) {
-          this.loading = true
+          const token = this.$ls.get('token')
 
-          const img = `${Date.now()}${randomStr(21)}.png`
+          if (token) {
+            this.loading = true
 
-          await this.set_completeChart({
-            groupId: this.form.group,
-            title: this.form.canvasTitle,
-            context: this.form.canvasContext,
-            data: this.actualReadingCanvas,
-            img,
-          })
+            const img = `${Date.now()}${randomStr(21)}.png`
 
-          const workerCanvas = document.querySelector('#workerCanvas')
-          const canvas = await html2canvas(workerCanvas, { useCORS: true })
-
-          canvas.toBlob(async (blob) => {
-            const file = new File([blob], img, {
-              type: 'image/png',
+            await this.set_completeChart({
+              groupId: this.form.group,
+              title: this.form.canvasTitle,
+              context: this.form.canvasContext,
+              data: this.actualReadingCanvas,
+              baseData: this.originCanvasConfigureList,
+              img,
             })
 
-            const formData = JSONSwitchFormData({
-              file: file,
-              name: img,
+            const workerCanvas = document.querySelector('#workerCanvas')
+            const canvas = await html2canvas(workerCanvas, { useCORS: true })
+
+            canvas.toBlob(async (blob) => {
+              const file = new File([blob], img, {
+                type: 'image/png',
+              })
+
+              const formData = JSONSwitchFormData({
+                file: file,
+                name: img,
+              })
+
+              await uploadFile(formData)
+
+              this.set_submitCanvasOpened(false)
+              this.loading = false
             })
-
-            await uploadFile(formData)
-
-            this.set_submitCanvasOpened(false)
-            this.loading = false
-          })
+          } else {
+            this.$confirm('继续此操作需要登录，是否前往登录页面？', '提示', {
+              confirmButtonText: '确定',
+              cancelButtonText: '取消',
+              type: 'warning',
+            })
+              .then(() => {
+                this.set_authMove(true)
+                this.$router.push({
+                  name: 'auth',
+                  query: { redirect: '/canvas' },
+                })
+              })
+              .catch(() => {})
+          }
         } else {
           console.log('error submit!!')
           return false

@@ -37,6 +37,8 @@ export default {
   computed: {
     ...mapState({
       canvasHeaderMenu: (state) => state.charts.canvasHeaderMenu,
+      canvasData: (state) => state.charts.canvasData,
+      canvasConfigureList: (state) => state.charts.canvasConfigureList,
     }),
   },
   watch: {
@@ -59,6 +61,7 @@ export default {
       set_submitCanvasOpened: 'app/set_submitCanvasOpened',
       set_canvasHeaderMenu: 'charts/set_canvasHeaderMenu',
       update_canvasHeaderMenu: 'charts/update_canvasHeaderMenu',
+      set_originCanvasConfigureList: 'other/set_originCanvasConfigureList',
     }),
     choice(e, type) {
       //限制只有阅览模式和编辑模式按钮拥有激活状态的style
@@ -121,9 +124,7 @@ export default {
         })
     },
     async actualReading() {
-      await this.set_actualReadingCanvas(
-        deepCopy(this.$store.state.charts.canvasData),
-      )
+      await this.set_actualReadingCanvas(deepCopy(this.canvasData))
 
       this.$router.push('/actualReading')
     },
@@ -131,42 +132,12 @@ export default {
       this.set_editCanvasOpened(true)
     },
     async complete() {
-      await this.set_actualReadingCanvas(
-        deepCopy(this.$store.state.charts.canvasData),
+      await this.set_actualReadingCanvas(deepCopy(this.canvasData))
+      await this.set_originCanvasConfigureList(
+        deepCopy(this.canvasConfigureList),
       )
       await this.set_targetChart(null)
       this.set_submitCanvasOpened(true)
-
-      // this.$router.push('/actualReading')
-      // this.$nextTick(() => {
-      //   this.$confirm('是否导出成图？', '提示', {
-      //     confirmButtonText: '确定',
-      //     cancelButtonText: '取消',
-      //     type: 'warning',
-      //   })
-      //     .then(async () => {
-      //       const canvasComponent = document.querySelector('#ActualReadingView')
-
-      //       await this.set_targetChart(null)
-
-      //       // 使用html2canvas将DOM元素转换为Canvas图像
-      //       const canvas = await html2canvas(canvasComponent, { useCORS: true })
-      //       // 将Canvas图像转换为图像URL
-      //       // const image = canvas.toDataURL()
-
-      //       canvas.toBlob((blob) => {
-      //         const file = new File([blob], `${randomStr(21)}.png`)
-      //         console.log(file)
-      //       })
-      //       // 打开图像
-      //       // const link = document.createElement('a')
-      //       // link.href = image
-      //       // link.download = `${randomStr(21)}.png`
-      //       // link.target = '_blank' // 在新标签页中打开图像
-      //       // link.click()
-      //     })
-      //     .catch(() => {})
-      // })
     },
     onlineHeaderControl() {
       this.set_onlineHeader(!this.onlineHeaderOpened)

@@ -8,6 +8,7 @@ const other = {
     targetChart: null, //保存当前选中的目标组件，用以实现例如激活样式的控制
     actualReading: false, //实际展示模式是否开启，控制组件某些功能在实际展示页面的关闭
     actualReadingCanvas: {}, //缓存实际保存页面配置
+    originCanvasConfigureList: {}, //缓存实际保存页面配置时画布的基本配置（遗留问题，详细查看store/charts）
     targetParent: null, //记录目标子组件的父组件，用以做拖动
     scaling: {
       //由于缩放导致无法获取dom真实尺寸，此处记录缩放的比例，换算真实尺寸
@@ -37,6 +38,10 @@ const other = {
       state.actualReadingCanvas = value
       Vue.ls.set('SET_ACTUAL_READING_CANVAS', state.actualReadingCanvas)
     },
+    SET_ORIGIN_CANVAS_CONFIGURE_LIST(state, value) {
+      state.originCanvasConfigureList = value
+      Vue.ls.set('ORIGIN_CANVAS_CONFIGURE_LIST', state.actualReadingCanvas)
+    },
     SET_TARGET_PARENT(state, value) {
       if (state.targetParent !== value) {
         state.targetParent = value
@@ -64,6 +69,9 @@ const other = {
     },
     set_actualReadingCanvas({ commit }, payload) {
       commit('SET_ACTUAL_READING_CANVAS', payload)
+    },
+    set_originCanvasConfigureList({ commit }, payload) {
+      commit('SET_ORIGIN_CANVAS_CONFIGURE_LIST', payload)
     },
     set_targetParent({ commit }, payload) {
       commit('SET_TARGET_PARENT', payload)
