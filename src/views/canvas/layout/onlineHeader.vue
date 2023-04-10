@@ -31,24 +31,12 @@ export default {
       headerMenu: [],
     }
   },
-  mounted() {
-    this.set_canvasHeaderMenu()
-  },
   computed: {
     ...mapState({
       canvasHeaderMenu: (state) => state.charts.canvasHeaderMenu,
       canvasData: (state) => state.charts.canvasData,
       canvasConfigureList: (state) => state.charts.canvasConfigureList,
     }),
-  },
-  watch: {
-    //监听模式修改控制侧边栏是否允许开启
-    operatingMode: function () {
-      if (this.operatingMode === 'editMode') {
-        return this.set_onlineHeader(true)
-      }
-      this.onlineHeaderControl()
-    },
   },
   methods: {
     ...mapActions({
@@ -59,7 +47,6 @@ export default {
       set_actualReadingCanvas: 'other/set_actualReadingCanvas',
       add_canvasDataChild: 'charts/add_canvasDataChild',
       set_submitCanvasOpened: 'app/set_submitCanvasOpened',
-      set_canvasHeaderMenu: 'charts/set_canvasHeaderMenu',
       update_canvasHeaderMenu: 'charts/update_canvasHeaderMenu',
       set_originCanvasConfigureList: 'other/set_originCanvasConfigureList',
     }),

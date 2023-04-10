@@ -54,6 +54,14 @@ export default {
         state.other.originCanvasConfigureList,
     }),
   },
+  created() {
+    const { title, context, group } = this.$route.query
+    if (title && context && group) {
+      this.form.canvasContext = decodeURIComponent(context)
+      this.form.canvasTitle = decodeURIComponent(title)
+      this.form.group = group
+    }
+  },
   data: function () {
     return {
       loading: false,
@@ -139,7 +147,12 @@ export default {
                 this.set_authMove(true)
                 this.$router.push({
                   name: 'auth',
-                  query: { redirect: '/canvas' },
+                  query: {
+                    redirect: '/canvas',
+                    title: encodeURIComponent(this.form.canvasTitle),
+                    context: encodeURIComponent(this.form.canvasContext),
+                    group: this.form.group,
+                  },
                 })
               })
               .catch(() => {})

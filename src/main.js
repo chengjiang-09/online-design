@@ -40,15 +40,15 @@ new Vue({
   router,
   store,
   mounted() {
-    store.commit('app/SET_LEFT_SIDEBAR', Vue.ls.get(LEFT_SIDEBAR, true))
-    store.commit('app/SET_RIGHT_SIDERBAR', Vue.ls.get(RIGHT_SIDERBAR, true))
+    store.commit('app/SET_LEFT_SIDEBAR', Vue.ls.get(LEFT_SIDEBAR, false))
+    store.commit('app/SET_RIGHT_SIDERBAR', Vue.ls.get(RIGHT_SIDERBAR, false))
     store.commit('app/SET_ONLINE_HEADER', Vue.ls.get(ONLINE_HEADER, true))
     store.commit(
       'app/SET_OPERATING_MODE',
-      Vue.ls.get(OPERATING_MODE, config.operatingMode),
+      Vue.ls.get(OPERATING_MODE, config.operatingMode2),
     )
 
-    //初始化图片请求路由
+    //初始化图片请求路由，用于更换资源服务器后更好的匹配url
     store.commit(
       'templateList/SET_TEMPLATE_IMG_BASE_URL',
       process.env.VUE_APP_CHART_IMG_URL,

@@ -193,10 +193,16 @@ export default {
           //清空用作动态渲染导航栏的路由表
           this.set_routes([]) // 清空路由表
 
-          const { redirect } = this.$route.query
-
+          const { redirect, title, context, group } = this.$route.query
           if (redirect) {
-            this.$router.push(redirect)
+            this.$router.push({
+              path: redirect,
+              query: {
+                title,
+                context,
+                group,
+              },
+            })
           } else {
             this.$router.push('/home') // 跳转到首页
           }

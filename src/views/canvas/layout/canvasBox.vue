@@ -134,7 +134,7 @@ export default {
       scaleProportion: -55,
       CanvasBox: null,
       //控制缩放按钮在不同模式下的显示位置
-      blockRight: false,
+      blockRight: true,
       //panel和layout默认100%height，当插入title后，改变height
       newHeight: '',
       timer: null,

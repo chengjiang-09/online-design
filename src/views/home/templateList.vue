@@ -37,6 +37,11 @@ export default {
       limit: 9,
       page: 1,
     })
+
+    //重置画布页面左右侧边栏展示，目的是为了显示不同权限的用户使用画布时，有更良好的展示效果
+    this.set_OperatingMode('readingMode')
+    this.set_leftSidebar(false)
+    this.set_rightSidebar(false)
   },
   computed: {
     ...mapState({
@@ -51,10 +56,13 @@ export default {
       set_editCanvasOpened: 'app/set_editCanvasOpened',
       set_canvasConfigureList: 'charts/set_canvasConfigureList',
       set_tmplateListALL: 'templateList/set_tmplateListALL',
+      set_leftSidebar: 'app/set_leftSidebar',
+      set_rightSidebar: 'app/set_rightSidebar',
+      set_OperatingMode: 'app/set_OperatingMode',
     }),
     //点击创建画布会清空可能存在的原画布
     createCanvas() {
-      this.set_canvasData([])
+      this.set_canvasData({})
       this.set_editCanvasOpened(true)
       this.set_canvasConfigureList([])
       this.$router.push('/canvas')

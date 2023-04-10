@@ -55,6 +55,11 @@ const charts = {
         permission = batchAddPermission(permission, rules)
 
         value = value.filter((menu) => {
+          if (menu.type == 'edit') {
+            menu.action = true
+          } else {
+            menu.action = false
+          }
           return hasPermission(permission, menu.type)
         })
       }
@@ -72,6 +77,9 @@ const charts = {
         state.canvasHeaderMenu,
         CANVAS_HEADER_MENU_EX_TIME,
       )
+    },
+    DELETE_CANVAS_HEADER_MENU(state) {
+      state.canvasHeaderMenu = []
     },
     SET_CANVAS_DATA(state, value) {
       state.canvasData = value
@@ -281,6 +289,9 @@ const charts = {
     },
     update_canvasHeaderMenu({ commit }, payload) {
       commit('UPDATE_CANVAS_HEADER_MENU', payload)
+    },
+    delete_canvasHeaderMenu({ commit }) {
+      commit('DELETE_CANVAS_HEADER_MENU')
     },
     set_canvasData({ commit }, payload) {
       commit('SET_CANVAS_DATA', payload)

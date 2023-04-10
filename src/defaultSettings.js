@@ -5,6 +5,7 @@ export default {
     storage: 'local',
   },
   operatingMode: 'editMode',
+  operatingMode2: 'readingMode',
   chooseObject: {
     email: [
       {

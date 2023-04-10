@@ -43,6 +43,9 @@ const templateList = {
         templateListAll.templateList[page].length === 9
       ) {
         commit('SET_TEMPLATE_LIST', templateListAll.templateList[page])
+        commit('SET_CURRENT_PAGE', templateListAll.currentPage)
+        commit('SET_TOTAL', templateListAll.total)
+        commit('SET_TOTAL_PAGE', templateListAll.totalPage)
       } else {
         const { data, msg, code } = await getChartsList(limit, page)
 
