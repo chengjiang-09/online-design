@@ -16,7 +16,8 @@ const other = {
       y: 0,
     },
     inputValue: {}, //由于右侧边栏的数据修改是单向的，但是因为用户可以通过拖动组件修改组件的宽高以及定位，导致实际值无法及时更新右侧边栏视图，也没想到什么更好的解决方法，所以选择此处记录值，进行动态修改
-    scaleFlag: false, // 控制是否处于缩放状态，是则关闭移动功能
+    scaleFlag: false, // 控制是否处于缩放状态，是则关闭移动功能（这里存在点击缩放仍然可以移动的bug）
+    moveFlag: false, // 标识是否处于移动状态，是则关闭缩放功能
   },
   mutations: {
     SET_TEMPLATE_DATA(state, { key, value }) {
@@ -56,6 +57,9 @@ const other = {
     SET_SCALE_FLAGE(state, value) {
       state.scaleFlag = value
     },
+    SET_MOVE_FLAG(state, value) {
+      state.moveFlag = value
+    },
   },
   actions: {
     set_templateData({ commit }, payload) {
@@ -84,6 +88,9 @@ const other = {
     },
     set_scaleFlag({ commit }, payload) {
       commit('SET_SCALE_FLAGE', payload)
+    },
+    set_moveFlag({ commit }, payload) {
+      commit('SET_MOVE_FLAG', payload)
     },
   },
 }

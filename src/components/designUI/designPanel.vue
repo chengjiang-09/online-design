@@ -27,12 +27,15 @@
         @mousedown.self="selectThis"
       >
         <component
-          v-for="obj in propsData.children"
+          v-for="(obj, index) in propsData.children"
           :id="obj.id"
           :key="obj.id"
           :is="obj.component"
           :props="obj"
           :fatherNodeId="propsData.id"
+          :style="{
+            zIndex: propsData.children.length - index,
+          }"
         ></component>
       </div>
     </div>
@@ -118,6 +121,7 @@ export default {
       set_targetChart: 'other/set_targetChart',
       set_configureList: 'charts/set_configureList',
       add_chart: 'charts/add_chart',
+      set_coverageArray: 'charts/set_coverageArray',
     }),
     //选中时，修改目标chart，修改有侧边栏属性表（id的作用是在修改时，动态找到渲染树的对应节点）
     selectThis() {
@@ -128,6 +132,7 @@ export default {
           fatherId: this.propsData.fatherId,
           default: this.propsData.default,
         })
+        this.set_coverageArray(this.propsData.id)
       }
     },
     dragenter() {},

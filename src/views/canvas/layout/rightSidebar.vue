@@ -27,7 +27,7 @@
 
 <script>
 import { styleMixin } from '@/mixins/styleControl'
-import CustomConfigurationList from '@/components/publicUI/customConfigurationList.vue'
+import CustomConfigurationList from '@/views/canvas/layout/components/customConfigurationList.vue'
 import { mapActions, mapState } from 'vuex'
 export default {
   name: 'RightSidebar',

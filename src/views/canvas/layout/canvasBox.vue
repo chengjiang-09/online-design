@@ -77,6 +77,7 @@
       :visible.sync="editCanvasOpened"
       width="30%"
       :before-close="handleClose"
+      :close-on-click-modal="false"
     >
       <div class="dialog-suffix">
         <span>width:</span>

@@ -5,6 +5,7 @@
       width: `${positionData.width}px`,
       height: `${positionData.height}px`,
     }"
+    :class="[{ isMove: moveFlag }]"
   >
     <div class="container">
       <slot></slot>
@@ -25,6 +26,10 @@
         cursor: obj.style.cursor,
       }"
     ></span>
+    <div
+      class="show"
+      :class="[{ action: action }, { enter: enterFlag }, { down: downFlag }]"
+    ></div>
   </div>
 </template>
 
@@ -49,16 +54,35 @@ export default {
       default: '',
       required: false,
     },
+    enter: {
+      type: Boolean,
+      default: false,
+    },
+    down: {
+      type: Boolean,
+      default: false,
+    },
   },
   computed: {
     ...mapState({
       targetChart: (state) => state.other.targetChart,
       targetParent: (state) => state.other.targetParent,
       scaling: (state) => state.other.scaling,
+      moveFlag: (state) => state.other.moveFlag,
     }),
     action: {
       get() {
         return this.targetChart === this.propsData.id
+      },
+    },
+    enterFlag: {
+      get() {
+        return this.enter
+      },
+    },
+    downFlag: {
+      get() {
+        return this.down
       },
     },
   },
@@ -531,7 +555,7 @@ export default {
   span {
     position: absolute;
     background-color: transparent;
-    z-index: 1;
+    z-index: 3;
 
     &::before {
       content: '';
@@ -547,5 +571,38 @@ export default {
       opacity: 0.4;
     }
   }
+
+  .show {
+    position: absolute;
+    pointer-events: none;
+    left: 0;
+    top: 0;
+    width: 100%;
+    height: 100%;
+    z-index: -1;
+    opacity: 0.5;
+    background-color: transparent;
+    transition: background-color 0.5s;
+  }
+
+  .action {
+    z-index: 2;
+    background-color: skyblue;
+  }
+
+  .enter {
+    z-index: 2;
+    background-color: skyblue;
+    cursor: move;
+  }
+
+  .down {
+    z-index: 2;
+    background-color: rgb(82, 147, 172) !important;
+  }
+}
+
+.isMove {
+  pointer-events: none;
 }
 </style>

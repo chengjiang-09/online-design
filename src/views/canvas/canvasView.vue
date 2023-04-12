@@ -34,6 +34,7 @@ export default {
     const token = this.$ls.get('token')
     const user = this.$ls.get('user')
     this.delete_canvasHeaderMenu()
+    this.delete_coverageArray()
     if (id) {
       this.set_canvasData({})
       this.set_editCanvasOpened(false)
@@ -81,6 +82,7 @@ export default {
       set_canvasData: 'charts/set_canvasData',
       set_targetChart: 'other/set_targetChart',
       delete_canvasHeaderMenu: 'charts/delete_canvasHeaderMenu',
+      delete_coverageArray: 'charts/delete_coverageArray',
     }),
   },
 }

@@ -69,10 +69,10 @@ export default {
         this.form.canvasContext = this.targetCanvasDefault.context
           ? this.targetCanvasDefault.context
           : ''
+        this.id = this.targetCanvasDefault.id ? this.targetCanvasDefault.id : ''
         this.imgName = this.targetCanvasDefault.imgName
           ? this.targetCanvasDefault.imgName
           : ''
-        this.id = this.targetCanvasDefault.id ? this.targetCanvasDefault.id : ''
         this.updateFlag = Boolean(
           (this.targetCanvasDefault.groupId ||
             this.targetCanvasDefault.title ||
@@ -149,8 +149,11 @@ export default {
                   cancelButtonText: '取消',
                   type: 'warning',
                 })
-
                 this.loading = true
+                if (this.updateFlagStore) {
+                  console.log(123)
+                  this.imgName = `${Date.now()}${randomStr(21)}.png`
+                }
                 await this.update_completeChart({
                   id: this.id,
                   authorId: this.targetCanvasDefault.authorId,
@@ -192,7 +195,9 @@ export default {
 
                 const formData = JSONSwitchFormData({
                   file: file,
-                  name: this.imgName,
+                  originName: this.targetCanvasDefault.imgName
+                    ? this.targetCanvasDefault.imgName
+                    : this.imgName,
                 })
                 this.updateFlag
                   ? await updateFile(formData)
@@ -204,8 +209,11 @@ export default {
                   type: 'success',
                   message: '保存成功',
                 })
+                this.$router.push({
+                  path: '/actualReading',
+                })
               })
-            } else if (!this.canvasIsNotEmpty) {
+            } else if (first && !this.canvasIsNotEmpty) {
               this.$message({
                 message: '画布为空不允许上传',
                 type: 'warning',

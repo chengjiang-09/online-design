@@ -6,7 +6,7 @@
     @mouseleave="mouseleave"
     @mousedown="mousedown"
     @mouseup="mouseup"
-    :class="[{ edit: edit && !actualReading }]"
+    :class="[{ edit: edit && !actualReading }, { down: down }]"
     :style="{
       width: `${positionData.width}px`,
       height: `${positionData.height}px`,
@@ -27,6 +27,8 @@
         :props="propsData"
         :positionProps.sync="positionData"
         :fatherNodeId="fatherNodeId"
+        :enter="enter"
+        :down="down"
       >
         <img
           class="imge"
@@ -55,18 +57,13 @@
           :src="imgUrl"
         />
       </div>
-      <div
-        v-if="!actualReading"
-        class="show"
-        :class="[{ action: action }, { enter: enter }, { down: down }]"
-      ></div>
     </div>
   </div>
 </template>
 
 <script>
 import SelectComponent from '@/components/designUI/components/selectComponent.vue'
-import { mapActions, mapState } from 'vuex'
+import { mapActions, mapState, mapMutations } from 'vuex'
 export default {
   name: 'designImg',
   components: {
@@ -128,6 +125,7 @@ export default {
       targetParent: (state) => state.other.targetParent, //鼠标点击到的组件的父组件
       scaling: (state) => state.other.scaling, //缩放比例
       scaleFlag: (state) => state.other.scaleFlag, //是否处于缩放模式，用于关闭移动功能
+      moveFlag: (state) => state.other.moveFlag,
     }),
     action: {
       get() {
@@ -153,12 +151,16 @@ export default {
     }
   },
   methods: {
+    ...mapMutations({
+      SET_MOVE_FLAG: 'other/SET_MOVE_FLAG',
+    }),
     ...mapActions({
       set_targetChart: 'other/set_targetChart',
       set_configureList: 'charts/set_configureList',
       set_targetParent: 'other/set_targetParent',
       modify_canvasDataChild: 'charts/modify_canvasDataChild',
       set_inputValue: 'other/set_inputValue',
+      set_coverageArray: 'charts/set_coverageArray',
     }),
     //选中时，修改目标chart，修改有侧边栏属性表（id的作用是在修改时，动态找到渲染树的对应节点）
     selectThis() {
@@ -169,6 +171,7 @@ export default {
           fatherId: this.propsData.fatherId,
           default: this.propsData.default,
         })
+        this.set_coverageArray(this.propsData.fatherId)
       }
     },
     mouseenter() {
@@ -178,6 +181,9 @@ export default {
     },
     mouseleave() {
       if (this.edit && !this.scaleFlag && !this.actualReading) {
+        if (this.moveFlag) {
+          this.SET_MOVE_FLAG(false)
+        }
         this.enter = false
         this.down = false
 
@@ -240,6 +246,9 @@ export default {
     },
     mouseup() {
       if (this.edit && !this.scaleFlag && !this.actualReading) {
+        if (this.moveFlag) {
+          this.SET_MOVE_FLAG(false)
+        }
         this.down = false
         //拖拽结束后，更新渲染树在store中的数据
         this.modify_canvasDataChild({
@@ -267,6 +276,9 @@ export default {
     },
     mousemove(e) {
       //计算鼠标移动后，当前组件新的left和top
+      if (!this.moveFlag) {
+        this.SET_MOVE_FLAG(true)
+      }
       let left =
         this.positionData.left + e.offsetX - this.target.offsetX <= 0
           ? 0
@@ -314,6 +326,7 @@ export default {
 <style lang="less" scoped>
 .design-img {
   position: absolute;
+  z-index: 2;
 
   .box {
     position: relative;
@@ -321,38 +334,14 @@ export default {
     .edit {
       pointer-events: none !important;
     }
-
-    .show {
-      position: absolute;
-      left: 0;
-      top: 0;
-      width: 100%;
-      height: 100%;
-      z-index: -1;
-      opacity: 0.5;
-      background-color: transparent;
-      transition: background-color 0.5s;
-    }
-
-    .action {
-      z-index: -1;
-      background-color: skyblue;
-    }
-
-    .enter {
-      z-index: 3;
-      background-color: skyblue;
-      cursor: move;
-    }
-
-    .down {
-      z-index: 3;
-      background-color: rgb(82, 147, 172) !important;
-    }
   }
 }
 
 .edit {
   cursor: move;
+}
+
+.down {
+  z-index: 9999 !important;
 }
 </style>

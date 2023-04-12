@@ -45,8 +45,12 @@ const charts = {
       context: '',
       imgName: '',
     },
-    updateFlag: false, //这个值是做一点小小的优化，如果用户未修改视图，则不再重新生成封面并上传
+    updateFlag: false, //这个值是做一点小小的优化，如果用户未修改视图，仅修改标题或简介和分组，则不再重新生成封面并上传
     canvasIsNotEmpty: false, //不允许画布为空进行上传
+    coverageArray: {
+      fatherId: '',
+      array: [],
+    },
   },
   mutations: {
     SET_TARGET_CANVAS_DAFAULT(state, value) {
@@ -281,6 +285,24 @@ const charts = {
     SET_PERMISSION_ID(state, value) {
       state.permissionId = value
     },
+    SET_COVERAGE_ARRAY(state, fatherId) {
+      let targetChild = findChildChart(state.canvasData.children, fatherId)
+      state.coverageArray = {
+        fatherId,
+        array: targetChild.children,
+      }
+    },
+    UPDATE_COVERAGE_ARRAY(state, array) {
+      let targetChild = findChildChart(
+        state.canvasData.children,
+        state.coverageArray.fatherId,
+      )
+      state.coverageArray.array = array
+      targetChild.children = array
+    },
+    DELETE_COVERAGE_ARRAY(state) {
+      state.coverageArray = {}
+    },
   },
   actions: {
     async set_allCharts({ commit }) {
@@ -399,6 +421,15 @@ const charts = {
     },
     set_permissionId({ commit }, payload) {
       commit('SET_PERMISSION_ID', payload)
+    },
+    set_coverageArray({ commit }, fatherId) {
+      commit('SET_COVERAGE_ARRAY', fatherId)
+    },
+    update_coverageArray({ commit }, array) {
+      commit('UPDATE_COVERAGE_ARRAY', array)
+    },
+    delete_coverageArray({ commit }) {
+      commit('DELETE_COVERAGE_ARRAY')
     },
   },
 }

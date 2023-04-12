@@ -31,6 +31,26 @@
           <div class="layer-title">
             <h2>图层</h2>
           </div>
+          <div class="layer-coverage">
+            <div class="layer-coverage-container">
+              <Draggable
+                v-model="coverageArray"
+                group="chart"
+                @start="drag = true"
+                @end="drag = false"
+              >
+                <transition-group>
+                  <CoverageCard
+                    v-for="chart in coverageArray"
+                    :key="chart.id"
+                    :chart="chart"
+                  >
+                    {{ chart.label }}({{ chart.id }})
+                  </CoverageCard>
+                </transition-group>
+              </Draggable>
+            </div>
+          </div>
         </div>
       </div>
     </div>
@@ -38,9 +58,11 @@
 </template>
 
 <script>
+import Draggable from 'vuedraggable'
 import { styleMixin } from '@/mixins/styleControl'
-import ItemList from '@/components/publicUI/itemList.vue'
-import { mapActions, mapState } from 'vuex'
+import ItemList from '@/views/canvas/layout/components/itemList.vue'
+import { mapActions, mapState, mapMutations } from 'vuex'
+import CoverageCard from './components/coverageCard.vue'
 export default {
   name: 'LeftSidebar',
   mixins: [styleMixin], //全局样式state混入
@@ -53,6 +75,8 @@ export default {
   },
   components: {
     ItemList,
+    CoverageCard,
+    Draggable,
   },
   //监听模式变化控制侧边栏展开
   watch: {
@@ -63,9 +87,21 @@ export default {
   computed: {
     ...mapState({
       allCharts: (state) => state.charts.allCharts,
+      coverageArrayStore: (state) => state.charts.coverageArray.array,
     }),
+    coverageArray: {
+      get() {
+        return this.coverageArrayStore
+      },
+      set(value) {
+        this.UPDATE_COVERAGE_ARRAY(value)
+      },
+    },
   },
   methods: {
+    ...mapMutations({
+      UPDATE_COVERAGE_ARRAY: 'charts/UPDATE_COVERAGE_ARRAY',
+    }),
     ...mapActions({
       set_leftSidebar: 'app/set_leftSidebar',
     }),
@@ -170,13 +206,31 @@ export default {
 
         &-title {
           width: 100%;
-          height: 15%;
+          height: 10%;
           display: flex;
           flex-direction: column;
+          border-bottom: 1px solid #d3d3d3;
 
           h2 {
             margin: 10px 12.5px;
             font-size: 16px;
+          }
+        }
+        &-coverage {
+          width: 100%;
+          height: 90%;
+          overflow: hidden;
+          overflow-y: scroll;
+          &-container {
+            width: 100%;
+            display: flex;
+            flex-direction: column-reverse;
+            div {
+              span {
+                // display: flex;
+                // flex-direction: column-reverse;
+              }
+            }
           }
         }
       }
