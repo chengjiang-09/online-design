@@ -40,6 +40,7 @@ export default {
       this.set_canvasConfigureList([])
       const { authorId } =
         await this.set_canvasDataAndCanvasConfigureListToServer({ id })
+      this.authorId = authorId
 
       if (token && user && user.id && user.email && user.id == authorId) {
         await this.set_permissionId('author')
@@ -61,6 +62,11 @@ export default {
       this.set_OperatingMode('editMode')
     }
     this.set_canvasHeaderMenu()
+  },
+  data: function () {
+    return {
+      authorId: '',
+    }
   },
   methods: {
     ...mapActions({

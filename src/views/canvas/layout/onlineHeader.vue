@@ -99,21 +99,35 @@ export default {
         .then(() => {
           this.add_canvasDataChild([])
           this.$message({
+            showClose: true,
             type: 'success',
             message: '重置成功!',
           })
         })
         .catch(() => {
           this.$message({
+            showClose: true,
             type: 'info',
             message: '已取消重置',
           })
         })
     },
     async actualReading() {
-      await this.set_actualReadingCanvas(deepCopy(this.canvasData))
+      this.$confirm(
+        '如果未保存，执行此操作修改将不会被记录, 是否继续?',
+        '提示',
+        {
+          confirmButtonText: '确定',
+          cancelButtonText: '取消',
+          type: 'warning',
+        },
+      )
+        .then(async () => {
+          await this.set_actualReadingCanvas(deepCopy(this.canvasData))
 
-      this.$router.push('/actualReading')
+          this.$router.push('/actualReading')
+        })
+        .catch(() => {})
     },
     editCanvas() {
       this.set_editCanvasOpened(true)

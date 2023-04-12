@@ -2,6 +2,7 @@ import {
   getTemplateClassification,
   getCanvasHeaderMenu,
   saveChart,
+  updateChart,
   getChartById,
 } from '@/apis/chartsApi'
 import {
@@ -34,8 +35,23 @@ const charts = {
     canvasConfigureList: {},
     completeChart: {}, //存储完成绘制的模版(由后端返回)，同时做一点简单的持久化
     permissionId: '', //标识用户拥有的权限规则（与util/authorityManage.js中rulesToChart规则对应）
+    targetCanvasDefault: {
+      //记录当前画布的一些基本信息，用以修改以及存在的画布
+      id: '',
+      authorName: '',
+      authorId: '',
+      groupId: '',
+      title: '',
+      context: '',
+      imgName: '',
+    },
+    updateFlag: false, //这个值是做一点小小的优化，如果用户未修改视图，则不再重新生成封面并上传
+    canvasIsNotEmpty: false, //不允许画布为空进行上传
   },
   mutations: {
+    SET_TARGET_CANVAS_DAFAULT(state, value) {
+      state.targetCanvasDefault = value
+    },
     SET_ALL_CHARTS(state, value) {
       state.allCharts = value
       state.chartsTypeList = value.map((obj) => {
@@ -112,6 +128,9 @@ const charts = {
     //早期设计的遗留问题，原本想要将渲染树和渲染树对应的配置树分开存储，使得渲染树只专注于样式的保存，后来因架构设计的修改，方案大范围更改，但是一部分核心代码已使用该方案，所以此数据给予保留。
     //只用于修改画布的属性值
     UPDATE_CANVAS_DATA(state, { type, data }) {
+      if (!state.updateFlag) {
+        state.updateFlag = true
+      }
       state.canvasData[data.key] = data.value
 
       let canvasConfigureListLength = state.canvasConfigureList.default.length
@@ -158,6 +177,9 @@ const charts = {
     },
     //找到并修改对应节点对应的某个属性值
     UPDATE_CANVAS_DATA_CHILD(state, { id, type, data, fatherId }) {
+      if (!state.updateFlag) {
+        state.updateFlag = true
+      }
       let targetChild = findChildChart(state.canvasData.children, id)
       if (fatherId === 'canvas') {
         if (
@@ -211,6 +233,10 @@ const charts = {
     },
     //通过fatherId动态插入子节点
     ADD_CHART(state, value) {
+      if (!state.canvasIsNotEmpty) {
+        state.canvasIsNotEmpty = true
+      }
+
       let targetChild = findChildChart(
         state.canvasData.children,
         value.fatherId,
@@ -242,6 +268,14 @@ const charts = {
         completeChart[id] = data
         Vue.ls.set('COMPLETE_CHART', completeChart, COMPLETE_CHART_EX_TIME)
       }
+      state.completeChart[id] = completeChart[id]
+    },
+    UPDATE_COMPLETE_CHART(state, { data, id }) {
+      const completeChart = Vue.ls.get('COMPLETE_CHART', {})
+
+      completeChart[id] = data
+      Vue.ls.set('COMPLETE_CHART', completeChart, COMPLETE_CHART_EX_TIME)
+
       state.completeChart[id] = completeChart[id]
     },
     SET_PERMISSION_ID(state, value) {
@@ -298,13 +332,19 @@ const charts = {
     },
     async set_canvasDataAndCanvasConfigureListToServer({ commit }, { id }) {
       const { data, code, msg } = await getChartById(id)
-
       if (code) {
         commit('SET_CANVAS_DATA', data.data)
         commit('SET_CANVAS_CONFIGURE_LIST', data.baseData)
-
-        return {
+        commit('SET_TARGET_CANVAS_DAFAULT', {
+          id: data.id,
           authorName: data.author_name,
+          authorId: data.author_id,
+          groupId: data.group_id.length > 0 ? `${data.group_id[0]}` : '',
+          title: data.title,
+          context: data.context,
+          imgName: data.imgName,
+        })
+        return {
           authorId: data.author_id,
         }
       }
@@ -341,6 +381,17 @@ const charts = {
 
       if (code === 1) {
         commit('SET_COMPLETE_CHART', data)
+        return data
+      } else {
+        Message(msg)
+      }
+    },
+    async update_completeChart({ commit }, chartData) {
+      const { data, code, msg } = await updateChart(chartData)
+
+      if (code === 1) {
+        commit('SET_COMPLETE_CHART', data)
+        console.log(data)
         return data
       } else {
         Message(msg)

@@ -43,7 +43,7 @@
 import { mapState, mapActions } from 'vuex'
 import html2canvas from 'html2canvas'
 import { randomStr, JSONSwitchFormData } from '@/utils/utils'
-import { uploadFile } from '@/apis/publicApi'
+import { uploadFile, updateFile } from '@/apis/publicApi'
 export default {
   name: 'SaveCanvasDialog',
   computed: {
@@ -52,7 +52,36 @@ export default {
       actualReadingCanvas: (state) => state.other.actualReadingCanvas,
       originCanvasConfigureList: (state) =>
         state.other.originCanvasConfigureList,
+      targetCanvasDefault: (state) => state.charts.targetCanvasDefault,
+      updateFlagStore: (state) => state.charts.updateFlag,
+      canvasIsNotEmpty: (state) => state.charts.canvasIsNotEmpty,
     }),
+  },
+  watch: {
+    targetCanvasDefault: {
+      handler: function () {
+        this.form.group = this.targetCanvasDefault.groupId
+          ? this.targetCanvasDefault.groupId
+          : ''
+        this.form.canvasTitle = this.targetCanvasDefault.title
+          ? this.targetCanvasDefault.title
+          : ''
+        this.form.canvasContext = this.targetCanvasDefault.context
+          ? this.targetCanvasDefault.context
+          : ''
+        this.imgName = this.targetCanvasDefault.imgName
+          ? this.targetCanvasDefault.imgName
+          : ''
+        this.id = this.targetCanvasDefault.id ? this.targetCanvasDefault.id : ''
+        this.updateFlag = Boolean(
+          (this.targetCanvasDefault.groupId ||
+            this.targetCanvasDefault.title ||
+            this.targetCanvasDefault.context) &&
+            this.targetCanvasDefault.id,
+        )
+      },
+      deep: true,
+    },
   },
   created() {
     const { title, context, group } = this.$route.query
@@ -65,6 +94,9 @@ export default {
   data: function () {
     return {
       loading: false,
+      imgName: '',
+      id: '',
+      updateFlag: false,
       form: {
         canvasTitle: '',
         canvasContext: '',
@@ -92,6 +124,7 @@ export default {
     ...mapActions({
       set_submitCanvasOpened: 'app/set_submitCanvasOpened',
       set_completeChart: 'charts/set_completeChart',
+      update_completeChart: 'charts/update_completeChart',
       set_authMove: 'app/set_authMove',
     }),
     handleClose() {
@@ -104,39 +137,87 @@ export default {
       this.$refs[formName].validate(async (valid) => {
         if (valid) {
           const token = this.$ls.get('token')
+          const user = this.$ls.get('user')
 
-          if (token) {
-            this.loading = true
+          if (token && user) {
+            let next = true
+            let first = false
+            if (user.id == this.targetCanvasDefault.authorId && this.id) {
+              try {
+                await this.$confirm('确定修改并保存当前画布？', '提示', {
+                  confirmButtonText: '确定',
+                  cancelButtonText: '取消',
+                  type: 'warning',
+                })
 
-            const img = `${Date.now()}${randomStr(21)}.png`
+                this.loading = true
+                await this.update_completeChart({
+                  id: this.id,
+                  authorId: this.targetCanvasDefault.authorId,
+                  groupId: this.form.group,
+                  title: this.form.canvasTitle,
+                  context: this.form.canvasContext,
+                  data: this.actualReadingCanvas,
+                  baseData: this.originCanvasConfigureList,
+                  img: this.imgName,
+                })
+              } catch (e) {
+                next = false
+              }
+            } else if (!this.canvasIsNotEmpty) {
+              next = false
+            } else {
+              this.loading = true
+              this.imgName = `${Date.now()}${randomStr(21)}.png`
+              first = true
 
-            await this.set_completeChart({
-              groupId: this.form.group,
-              title: this.form.canvasTitle,
-              context: this.form.canvasContext,
-              data: this.actualReadingCanvas,
-              baseData: this.originCanvasConfigureList,
-              img,
-            })
-
-            const workerCanvas = document.querySelector('#workerCanvas')
-            const canvas = await html2canvas(workerCanvas, { useCORS: true })
-
-            canvas.toBlob(async (blob) => {
-              const file = new File([blob], img, {
-                type: 'image/png',
+              await this.set_completeChart({
+                id: this.id,
+                groupId: this.form.group,
+                title: this.form.canvasTitle,
+                context: this.form.canvasContext,
+                data: this.actualReadingCanvas,
+                baseData: this.originCanvasConfigureList,
+                img: this.imgName,
               })
+            }
+            if (next && (first || this.updateFlagStore)) {
+              const workerCanvas = document.querySelector('#workerCanvas')
+              const canvas = await html2canvas(workerCanvas, { useCORS: true })
 
-              const formData = JSONSwitchFormData({
-                file: file,
-                name: img,
+              canvas.toBlob(async (blob) => {
+                const file = new File([blob], this.imgName, {
+                  type: 'image/png',
+                })
+
+                const formData = JSONSwitchFormData({
+                  file: file,
+                  name: this.imgName,
+                })
+                this.updateFlag
+                  ? await updateFile(formData)
+                  : await uploadFile(formData)
+
+                this.set_submitCanvasOpened(false)
+                this.loading = false
+                this.$message({
+                  type: 'success',
+                  message: '保存成功',
+                })
               })
-
-              await uploadFile(formData)
-
+            } else if (!this.canvasIsNotEmpty) {
+              this.$message({
+                message: '画布为空不允许上传',
+                type: 'warning',
+              })
+            } else {
               this.set_submitCanvasOpened(false)
               this.loading = false
-            })
+              this.$message({
+                type: 'success',
+                message: '保存成功',
+              })
+            }
           } else {
             this.$confirm('继续此操作需要登录，是否前往登录页面？', '提示', {
               confirmButtonText: '确定',
