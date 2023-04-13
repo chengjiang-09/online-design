@@ -36,6 +36,7 @@
               <Draggable
                 v-model="coverageArray"
                 group="chart"
+                v-if="coverageArray"
                 @start="drag = true"
                 @end="drag = false"
               >
@@ -49,6 +50,7 @@
                   </CoverageCard>
                 </transition-group>
               </Draggable>
+              <div v-else class="coverage-empty">空</div>
             </div>
           </div>
         </div>
@@ -225,11 +227,14 @@ export default {
             width: 100%;
             display: flex;
             flex-direction: column-reverse;
-            div {
-              span {
-                // display: flex;
-                // flex-direction: column-reverse;
-              }
+
+            .coverage-empty {
+              width: 100%;
+              height: 200px;
+              font-size: 24px;
+              display: flex;
+              justify-content: center;
+              align-items: center;
             }
           }
         }

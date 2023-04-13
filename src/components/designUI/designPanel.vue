@@ -196,7 +196,9 @@ export default {
           this.set_targetChart(this.templateData[this.data].type + date)
         } else {
           this.$message({
-            message: `${this.templateData[this.data].type}插入错误，或违规插入`,
+            message: `${
+              this.templateData[this.data].label
+            }插入错误，或违规插入`,
             type: 'warning',
           })
         }

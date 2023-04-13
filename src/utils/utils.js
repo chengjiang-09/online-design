@@ -1,5 +1,5 @@
 /**
- * 深拷贝
+ * 深拷贝,如果使用在组件插入部分，则会对数据做一些格式化处理
  *
  * @param {*} obj
  * @returns
@@ -16,37 +16,23 @@ export const deepCopy = (obj) => {
           copyObj[key].push(val)
         }
       })
+      if (key === 'values' && !copyObj['value'] && copyObj[key].length > 0) {
+        copyObj['value'] = copyObj[key]
+      }
     } else if (Object.prototype.toString.call(obj[key]) === '[object Object]') {
       copyObj[key] = deepCopy(obj[key])
     } else {
       copyObj[key] = obj[key]
+      if (
+        key === 'value' &&
+        copyObj['values'] &&
+        copyObj['values'].length > 0
+      ) {
+        copyObj[key] = copyObj['values']
+      }
     }
   })
   return copyObj
-}
-
-/**
- * 找到修改的child
- *
- * @param {*} children
- * @param {*} id
- * @returns
- */
-export const findChildChart = (children, id) => {
-  let chart = null
-
-  const fn = (children, id) => {
-    let childrenLength = children.length
-    for (let i = 0; i < childrenLength; i++) {
-      if (children[i].id === id) {
-        chart = children[i]
-      } else if (children[i].children.length !== 0) {
-        fn(children[i].children, id)
-      }
-    }
-  }
-  fn(children, id)
-  return chart
 }
 
 /**

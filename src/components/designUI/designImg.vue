@@ -134,7 +134,13 @@ export default {
     },
   },
   created() {
-    this.update()
+    //限制初始化大小不超过这个父盒子宽高
+    const fatherNode = document.querySelector(`#${this.fatherNodeId}`)
+    if (fatherNode) {
+      this.update(fatherNode.offsetWidth, fatherNode.offsetHeight)
+    } else {
+      this.update()
+    }
   },
   mounted() {
     switch (this.operatingMode) {
@@ -303,12 +309,46 @@ export default {
       })
     },
     //初始化函数
-    update() {
+    update(parentNodeWidth, parentNodeHeight) {
       this.propsData = this.props
       this.propsData.default.forEach((obj) => {
         if (obj.type === 'position') {
           obj.configure.forEach((style) => {
-            this.positionData[style.type] = style.value
+            if (
+              style.type == 'width' &&
+              parentNodeWidth &&
+              style.value > parentNodeWidth
+            ) {
+              this.positionData[style.type] = parentNodeWidth
+
+              this.modify_canvasDataChild({
+                fatherId: this.propsData.fatherId,
+                id: this.propsData.id,
+                data: {
+                  key: 'width',
+                  value: this.positionData.width,
+                },
+                type: 'position',
+              })
+            } else if (
+              style.type == 'height' &&
+              parentNodeHeight &&
+              style.value > parentNodeHeight
+            ) {
+              this.positionData[style.type] = parentNodeHeight
+
+              this.modify_canvasDataChild({
+                fatherId: this.propsData.fatherId,
+                id: this.propsData.id,
+                data: {
+                  key: 'height',
+                  value: this.positionData.height,
+                },
+                type: 'position',
+              })
+            } else {
+              this.positionData[style.type] = style.value
+            }
           })
         } else if (obj.type === 'configure') {
           obj.configure.forEach((config) => {

@@ -124,13 +124,14 @@ export default {
           this.set_targetChart(this.templateData[data].type + date)
         } else {
           this.$message({
-            message: `${this.templateData[data].type}插入错误，或违规插入`,
+            message: `${this.templateData[data].label}插入错误，或违规插入`,
             type: 'warning',
           })
         }
       } else {
         this.$message({
-          message: '请先使用panel组件进行布局后，再使用普通组件',
+          message:
+            '请先使用容器盒子（统一管理数据源的功能）进行布局后，再使用普通组件',
           type: 'warning',
         })
       }

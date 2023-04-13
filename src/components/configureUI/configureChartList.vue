@@ -54,10 +54,6 @@ export default {
     },
     update() {
       this.dataAll = this.data
-
-      if (!this.dataAll.value && this.dataAll.values) {
-        this.dataAll.value = this.dataAll.values
-      }
     },
   },
 }
