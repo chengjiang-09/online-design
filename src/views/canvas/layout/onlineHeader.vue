@@ -2,7 +2,11 @@
   <div id="OnlineHeader" :class="[{ onlineHeaderClose: !onlineHeaderOpened }]">
     <div id="HeaderMenu">
       <div class="container">
-        <div class="close-open" @click="onlineHeaderControl"></div>
+        <div
+          class="close-open"
+          @click="onlineHeaderControl"
+          v-loading="loading"
+        ></div>
         <ul>
           <li
             v-for="obj in canvasHeaderMenu"
@@ -23,12 +27,14 @@
 import { mapActions, mapState } from 'vuex'
 import { styleMixin } from '@/mixins/styleControl'
 import { deepCopy } from '@/utils/utils'
+import goBackListType from '@/utils/goBackListType'
 export default {
   name: 'OnlineHeader',
   mixins: [styleMixin],
   data: function () {
     return {
       headerMenu: [],
+      loading: false,
     }
   },
   computed: {
@@ -36,6 +42,7 @@ export default {
       canvasHeaderMenu: (state) => state.charts.canvasHeaderMenu,
       canvasData: (state) => state.charts.canvasData,
       canvasConfigureList: (state) => state.charts.canvasConfigureList,
+      goBcakArray: (state) => state.charts.goBcakArray,
     }),
   },
   methods: {
@@ -49,6 +56,11 @@ export default {
       set_submitCanvasOpened: 'app/set_submitCanvasOpened',
       update_canvasHeaderMenu: 'charts/update_canvasHeaderMenu',
       set_originCanvasConfigureList: 'other/set_originCanvasConfigureList',
+      pop_goBackArray: 'charts/pop_goBackArray',
+      modify_canvasDataChild: 'charts/modify_canvasDataChild',
+      delete_chart: 'charts/delete_chart',
+      gobackCoverage: 'charts/gobackCoverage',
+      set_configureList: 'charts/set_configureList',
     }),
     choice(e, type) {
       //限制只有阅览模式和编辑模式按钮拥有激活状态的style
@@ -89,7 +101,58 @@ export default {
       this.set_targetChart('')
       this.set_OperatingMode('readingMode')
     },
-    revoke() {},
+    async revoke() {
+      let length = this.goBcakArray.length
+      if (length > 0) {
+        this.loading = true
+        const goBackData = this.goBcakArray[length - 1]
+
+        switch (goBackData.type) {
+          case goBackListType.update:
+            if (goBackData.fatherId) {
+              goBackData.data.forEach(async (value) => {
+                await this.modify_canvasDataChild({
+                  fatherId: goBackData.fatherId,
+                  id: goBackData.id,
+                  data: value,
+                  type: goBackData.defaultType,
+                })
+              })
+            } else {
+              this.modify_canvasData({
+                id: goBackData.id,
+                data: goBackData.data,
+                type: goBackData.defaultType,
+              })
+            }
+            console.log(goBackData.type)
+            break
+          case goBackListType.add:
+            this.delete_chart({
+              fatherId: goBackData.fatherId,
+              id: goBackData.id,
+            })
+            this.set_targetChart('')
+            this.set_configureList(this.canvasConfigureList)
+            console.log(goBackData.type)
+            break
+          case goBackListType.coverage:
+            this.gobackCoverage({
+              fatherId: goBackData.fatherId,
+              data: goBackData.data,
+            })
+            console.log(goBackData.type)
+            break
+          case goBackListType.delete:
+            console.log(goBackData.type)
+            break
+          default:
+            break
+        }
+        await this.pop_goBackArray()
+        this.loading = false
+      }
+    },
     redo() {
       this.$confirm('是否确定重置？重置将会清除所有已布局的组件。', '提示', {
         confirmButtonText: '确定',

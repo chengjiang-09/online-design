@@ -21,6 +21,7 @@
 <script>
 //右侧样式列表组件
 import { mapActions } from 'vuex'
+import goBackListType from '@/utils/goBackListType'
 export default {
   name: 'ConfigureList',
   props: {
@@ -50,20 +51,51 @@ export default {
     ...mapActions({
       modify_canvasData: 'charts/modify_canvasData',
       modify_canvasDataChild: 'charts/modify_canvasDataChild',
+      set_goBcakArray: 'charts/set_goBcakArray',
     }),
-    dataChange(data) {
+    dataChange({ key, value, originValue }) {
       if (this.id === 'canvas') {
         this.modify_canvasData({
           id: this.id,
-          data,
+          data: {
+            key,
+            value,
+          },
           type: this.type,
+        })
+
+        this.set_goBcakArray({
+          fatherId: null,
+          id: this.id,
+          data: {
+            key,
+            value: originValue,
+          },
+          defaultType: this.type,
+          type: goBackListType.update,
         })
       } else {
         this.modify_canvasDataChild({
           fatherId: this.fatherId,
           id: this.id,
-          data,
+          data: {
+            key,
+            value,
+          },
           type: this.type,
+        })
+
+        this.set_goBcakArray({
+          fatherId: this.fatherId,
+          id: this.id,
+          data: [
+            {
+              key,
+              value: originValue,
+            },
+          ],
+          defaultType: this.type,
+          type: goBackListType.update,
         })
       }
     },

@@ -17,6 +17,7 @@
 </template>
 
 <script>
+import { deepCopy } from '@/utils/utils'
 export default {
   name: 'ConfigureChartList',
   props: {
@@ -38,18 +39,23 @@ export default {
     return {
       dataAll: {},
       activeName: 0,
+      originValue: null,
     }
   },
   methods: {
-    dataChange(data) {
+    dataChange({ key, value }) {
+      this.originValue = deepCopy({
+        data: this.dataAll.value,
+      })
       this.dataAll.value.forEach((obj) => {
-        if (obj.type === data.key) {
-          obj.value = data.value
+        if (obj.type === key) {
+          obj.value = value
         }
       })
       this.$emit('dataChange', {
         key: this.dataAll.type,
         value: this.dataAll.value,
+        originValue: this.originValue.data,
       })
     },
     update() {

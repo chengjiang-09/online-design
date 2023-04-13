@@ -194,11 +194,12 @@ export default {
             }),
           )
           this.set_targetChart(this.templateData[this.data].type + date)
+          this.set_coverageArray(this.propsData.id)
         } else {
           this.$message({
-            message: `${
+            message: `${this.templateData[this.data].label}插入错误，${
               this.templateData[this.data].label
-            }插入错误，或违规插入`,
+            }可能已插入，请勿重复操作`,
             type: 'warning',
           })
         }

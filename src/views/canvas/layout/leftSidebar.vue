@@ -36,7 +36,7 @@
               <Draggable
                 v-model="coverageArray"
                 group="chart"
-                v-if="coverageArray"
+                v-if="coverageArrayNotEmpty"
                 @start="drag = true"
                 @end="drag = false"
               >
@@ -50,7 +50,7 @@
                   </CoverageCard>
                 </transition-group>
               </Draggable>
-              <div v-else class="coverage-empty">空</div>
+              <EmptyCard v-else />
             </div>
           </div>
         </div>
@@ -65,6 +65,7 @@ import { styleMixin } from '@/mixins/styleControl'
 import ItemList from '@/views/canvas/layout/components/itemList.vue'
 import { mapActions, mapState, mapMutations } from 'vuex'
 import CoverageCard from './components/coverageCard.vue'
+import EmptyCard from './components/emptyCard.vue'
 export default {
   name: 'LeftSidebar',
   mixins: [styleMixin], //全局样式state混入
@@ -79,6 +80,7 @@ export default {
     ItemList,
     CoverageCard,
     Draggable,
+    EmptyCard,
   },
   //监听模式变化控制侧边栏展开
   watch: {
@@ -97,6 +99,13 @@ export default {
       },
       set(value) {
         this.UPDATE_COVERAGE_ARRAY(value)
+      },
+    },
+    coverageArrayNotEmpty: {
+      get() {
+        return this.coverageArrayStore && this.coverageArrayStore.length > 0
+          ? true
+          : false
       },
     },
   },
@@ -227,15 +236,6 @@ export default {
             width: 100%;
             display: flex;
             flex-direction: column-reverse;
-
-            .coverage-empty {
-              width: 100%;
-              height: 200px;
-              font-size: 24px;
-              display: flex;
-              justify-content: center;
-              align-items: center;
-            }
           }
         }
       }

@@ -61,7 +61,6 @@ export default {
   watch: {
     props: {
       handler: function () {
-        console.log('layout-box')
         this.propsData = this.props
       },
       deep: true,
@@ -124,7 +123,7 @@ export default {
           this.set_targetChart(this.templateData[data].type + date)
         } else {
           this.$message({
-            message: `${this.templateData[data].label}插入错误，或违规插入`,
+            message: `${this.templateData[data].label}插入错误，，${this.templateData[data].label}可能已插入，请勿重复操作`,
             type: 'warning',
           })
         }

@@ -36,6 +36,7 @@
 <script>
 //组件大小四角四边控制组件
 import { mapState, mapActions } from 'vuex'
+import goBackListType from '@/utils/goBackListType'
 export default {
   name: 'SelectComponent',
   props: {
@@ -211,6 +212,7 @@ export default {
       set_targetParent: 'other/set_targetParent',
       set_inputValue: 'other/set_inputValue',
       modify_canvasDataChild: 'charts/modify_canvasDataChild',
+      set_goBcakArray: 'charts/set_goBcakArray',
     }),
     update() {
       this.propsData = this.props
@@ -278,6 +280,32 @@ export default {
 
       let maxWidth = parseInt(this.positionData.width) + this.positionData.left
       let maxHeight = parseInt(this.positionData.height) + this.positionData.top
+
+      //记录初始位置，用于撤回操作
+      this.set_goBcakArray({
+        fatherId: this.propsData.fatherId,
+        id: this.propsData.id,
+        data: [
+          {
+            key: 'top',
+            value: this.positionData.top,
+          },
+          {
+            key: 'left',
+            value: this.positionData.left,
+          },
+          {
+            key: 'height',
+            value: this.positionData.height,
+          },
+          {
+            key: 'width',
+            value: this.positionData.width,
+          },
+        ],
+        defaultType: 'position',
+        type: goBackListType.update,
+      })
 
       //以下是点击八个点之后，对应的移动功能
       node.onmousemove = (e) => {

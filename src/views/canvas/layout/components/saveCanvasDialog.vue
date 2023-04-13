@@ -151,7 +151,6 @@ export default {
                 })
                 this.loading = true
                 if (this.updateFlagStore) {
-                  console.log(123)
                   this.imgName = `${Date.now()}${randomStr(21)}.png`
                 }
                 await this.update_completeChart({

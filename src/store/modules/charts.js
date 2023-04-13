@@ -18,6 +18,7 @@ import {
   batchAddPermission,
   hasPermission,
 } from '@/utils/authorityManage'
+import goBackListType from '@/utils/goBackListType'
 
 /**
  * 找到修改的child
@@ -160,6 +161,19 @@ const charts = {
       if (!state.updateFlag) {
         state.updateFlag = true
       }
+
+      //向回退数据添加节点标识,只记录最近30条操作
+      if (state.goBcakArray.length >= 30) {
+        state.goBcakArray.shift()
+      }
+      state.goBcakArray.push({
+        fatherId: null,
+        id: 'canvas',
+        data: [data],
+        defaultType: type,
+        type: goBackListType.update,
+      })
+
       state.canvasData[data.key] = data.value
 
       let canvasConfigureListLength = state.canvasConfigureList.default.length
@@ -191,6 +205,18 @@ const charts = {
         state.canvasData.children = []
       }
 
+      //向回退数据添加节点标识,只记录最近30条操作
+      if (state.goBcakArray.length >= 30) {
+        state.goBcakArray.shift()
+      }
+      state.goBcakArray.push({
+        fatherId: value.fatherId,
+        id: value.id,
+        data: null,
+        defaultType: null,
+        type: goBackListType.add,
+      })
+
       if (Array.isArray(value) && value.length === 0) {
         state.canvasData.children = []
         state.configureList = state.canvasConfigureList
@@ -209,17 +235,6 @@ const charts = {
       if (!state.updateFlag) {
         state.updateFlag = true
       }
-      //向回退数据添加节点标识,只记录最近20条操作
-      if (state.goBcakArray.length >= 20) {
-        state.goBcakArray.shift()
-      }
-      state.goBcakArray.push({
-        fatherId,
-        id,
-        data,
-        defaultType: type,
-        type: 'update',
-      })
 
       let targetChild = findChildChart(state.canvasData.children, id)
       if (fatherId === 'canvas') {
@@ -279,8 +294,8 @@ const charts = {
         state.canvasIsNotEmpty = true
       }
 
-      //向回退数据添加节点标识,只记录最近20条操作
-      if (state.goBcakArray.length >= 20) {
+      //向回退数据添加节点标识,只记录最近30条操作
+      if (state.goBcakArray.length >= 30) {
         state.goBcakArray.shift()
       }
       state.goBcakArray.push({
@@ -288,7 +303,7 @@ const charts = {
         id: value.id,
         data: null,
         defaultType: null,
-        type: 'add',
+        type: goBackListType.add,
       })
 
       let targetChild = findChildChart(
@@ -306,6 +321,18 @@ const charts = {
         default: value.default,
       }
       Vue.ls.set('CANVAS_DATA', state.canvasData)
+    },
+    DELETE_CHART(state, { id, fatherId }) {
+      let targetChild =
+        fatherId === 'canvas'
+          ? state.canvasData
+          : findChildChart(state.canvasData.children, fatherId)
+
+      const index = targetChild.children.findIndex((chart) => {
+        return chart.id == id
+      })
+
+      targetChild.children.splice(index, 1)
     },
     SET_LAYOUT_CHILD(state, value) {
       let targetChild = findChildChart(
@@ -335,6 +362,7 @@ const charts = {
     SET_PERMISSION_ID(state, value) {
       state.permissionId = value
     },
+    //图层数组
     SET_COVERAGE_ARRAY(state, fatherId) {
       let targetChild = findChildChart(state.canvasData.children, fatherId)
       state.coverageArray = {
@@ -346,19 +374,48 @@ const charts = {
             : targetChild.children,
       }
     },
+    //更新图层
     UPDATE_COVERAGE_ARRAY(state, array) {
       let targetChild = findChildChart(
         state.canvasData.children,
         state.coverageArray.fatherId,
       )
+
+      //向回退数据添加节点标识,只记录最近30条操作
+      if (state.goBcakArray.length >= 30) {
+        state.goBcakArray.shift()
+      }
+      state.goBcakArray.push({
+        fatherId: state.coverageArray.fatherId,
+        id: null,
+        data: targetChild.children.map((chart) => {
+          return chart.id
+        }),
+        defaultType: null,
+        type: goBackListType.coverage,
+      })
+
       state.coverageArray.array = array
       targetChild.children = array
     },
     DELETE_COVERAGE_ARRAY(state) {
       state.coverageArray = {}
     },
+    GO_BACK_COVERAGE(state, { fatherId, data }) {
+      let targetChild = findChildChart(state.canvasData.children, fatherId)
+
+      targetChild.children.sort((a, b) => {
+        const indexA = data.findIndex((num) => num === a.id)
+        const indexB = data.findIndex((num) => num === b.id)
+        return indexA - indexB
+      })
+    },
     //data数据类似modify_canvasDataChild的data
     SET_GO_BACK_ARRAY(state, { id, defaultType, data, fatherId, type }) {
+      //向回退数据添加节点标识,只记录最近30条操作
+      if (state.goBcakArray.length >= 30) {
+        state.goBcakArray.shift()
+      }
       state.goBcakArray.push({
         fatherId,
         id,
@@ -366,6 +423,14 @@ const charts = {
         defaultType,
         type,
       })
+    },
+    DELETE_GO_BACK_ARRAY(state) {
+      state.goBcakArray = []
+    },
+    POP_GO_BACK_ARRAY(state) {
+      if (state.goBcakArray.length > 0) {
+        state.goBcakArray.pop()
+      }
     },
   },
   actions: {
@@ -462,6 +527,9 @@ const charts = {
     set_layoutChild({ commit }, payload) {
       commit('SET_LAYOUT_CHILD', payload)
     },
+    delete_chart({ commit }, payload) {
+      commit('DELETE_CHART', payload)
+    },
     async set_completeChart({ commit }, chartData) {
       const { data, code, msg } = await saveChart(chartData)
 
@@ -477,7 +545,6 @@ const charts = {
 
       if (code === 1) {
         commit('SET_COMPLETE_CHART', data)
-        console.log(data)
         return data
       } else {
         Message(msg)
@@ -495,8 +562,17 @@ const charts = {
     delete_coverageArray({ commit }) {
       commit('DELETE_COVERAGE_ARRAY')
     },
+    gobackCoverage({ commit }, payload) {
+      commit('GO_BACK_COVERAGE', payload)
+    },
     set_goBcakArray({ commit }, payload) {
       commit('SET_GO_BACK_ARRAY', payload)
+    },
+    delete_goBcakArray({ commit }) {
+      commit('DELETE_GO_BACK_ARRAY')
+    },
+    pop_goBackArray({ commit }) {
+      commit('POP_GO_BACK_ARRAY')
     },
   },
 }

@@ -33,6 +33,7 @@ export default {
     return {
       dataAll: {},
       flag: null,
+      originValue: '',
     }
   },
   methods: {
@@ -40,11 +41,14 @@ export default {
       this.$emit('dataChange', {
         key: this.dataAll.type,
         value: this.flag ? 1 : 0,
+        originValue: this.originValue,
       })
+      this.originValue = this.flag
     },
     update() {
       this.dataAll = this.data
       this.flag = this.dataAll.value ? true : false
+      this.originValue = this.flag
     },
   },
 }

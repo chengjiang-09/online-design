@@ -27,11 +27,13 @@ export default {
   created() {
     this.dataAll = this.data
     this.value = this.dataAll.value
+    this.originValue = this.value
   },
   data: function () {
     return {
       dataAll: {},
       value: '',
+      originValue: '',
     }
   },
   methods: {
@@ -39,7 +41,9 @@ export default {
       this.$emit('dataChange', {
         key: this.dataAll.type,
         value,
+        originValue: this.originValue,
       })
+      this.originValue = this.value
     },
   },
 }

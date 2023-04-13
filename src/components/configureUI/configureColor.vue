@@ -39,6 +39,7 @@ export default {
     return {
       dataAll: {},
       color: '',
+      originValue: '',
       jsonData: [],
     }
   },
@@ -48,11 +49,14 @@ export default {
       this.$emit('dataChange', {
         key: this.dataAll.type,
         value: this.color,
+        originValue: this.originValue,
       })
+      this.originValue = this.color
     },
     update() {
       this.dataAll = this.data
       this.color = this.dataAll.value
+      this.originValue = this.color
       this.jsonData = this.dataAll.jsonData
     },
   },

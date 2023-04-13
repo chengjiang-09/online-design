@@ -54,6 +54,7 @@ export default {
     return {
       dataAll: {},
       text: '',
+      originValue: '',
       disabled: false,
     }
   },
@@ -64,11 +65,14 @@ export default {
       this.$emit('dataChange', {
         key: this.dataAll.type,
         value: this.text,
+        originValue: this.originValue,
       })
+      this.originValue = this.text
     },
     update() {
       this.dataAll = this.data
       this.text = this.dataAll.value
+      this.originValue = this.text
       if (this.dataAll.disabled) {
         this.disabled = this.dataAll.disabled
       }

@@ -64,6 +64,7 @@
 <script>
 import SelectComponent from '@/components/designUI/components/selectComponent.vue'
 import { mapActions, mapState, mapMutations } from 'vuex'
+import goBackListType from '@/utils/goBackListType'
 export default {
   name: 'designImg',
   components: {
@@ -167,6 +168,7 @@ export default {
       modify_canvasDataChild: 'charts/modify_canvasDataChild',
       set_inputValue: 'other/set_inputValue',
       set_coverageArray: 'charts/set_coverageArray',
+      set_goBcakArray: 'charts/set_goBcakArray',
     }),
     //选中时，修改目标chart，修改有侧边栏属性表（id的作用是在修改时，动态找到渲染树的对应节点）
     selectThis() {
@@ -190,11 +192,9 @@ export default {
         if (this.moveFlag) {
           this.SET_MOVE_FLAG(false)
         }
-        this.enter = false
-        this.down = false
 
         try {
-          this.targetParent.onmousemove = null
+          this.targetParent.removeEventListener('mousemove', this.mousemove)
           //拖拽结束后，更新渲染树在store中的数据
           this.modify_canvasDataChild({
             fatherId: this.propsData.fatherId,
@@ -218,6 +218,8 @@ export default {
         } catch (e) {
           return
         }
+        this.enter = false
+        this.down = false
       }
     },
     mousedown(e) {
@@ -225,6 +227,25 @@ export default {
         this.down = true
         this.enter = false
         this.selectThis() //鼠标点下后，选中当前组件的函数
+
+        if (this.down) {
+          this.set_goBcakArray({
+            fatherId: this.propsData.fatherId,
+            id: this.propsData.id,
+            data: [
+              {
+                key: 'top',
+                value: this.positionData.top,
+              },
+              {
+                key: 'left',
+                value: this.positionData.left,
+              },
+            ],
+            defaultType: 'position',
+            type: goBackListType.update,
+          })
+        }
 
         if (!this.target.node) {
           //当前组件
@@ -247,7 +268,7 @@ export default {
             this.targetParent.getBoundingClientRect().height / this.scaling.y,
           ) - parseInt(this.positionData.height)
 
-        this.targetParent.onmousemove = this.mousemove
+        this.targetParent.addEventListener('mousemove', this.mousemove)
       }
     },
     mouseup() {
@@ -255,7 +276,6 @@ export default {
         if (this.moveFlag) {
           this.SET_MOVE_FLAG(false)
         }
-        this.down = false
         //拖拽结束后，更新渲染树在store中的数据
         this.modify_canvasDataChild({
           fatherId: this.propsData.fatherId,
@@ -277,7 +297,8 @@ export default {
           type: 'position',
         })
 
-        this.targetParent.onmousemove = null
+        this.targetParent.removeEventListener('mousemove', this.mousemove)
+        this.down = false
       }
     },
     mousemove(e) {
