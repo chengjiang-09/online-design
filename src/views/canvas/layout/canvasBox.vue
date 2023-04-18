@@ -192,9 +192,11 @@ export default {
       set_targetChart: 'other/set_targetChart',
       set_configureList: 'charts/set_configureList',
       set_scaling: 'other/set_scaling',
+      set_targetFather: 'other/set_targetFather',
     }),
     mousedown() {
       this.set_targetChart('canvas')
+      this.set_targetFather(null)
       this.set_configureList(this.canvasConfigureList)
     },
     handleClose() {
@@ -247,7 +249,7 @@ export default {
               value: '',
             },
             {
-              label: '背景透明度',
+              label: '背景图片透明度',
               component: 'configureInput',
               type: 'opacity',
               value: '0.5',

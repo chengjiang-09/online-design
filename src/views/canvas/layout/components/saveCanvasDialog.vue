@@ -31,6 +31,9 @@
           </el-form-item>
           <el-form-item>
             <el-button type="primary" @click="onSubmit('form')">确定</el-button>
+            <el-button type="primary" @click="saveAs('form')" v-if="id"
+              >另存为</el-button
+            >
             <el-button @click="resetForm('form')">重置</el-button>
           </el-form-item>
         </el-form>
@@ -133,6 +136,108 @@ export default {
     resetForm(formName) {
       this.$refs[formName].resetFields()
     },
+    async onloadImg() {
+      const workerCanvas = document.querySelector('#workerCanvas')
+      const canvas = await html2canvas(workerCanvas, { useCORS: true })
+
+      canvas.toBlob(async (blob) => {
+        const file = new File([blob], this.imgName, {
+          type: 'image/png',
+        })
+
+        const formData = JSONSwitchFormData({
+          file: file,
+          originName: this.targetCanvasDefault.imgName
+            ? this.targetCanvasDefault.imgName
+            : this.imgName,
+        })
+        this.updateFlag
+          ? await updateFile(formData)
+          : await uploadFile(formData)
+
+        this.set_submitCanvasOpened(false)
+        this.loading = false
+        this.$message({
+          type: 'success',
+          message: '保存成功',
+        })
+        this.$router.push({
+          path: '/actualReading',
+        })
+      })
+    },
+    saveAs(formName) {
+      this.$refs[formName].validate(async (valid) => {
+        if (valid) {
+          const token = this.$ls.get('token')
+          const user = this.$ls.get('user')
+
+          if (token && user) {
+            //next为了限制图片上传功能，画布为空时以及不保存页面时，不执行封面上传操作
+            let next = true
+            if (user.id == this.targetCanvasDefault.authorId && this.id) {
+              try {
+                await this.$confirm('是否另存为当前画布？', '提示', {
+                  confirmButtonText: '确定',
+                  cancelButtonText: '取消',
+                  type: 'warning',
+                })
+                this.loading = true
+                //updateFlag是在保存时，判断是上传新图片还是替换旧图片
+                this.updateFlag = false
+                this.imgName = `${Date.now()}${randomStr(21)}.png`
+
+                await this.set_completeChart({
+                  id: this.id,
+                  groupId: this.form.group,
+                  title: this.form.canvasTitle,
+                  context: this.form.canvasContext,
+                  data: this.actualReadingCanvas,
+                  baseData: this.originCanvasConfigureList,
+                  img: this.imgName,
+                })
+              } catch (e) {
+                next = false
+              }
+            } else if (!this.canvasIsNotEmpty) {
+              next = false
+            }
+            if (next) {
+              //上传封面图片
+              await this.onloadImg()
+              this.set_submitCanvasOpened(false)
+              this.loading = false
+              this.$message({
+                type: 'success',
+                message: '保存成功',
+              })
+            }
+          } else {
+            this.$confirm('继续此操作需要登录，是否前往登录页面？', '提示', {
+              confirmButtonText: '确定',
+              cancelButtonText: '取消',
+              type: 'warning',
+            })
+              .then(() => {
+                this.set_authMove(true)
+                this.$router.push({
+                  name: 'auth',
+                  query: {
+                    redirect: '/canvas',
+                    title: encodeURIComponent(this.form.canvasTitle),
+                    context: encodeURIComponent(this.form.canvasContext),
+                    group: this.form.group,
+                  },
+                })
+              })
+              .catch(() => {})
+          }
+        } else {
+          console.log('error submit!!')
+          return false
+        }
+      })
+    },
     onSubmit(formName) {
       this.$refs[formName].validate(async (valid) => {
         if (valid) {
@@ -140,7 +245,9 @@ export default {
           const user = this.$ls.get('user')
 
           if (token && user) {
+            //next为了限制图片上传功能，画布为空时以及不保存页面时，不执行封面上传操作
             let next = true
+            //标识是否是第一次保存画布
             let first = false
             if (user.id == this.targetCanvasDefault.authorId && this.id) {
               try {
@@ -167,6 +274,7 @@ export default {
                 next = false
               }
             } else if (!this.canvasIsNotEmpty) {
+              //画布为空，不允许上传图片
               next = false
             } else {
               this.loading = true
@@ -183,35 +291,10 @@ export default {
                 img: this.imgName,
               })
             }
+            //updateFlagStore只会在画布内容修改后才会为true，如果只修改例如画布模版的标题和简介，不再上传封面图片
             if (next && (first || this.updateFlagStore)) {
-              const workerCanvas = document.querySelector('#workerCanvas')
-              const canvas = await html2canvas(workerCanvas, { useCORS: true })
-
-              canvas.toBlob(async (blob) => {
-                const file = new File([blob], this.imgName, {
-                  type: 'image/png',
-                })
-
-                const formData = JSONSwitchFormData({
-                  file: file,
-                  originName: this.targetCanvasDefault.imgName
-                    ? this.targetCanvasDefault.imgName
-                    : this.imgName,
-                })
-                this.updateFlag
-                  ? await updateFile(formData)
-                  : await uploadFile(formData)
-
-                this.set_submitCanvasOpened(false)
-                this.loading = false
-                this.$message({
-                  type: 'success',
-                  message: '保存成功',
-                })
-                this.$router.push({
-                  path: '/actualReading',
-                })
-              })
+              //上传封面图片
+              await this.onloadImg()
             } else if (first && !this.canvasIsNotEmpty) {
               this.$message({
                 message: '画布为空不允许上传',

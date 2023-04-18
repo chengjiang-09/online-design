@@ -6,6 +6,8 @@
       height: `${thisNewHeight}%`,
     }"
     @mousedown.self="selectThis"
+    @mouseenter.self="enterPanel"
+    @mouseleave.self="leavePanel"
   >
     <div
       class="container"
@@ -50,7 +52,7 @@
     <div
       v-if="!actualReading"
       class="show"
-      :class="[{ action: action }]"
+      :class="[{ action: containerAction || action || isEnter }]"
       @dragenter.self="dragenter"
       @dragover.self="dragover"
       @drop.self="drop"
@@ -88,15 +90,34 @@ export default {
       templateData: (state) => state.other.templateData,
       layoutTypeList: (state) => state.charts.layoutTypeList,
       actualReading: (state) => state.other.actualReading,
+      targetFather: (state) => state.other.targetFather,
+      operatingMode: (state) => state.app.operatingMode, //编辑模式与阅览模式标识
     }),
     action: {
       get() {
         return this.targetChart === this.propsData.id
       },
     },
+    containerAction: {
+      get() {
+        return this.targetFather === this.propsData.id
+      },
+    },
   },
   created() {
     this.update()
+  },
+  mounted() {
+    switch (this.operatingMode) {
+      case 'editMode':
+        this.edit = true
+        break
+      case 'readingMode':
+        this.edit = false
+        break
+      default:
+        break
+    }
   },
   data: function () {
     return {
@@ -114,6 +135,8 @@ export default {
       thisNewHeight: '100',
       //panel和layout默认100%height，当插入title后，改变height
       newHeight: '',
+      isEnter: false,
+      edit: true,
     }
   },
   methods: {
@@ -122,11 +145,13 @@ export default {
       set_configureList: 'charts/set_configureList',
       add_chart: 'charts/add_chart',
       set_coverageArray: 'charts/set_coverageArray',
+      set_targetFather: 'other/set_targetFather',
     }),
     //选中时，修改目标chart，修改有侧边栏属性表（id的作用是在修改时，动态找到渲染树的对应节点）
     selectThis() {
       if (!this.actualReading) {
         this.set_targetChart(this.propsData.id)
+        this.set_targetFather(null)
         this.set_configureList({
           id: this.propsData.id,
           fatherId: this.propsData.fatherId,
@@ -135,7 +160,17 @@ export default {
         this.set_coverageArray(this.propsData.id)
       }
     },
-    dragenter() {},
+    enterPanel() {
+      if (!this.actualReading && this.edit) {
+        this.isEnter = true
+      }
+    },
+    leavePanel() {
+      this.isEnter = false
+    },
+    dragenter() {
+      this.set_targetChart(this.propsData.id)
+    },
     dragover(e) {
       e.preventDefault()
     },
@@ -194,6 +229,7 @@ export default {
             }),
           )
           this.set_targetChart(this.templateData[this.data].type + date)
+          this.set_targetFather(this.propsData.id)
           this.set_coverageArray(this.propsData.id)
         } else {
           this.$message({
@@ -270,11 +306,13 @@ export default {
     z-index: -1;
     opacity: 0.5;
     background-color: transparent;
-    transition: background-color 0.5s;
+    transition: background-color 0.5s, opacity 0.5s;
   }
 
   .action {
     z-index: 3;
+    pointer-events: none;
+    opacity: 0.2;
     background-color: skyblue;
   }
 }

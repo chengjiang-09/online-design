@@ -58,17 +58,22 @@ export default {
   methods: {
     ...mapActions({
       set_templateData: 'other/set_templateData',
+      set_targetChart: 'other/set_targetChart',
+      set_isDrag: 'other/set_isDrag',
     }),
-    dragstart(e, data) {
+    async dragstart(e, data) {
       e.dataTransfer.setData(this.attributionType, data.id + data.type)
-
+      await this.set_isDrag(true)
       this.set_templateData({
         key: data.id + data.type,
         value: data,
       })
     },
     drag() {},
-    dragend() {},
+    async dragend() {
+      this.set_targetChart('')
+      await this.set_isDrag(false)
+    },
   },
 }
 </script>

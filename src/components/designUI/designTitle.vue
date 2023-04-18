@@ -88,11 +88,13 @@ export default {
       set_targetChart: 'other/set_targetChart',
       set_configureList: 'charts/set_configureList',
       add_chart: 'charts/add_chart',
+      set_targetFather: 'other/set_targetFather',
     }),
     //选中时，修改目标chart，修改有侧边栏属性表（id的作用是在修改时，动态找到渲染树的对应节点）
     selectThis() {
       if (!this.actualReading) {
         this.set_targetChart(this.propsData.id)
+        this.set_targetFather(this.propsData.fatherId)
         this.set_configureList({
           id: this.propsData.id,
           fatherId: this.propsData.fatherId,

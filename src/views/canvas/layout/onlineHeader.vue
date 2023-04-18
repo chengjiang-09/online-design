@@ -51,6 +51,7 @@ export default {
       set_onlineHeader: 'app/set_onlineHeader',
       set_editCanvasOpened: 'app/set_editCanvasOpened',
       set_targetChart: 'other/set_targetChart',
+      set_targetFather: 'other/set_targetFather',
       set_actualReadingCanvas: 'other/set_actualReadingCanvas',
       add_canvasDataChild: 'charts/add_canvasDataChild',
       set_submitCanvasOpened: 'app/set_submitCanvasOpened',
@@ -99,6 +100,7 @@ export default {
     },
     reading() {
       this.set_targetChart('')
+      this.set_targetFather(null)
       this.set_OperatingMode('readingMode')
     },
     async revoke() {
@@ -133,6 +135,7 @@ export default {
               id: goBackData.id,
             })
             this.set_targetChart('')
+            this.set_targetFather(null)
             this.set_configureList(this.canvasConfigureList)
             console.log(goBackData.type)
             break
@@ -161,19 +164,8 @@ export default {
       })
         .then(() => {
           this.add_canvasDataChild([])
-          this.$message({
-            showClose: true,
-            type: 'success',
-            message: '重置成功!',
-          })
         })
-        .catch(() => {
-          this.$message({
-            showClose: true,
-            type: 'info',
-            message: '已取消重置',
-          })
-        })
+        .catch(() => {})
     },
     async actualReading() {
       this.$confirm(
@@ -201,6 +193,7 @@ export default {
         deepCopy(this.canvasConfigureList),
       )
       await this.set_targetChart(null)
+      await this.set_targetFather(null)
       this.set_submitCanvasOpened(true)
     },
     onlineHeaderControl() {

@@ -51,6 +51,7 @@ export default {
       } else {
         await this.set_permissionId('notAuthor')
         this.set_targetChart('')
+        this.set_targetFather(null)
         this.set_canvasConfigureList([])
       }
     } else if (this.canvasData && !isEmpty(this.canvasData)) {
@@ -85,6 +86,7 @@ export default {
       delete_canvasHeaderMenu: 'charts/delete_canvasHeaderMenu',
       delete_coverageArray: 'charts/delete_coverageArray',
       delete_goBcakArray: 'charts/delete_goBcakArray',
+      set_targetFather: 'other/set_targetFather',
     }),
   },
 }

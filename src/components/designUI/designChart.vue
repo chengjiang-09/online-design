@@ -6,7 +6,11 @@
     @mouseleave="mouseleave"
     @mousedown="mousedown"
     @mouseup="mouseup"
-    :class="[{ edit: edit && !actualReading }, { down: down }]"
+    :class="[
+      { edit: edit && !actualReading },
+      { down: down },
+      { drag: isDrag },
+    ]"
     :style="{
       width: `${positionData.width}px`,
       height: `${positionData.height}px`,
@@ -112,6 +116,7 @@ export default {
       scaling: (state) => state.other.scaling, //缩放比例
       scaleFlag: (state) => state.other.scaleFlag, //是否处于缩放模式，用于关闭移动功能
       moveFlag: (state) => state.other.moveFlag,
+      isDrag: (state) => state.other.isDrag,
     }),
     action: {
       get() {
@@ -188,11 +193,13 @@ export default {
       set_inputValue: 'other/set_inputValue',
       set_coverageArray: 'charts/set_coverageArray',
       set_goBcakArray: 'charts/set_goBcakArray',
+      set_targetFather: 'other/set_targetFather',
     }),
     //选中时，修改目标chart，修改有侧边栏属性表（id的作用是在修改时，动态找到渲染树的对应节点）
     selectThis() {
       if (!this.actualReading) {
         this.set_targetChart(this.propsData.id)
+        this.set_targetFather(this.propsData.fatherId)
         this.set_configureList({
           id: this.propsData.id,
           fatherId: this.propsData.fatherId,
@@ -443,5 +450,9 @@ export default {
 
 .down {
   z-index: 9999 !important;
+}
+
+.drag {
+  pointer-events: none;
 }
 </style>

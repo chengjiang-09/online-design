@@ -1,5 +1,11 @@
 <template>
-  <div class="layout-box" :style="styleData" @mousedown.self="selectThis">
+  <div
+    class="layout-box"
+    :style="styleData"
+    @mousedown.self="selectThis"
+    @mouseenter.self="enterPanel"
+    @mouseleave.self="leavePanel"
+  >
     <div
       class="container"
       @dragenter.self="dragenter"
@@ -75,6 +81,7 @@ export default {
       },
       //panel和layout默认100%height，当插入title后，改变height
       newHeight: '',
+      isEnter: false,
     }
   },
   methods: {
@@ -82,15 +89,23 @@ export default {
       set_targetChart: 'other/set_targetChart',
       set_configureList: 'charts/set_configureList',
       add_chart: 'charts/add_chart',
+      set_targetFather: 'other/set_targetFather',
     }),
     selectThis() {
       if (!this.actualReading) {
         this.set_targetChart(this.propsData.id)
+        this.set_targetFather(null)
         this.set_configureList({
           ...this.propsData.layoutData,
           fatherId: this.propsData.fatherId,
         })
       }
+    },
+    enterPanel() {
+      this.isEnter = true
+    },
+    leavePanel() {
+      this.isEnter = false
     },
     dragenter() {},
     dragover(e) {
@@ -159,7 +174,7 @@ export default {
     width: 100%;
     height: 100%;
     z-index: -1;
-    opacity: 0.5;
+    opacity: 0.2;
     background-color: transparent;
     transition: background-color 0.5s;
   }

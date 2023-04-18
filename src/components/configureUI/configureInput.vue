@@ -6,7 +6,7 @@
       </div>
       <div class="input">
         <el-input
-          :disabled="disabled ? true : false"
+          :disabled="disabled"
           v-model="text"
           :placeholder="dataAll.label"
           @blur="blur"
@@ -74,7 +74,7 @@ export default {
       this.text = this.dataAll.value
       this.originValue = this.text
       if (this.dataAll.disabled) {
-        this.disabled = this.dataAll.disabled
+        this.disabled = this.dataAll.disabled == 0 ? false : true
       }
     },
   },

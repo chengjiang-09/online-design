@@ -199,7 +199,7 @@ const charts = {
       Vue.ls.set('CANVAS_DATA', state.canvasData)
     },
     //早期设计的遗留问题，原本想要将渲染树和渲染树对应的配置树分开存储，使得渲染树只专注于样式的保存，后来因架构设计的修改，方案大范围更改，但是一部分核心代码已使用该方案，所以此数据给予保留。
-    //只用于向画布添加亲代子节点
+    //只用于向画布添加亲代子节点，理论上只能添加布局组件
     ADD_CANVAS_DATA_CHILD(state, value) {
       if (!state.canvasData.children) {
         state.canvasData.children = []
@@ -235,7 +235,7 @@ const charts = {
       if (!state.updateFlag) {
         state.updateFlag = true
       }
-
+      //通过id找到组件
       let targetChild = findChildChart(state.canvasData.children, id)
       if (fatherId === 'canvas') {
         if (
@@ -273,7 +273,7 @@ const charts = {
         }
       }
 
-      //这里处理的不是很好，只处理了两层嵌套的数据修改，由于echarts的配置较多，多余层数的样式数据修改由configureChartList组件做了统一处理，返回一个完整数组，由于数组内容不算巨大，性能影响不算太高，待优化。
+      //这里处理的不是很好，只处理了两层嵌套的数据修改，由于echarts的配置较多，多余层数的样式数据修改由configureChartList组件做了统一处理，返回一个完整数组，由于数组内容不算巨大，性能影响不算太高,暂时先这样了，待优化。
       let defaultLength = targetChild.default.length
       for (let i = 0; i < defaultLength; i++) {
         if (targetChild.default[i].type === type) {
@@ -310,11 +310,15 @@ const charts = {
         state.canvasData.children,
         value.fatherId,
       )
-      //由于所有的子节点都是通过v-for进行渲染，虽然只有title组件只能先插入，但此处还是为了保证title在布局组件中优先渲染
-      if (value.type === 'title') {
-        targetChild.children.unshift(value)
-      } else {
+      //由于所有的子节点都是通过v-for进行渲染，此处是为了保证title在布局组件中渲染在上方
+      if (
+        Array.isArray(targetChild.children) &&
+        targetChild.children.length > 0 &&
+        targetChild.children[0].type === 'title'
+      ) {
         targetChild.children.push(value)
+      } else {
+        targetChild.children.unshift(value)
       }
       state.configureList = {
         id: value.id,

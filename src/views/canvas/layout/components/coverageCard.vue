@@ -34,9 +34,11 @@ export default {
     ...mapActions({
       set_targetChart: 'other/set_targetChart',
       set_configureList: 'charts/set_configureList',
+      set_targetFather: 'other/set_targetFather',
     }),
     selectThis(chart) {
       this.set_targetChart(chart.id)
+      this.set_targetFather(chart.fatherId)
       this.set_configureList({
         id: chart.id,
         fatherId: chart.fatherId,

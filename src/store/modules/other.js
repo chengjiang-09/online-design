@@ -5,11 +5,13 @@ const other = {
   namespaced: true,
   state: {
     templateData: {}, //每个组件创建时的默认值存储
-    targetChart: null, //保存当前选中的目标组件，用以实现例如激活样式的控制
+    targetChart: null, //保存当前选中的目标组件id，用以实现例如激活样式的控制
+    targetFather: null, //当前选中的目标组件的父组件id，用以实现标识组件的父代容器盒子的功能
+    isDrag: false, //标识进入拖拽状态，关闭一些组件的鼠标事件，使得插入画布不会被普通组件阻挡
     actualReading: false, //实际展示模式是否开启，控制组件某些功能在实际展示页面的关闭
     actualReadingCanvas: {}, //缓存实际保存页面配置
     originCanvasConfigureList: {}, //缓存实际保存页面配置时画布的基本配置（遗留问题，详细查看store/charts）
-    targetParent: null, //记录目标子组件的父组件，用以做拖动
+    targetParent: null, //记录目标子组件的父组件DOM，用以做拖动
     scaling: {
       //由于缩放导致无法获取dom真实尺寸，此处记录缩放的比例，换算真实尺寸
       x: 0,
@@ -31,6 +33,16 @@ const other = {
         return (state.targetChart = '')
       }
       state.targetChart = value
+    },
+    SET_TARGET_FATHER(state, value) {
+      let mode = Vue.ls.get(OPERATING_MODE)
+      if (mode === 'readingMode') {
+        return (state.targetFather = '')
+      }
+      state.targetFather = value
+    },
+    SET_IS_DRAG(state, value) {
+      state.isDrag = value
     },
     SET_ACTUAL_READING(state, value) {
       state.actualReading = value
@@ -67,6 +79,12 @@ const other = {
     },
     set_targetChart({ commit }, payload) {
       commit('SET_TARGET_CHART', payload)
+    },
+    set_targetFather({ commit }, payload) {
+      commit('SET_TARGET_FATHER', payload)
+    },
+    set_isDrag({ commit }, payload) {
+      commit('SET_IS_DRAG', payload)
     },
     set_actualReading({ commit }, payload) {
       commit('SET_ACTUAL_READING', payload)
