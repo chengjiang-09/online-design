@@ -610,11 +610,12 @@ export default {
     z-index: -1;
     opacity: 0.5;
     background-color: transparent;
-    transition: background-color 0.5s;
+    transition: background-color 0.5s, opacity 0.5s;
   }
 
   .action {
     z-index: 2;
+    opacity: 0.3;
     background-color: skyblue;
   }
 

@@ -113,6 +113,7 @@ export default {
           case goBackListType.update:
             if (goBackData.fatherId) {
               goBackData.data.forEach(async (value) => {
+                console.log(value)
                 await this.modify_canvasDataChild({
                   fatherId: goBackData.fatherId,
                   id: goBackData.id,

@@ -224,9 +224,10 @@ export default {
           })
         } catch (e) {
           return
+        } finally {
+          this.enter = false
+          this.down = false
         }
-        this.enter = false
-        this.down = false
       }
     },
     mousedown(e) {

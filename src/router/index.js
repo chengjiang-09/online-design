@@ -9,6 +9,8 @@ const ActualReadingView = () => import('@/views/canvas/actualReadingView.vue')
 const HomeView = () => import('@/views/home/homeView.vue')
 const TemplateList = () => import('@/views/home/templateList.vue')
 
+const EditableView = () => import('@/views/editableView.vue')
+
 const NoFound = () => import('@/views/noFound.vue')
 
 Vue.use(VueRouter)
@@ -48,6 +50,11 @@ export const baseRoutes = [
     path: '/actualReading',
     name: 'actualReading',
     component: ActualReadingView,
+  },
+  {
+    path: '/editableView',
+    name: 'editableView',
+    component: EditableView,
   },
   {
     path: '*',

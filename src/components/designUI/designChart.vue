@@ -214,6 +214,7 @@ export default {
       }
     },
     mouseleave() {
+      console.log(this.edit && !this.scaleFlag && !this.actualReading)
       if (this.edit && !this.scaleFlag && !this.actualReading) {
         if (this.moveFlag) {
           this.SET_MOVE_FLAG(false)
@@ -242,9 +243,10 @@ export default {
           })
         } catch (e) {
           return
+        } finally {
+          this.enter = false
+          this.down = false
         }
-        this.enter = false
-        this.down = false
       }
     },
     mousedown(e) {
@@ -321,9 +323,8 @@ export default {
           },
           type: 'position',
         })
-
-        this.targetParent.removeEventListener('mousemove', this.mousemove)
         this.down = false
+        this.targetParent.removeEventListener('mousemove', this.mousemove)
       }
     },
     mousemove(e) {

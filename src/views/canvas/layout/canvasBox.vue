@@ -131,8 +131,8 @@ export default {
         width: 0,
         height: 0,
       },
-      //默认画布在视觉上的缩放比例，-55：缩小百分之55
-      scaleProportion: -55,
+      //默认画布在视觉上的缩放比例，-43：缩小百分之43
+      scaleProportion: -43,
       CanvasBox: null,
       //控制缩放按钮在不同模式下的显示位置
       blockRight: true,

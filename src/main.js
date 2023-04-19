@@ -18,6 +18,8 @@ import config from './defaultSettings'
 import DesignUI from '@/components/designUI'
 import ConfigureUI from '@/components/configureUI'
 import CommonUI from '@/components/publicUI/common'
+import CodeEditor from 'bin-code-editor'
+import 'bin-code-editor/lib/style/index.css'
 import {
   LEFT_SIDEBAR,
   OPERATING_MODE,
@@ -34,6 +36,7 @@ Vue.use(ElementUI)
 Vue.use(DesignUI)
 Vue.use(ConfigureUI)
 Vue.use(CommonUI)
+Vue.use(CodeEditor)
 
 // '记得修改lib-flexible源码,让其支持大屏适配,允许适配800-5400'
 new Vue({

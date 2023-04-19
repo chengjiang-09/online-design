@@ -280,7 +280,17 @@ const charts = {
           let configureLength = targetChild.default[i].configure.length
           for (let j = 0; j < configureLength; j++) {
             if (targetChild.default[i].configure[j].type === data.key) {
-              targetChild.default[i].configure[j].value = data.value
+              if (data.key === 'staticData') {
+                targetChild.default[i].configure[j].jsonData = data.value
+              } else if (data.key === 'dynamicDataUrl') {
+                targetChild.default[i].configure[j].jsonData = {
+                  param: data.value.param,
+                  methods: data.value.methods,
+                }
+                targetChild.default[i].configure[j].value = data.value.value
+              } else {
+                targetChild.default[i].configure[j].value = data.value
+              }
               break
             }
           }
