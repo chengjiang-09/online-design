@@ -1,10 +1,10 @@
 import Mock from 'mockjs'
 
-import { getChartsList, getHeaderMenu } from './chartsMock'
+import { getDataFromDemo1, postDataFromDemo2 } from './dataFromMock'
 
 Mock.setup({
   timeout: '500-1000',
 })
 
-getChartsList(Mock)
-getHeaderMenu(Mock)
+getDataFromDemo1(Mock)
+postDataFromDemo2(Mock)

@@ -62,6 +62,8 @@ import { mapActions, mapState, mapMutations } from 'vuex'
 import { isEmpty } from '@/utils/utils'
 import SelectComponent from '@/components/designUI/components/selectComponent.vue'
 import goBackListType from '@/utils/goBackListType'
+import { dataFromApi } from '@/apis/publicApi'
+import { DATA_FROM_EX_TIME } from '@/utils/expirationTime'
 export default {
   name: 'DesignChart',
   components: {
@@ -86,12 +88,6 @@ export default {
       },
       deep: true,
     },
-    dataSourceType: {
-      handler: function (newType, oldType) {
-        //未启用，数据源
-        console.log(newType, oldType)
-      },
-    },
     positionData: {
       handler: function () {
         //size数据修改后，重新渲染eCharts
@@ -106,6 +102,19 @@ export default {
       },
       deep: true,
     },
+    dataFrom: {
+      handler: function () {
+        this.myChart &&
+          this.myChart.setOption(
+            {
+              ...this.dataFrom,
+              ...this.styleValue,
+            },
+            false,
+          )
+      },
+      deep: true,
+    },
   },
   computed: {
     ...mapState({
@@ -117,10 +126,16 @@ export default {
       scaleFlag: (state) => state.other.scaleFlag, //是否处于缩放模式，用于关闭移动功能
       moveFlag: (state) => state.other.moveFlag,
       isDrag: (state) => state.other.isDrag,
+      dataFromAll: (state) => state.charts.dataFromAll,
     }),
     action: {
       get() {
         return this.targetChart === this.propsData.id
+      },
+    },
+    dataFrom: {
+      get() {
+        return this.dataFromAll[this.propsData.id]
       },
     },
   },
@@ -194,6 +209,7 @@ export default {
       set_coverageArray: 'charts/set_coverageArray',
       set_goBcakArray: 'charts/set_goBcakArray',
       set_targetFather: 'other/set_targetFather',
+      set_dataFromAll: 'charts/set_dataFromAll',
     }),
     //选中时，修改目标chart，修改有侧边栏属性表（id的作用是在修改时，动态找到渲染树的对应节点）
     selectThis() {
@@ -214,7 +230,6 @@ export default {
       }
     },
     mouseleave() {
-      console.log(this.edit && !this.scaleFlag && !this.actualReading)
       if (this.edit && !this.scaleFlag && !this.actualReading) {
         if (this.moveFlag) {
           this.SET_MOVE_FLAG(false)
@@ -398,10 +413,50 @@ export default {
             }
           })
         } else if (obj.type === 'dataFrom') {
-          obj.configure.forEach((config) => {
+          obj.configure.forEach(async (config) => {
             if (config.type === 'staticData') {
               this.dataSourceType = config.type
               this.staticValue = config.jsonData
+            } else {
+              try {
+                const param = this.$ls.get(
+                  `DATA_FROM_PARAM_${this.propsData.id}`,
+                )
+                if (
+                  config.value &&
+                  (!param ||
+                    JSON.stringify(param) !==
+                      JSON.stringify({
+                        url: config.value,
+                        methods: config.jsonData.methods,
+                        param: config.jsonData.param,
+                      }) ||
+                    !this.dataFromAll[this.propsData.id])
+                ) {
+                  this.$ls.set(
+                    `DATA_FROM_PARAM_${this.propsData.id}`,
+                    {
+                      url: config.value,
+                      methods: config.jsonData.methods,
+                      param: config.jsonData.param,
+                    },
+                    DATA_FROM_EX_TIME,
+                  )
+                  console.log('请求啦')
+                  const { data, code } = await dataFromApi(
+                    config.value,
+                    config.jsonData.methods ? config.jsonData.methods : 'GET',
+                    config.jsonData.param ? config.jsonData.param : {},
+                  )
+                  if (code === 1) {
+                    await this.set_dataFromAll({
+                      key: this.propsData.id,
+                      data,
+                    })
+                  }
+                }
+                // eslint-disable-next-line no-empty
+              } catch (e) {}
             }
           })
         } else if (obj.type === 'configure') {
@@ -423,6 +478,7 @@ export default {
           })
         }
       })
+
       this.staticValue = {
         ...this.staticValue,
         ...this.styleValue,

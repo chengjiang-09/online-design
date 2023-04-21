@@ -1,12 +1,22 @@
 <template>
-  <div class="json-edit-view">
+  <div class="json-edit-view" ref="edit">
     <div class="container">
       <i class="el-icon-close icon" @click="close"></i>
-      <div class="move" @click="startMove"></div>
+      <div
+        class="move"
+        @mousedown="startMove"
+        @mousemove="mousemove"
+        @mouseleave="mouseleave"
+        @mouseup="mouseup"
+      >
+        {{ title }}
+      </div>
       <b-code-editor
-        v-model="jsonData"
+        :value="jsonData"
+        @on-change="onJsonChange"
+        ref="editor"
         :indent-unit="4"
-        height="auto"
+        height="700px"
         theme="material-darker"
       />
     </div>
@@ -21,22 +31,27 @@ export default {
       type: Object,
       default: () => {},
     },
+    title: {
+      type: String,
+      default: '标题',
+    },
   },
-  mounted() {
-    console.log(JSON.stringify(this.jsonDataProp, null, 2))
-    this.jsonData = JSON.stringify(this.jsonDataProp, null, 2)
-  },
-  watch: {
-    jsonDataProp: {
-      handler: function () {
-        this.jsonData = JSON.stringify(this.jsonDataProp, null, 2)
+  computed: {
+    jsonData: {
+      get() {
+        return JSON.stringify(this.jsonDataProp, null, 2)
       },
-      deep: true,
+      set(value) {
+        return value
+      },
     },
   },
   data: function () {
     return {
-      jsonData: '',
+      timer: null,
+      offsetX: 0,
+      offsetY: 0,
+      start: false,
     }
   },
   methods: {
@@ -59,21 +74,44 @@ export default {
     customTimeFormat(time) {
       return time.toLocaleDateString()
     },
-    startMove() {
-      console.log('拖拽移动，暂时未实现')
+    startMove(e) {
+      this.offsetX = e.offsetX
+      this.offsetY = e.offsetY
+
+      this.start = true
+    },
+    mousemove(e) {
+      if (this.start) {
+        let left = e.offsetX - this.offsetX
+        let top = e.offsetY - this.offsetY
+
+        this.$refs.edit.style.left = `${this.$refs.edit.offsetLeft + left}px`
+        this.$refs.edit.style.top = `${this.$refs.edit.offsetTop + top}px`
+      }
+    },
+    mouseleave() {
+      this.start = false
+    },
+    mouseup() {
+      this.start = false
     },
     onJsonChange(value) {
-      if (!this.isJSON(value)) {
-        this.$message({
-          message: 'json格式错误',
-          type: 'warning',
-        })
-        return false
+      if (this.timer) {
+        clearTimeout(this.timer)
       }
-      this.$emit('changeData', {
-        value: JSON.parse(value),
-        originValue: this.jsonDataProp,
-      })
+      this.timer = setTimeout(() => {
+        if (!this.isJSON(value)) {
+          this.$message({
+            message: 'json格式错误',
+            type: 'warning',
+          })
+          return false
+        }
+        this.$emit('changeData', {
+          value: JSON.parse(value),
+          originValue: this.jsonDataProp,
+        })
+      }, 1500)
     },
     close() {
       this.$emit('close', false)
@@ -82,16 +120,15 @@ export default {
 }
 </script>
 
-<style lang="less" scoped>
+<style lang="less">
 .json-edit-view {
   position: fixed;
   left: -500px;
   top: 70px;
   width: 24vw;
-  height: 70vh;
   background-color: #ffffff;
   border-radius: 20px;
-  padding: 40px 10px 20px;
+  padding: 50px 10px 20px;
   .container {
     width: 100%;
     height: 100%;
@@ -100,7 +137,7 @@ export default {
     .icon {
       position: absolute;
       right: 10px;
-      top: -25px;
+      top: -35px;
       width: 30px;
       height: 30px;
       font-size: 24px;
@@ -111,11 +148,17 @@ export default {
     .move {
       position: absolute;
       right: 10px;
-      top: -30px;
+      top: -45px;
       width: 100%;
-      height: 30px;
+      height: 50px;
       font-size: 24px;
       cursor: move;
+
+      display: flex;
+      justify-content: center;
+      align-items: center;
+      font-weight: 800;
+      padding-left: 20px;
     }
   }
 }

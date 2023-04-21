@@ -76,7 +76,8 @@ const charts = {
       fatherId: '',
       array: [],
     },
-    goBcakArray: [], //
+    goBcakArray: [], //撤回功能的状态数组
+    dataFromAll: {}, //存放所有的数据源请求后的结果信息
   },
   mutations: {
     SET_TARGET_CANVAS_DAFAULT(state, value) {
@@ -446,6 +447,12 @@ const charts = {
         state.goBcakArray.pop()
       }
     },
+    SET_DATA_FROM_ALL(state, { key, data }) {
+      state.dataFromAll[key] = data
+    },
+    DELETE_DATA_FROM_ALL(state) {
+      state.dataFromAll = {}
+    },
   },
   actions: {
     async set_allCharts({ commit }) {
@@ -587,6 +594,12 @@ const charts = {
     },
     pop_goBackArray({ commit }) {
       commit('POP_GO_BACK_ARRAY')
+    },
+    set_dataFromAll({ commit }, paload) {
+      commit('SET_DATA_FROM_ALL', paload)
+    },
+    delete_dataFromAll({ commit }) {
+      commit('DELETE_DATA_FROM_ALL')
     },
   },
 }

@@ -19,7 +19,7 @@ import DesignUI from '@/components/designUI'
 import ConfigureUI from '@/components/configureUI'
 import CommonUI from '@/components/publicUI/common'
 import CodeEditor from 'bin-code-editor'
-import 'bin-code-editor/lib/style/index.css'
+import 'bin-code-editor/lib/styles/index.css'
 import {
   LEFT_SIDEBAR,
   OPERATING_MODE,
@@ -27,7 +27,7 @@ import {
   ONLINE_HEADER,
 } from '@/store/style-types'
 
-// import '@/mock'
+import '@/mock'
 Vue.config.productionTip = false
 
 Vue.prototype.$echarts = echarts

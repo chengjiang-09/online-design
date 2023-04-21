@@ -28,6 +28,7 @@ export default {
       canvasConfigureList: (state) => state.charts.canvasConfigureList,
     }),
   },
+  //初始化画布，删除上一个模版的遗留数据
   async created() {
     const id = this.$route.params.id
 
@@ -36,6 +37,7 @@ export default {
     this.delete_canvasHeaderMenu()
     this.delete_coverageArray()
     this.delete_goBcakArray()
+    this.delete_dataFromAll()
     if (id) {
       this.set_canvasData({})
       this.set_editCanvasOpened(false)
@@ -87,6 +89,7 @@ export default {
       delete_coverageArray: 'charts/delete_coverageArray',
       delete_goBcakArray: 'charts/delete_goBcakArray',
       set_targetFather: 'other/set_targetFather',
+      delete_dataFromAll: 'charts/delete_dataFromAll',
     }),
   },
 }

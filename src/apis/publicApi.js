@@ -16,6 +16,6 @@ export const updateFile = (formData) => {
   })
 }
 
-export const dataFromApi = ({ url, methods, data }) => {
+export const dataFromApi = (url, methods, data) => {
   return request(url, methods, data)
 }

@@ -44,13 +44,15 @@
     </div>
     <JsonEditView
       :jsonDataProp="editParamJson"
-      v-show="editParamData"
+      title="请求参数"
+      v-if="editParamData"
       @close="closeParamJson"
       @changeData="changeParamData"
     />
     <JsonEditView
       :jsonDataProp="jsonData"
-      v-show="editData"
+      title="数据值"
+      v-if="editData"
       @close="closeJsonEdit"
       @changeData="changeData"
     />
@@ -59,10 +61,9 @@
 
 <script>
 //未开发完成数据源配置
-import { mapActions } from 'vuex'
+import { mapActions, mapState } from 'vuex'
 import goBackListType from '@/utils/goBackListType'
 import { deepCopy } from '@/utils/utils'
-// import { dataFromApi } from '@/apis/publicApi'
 export default {
   name: 'DataFromList',
   props: {
@@ -87,6 +88,9 @@ export default {
     },
   },
   computed: {
+    ...mapState({
+      dataFromAll: (state) => state.charts.dataFromAll,
+    }),
     jsonData: {
       get() {
         let jsonData = {}
@@ -97,6 +101,11 @@ export default {
             this.radio == 'staticData'
           ) {
             jsonData = this.configureList[i].jsonData
+            break
+          } else if (this.configureList[i].type == this.radio) {
+            jsonData = this.dataFromAll[this.configure.id]
+              ? this.dataFromAll[this.configure.id]
+              : {}
             break
           }
         }
@@ -200,7 +209,6 @@ export default {
     },
     async blur() {
       this.dynamicDataFormUpdate()
-      // await dataFromApi(this.urlPath, this.methods, this.editParamJson)
     },
     dynamicDataFormUpdate() {
       this.set_goBcakArray({
