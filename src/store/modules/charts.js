@@ -287,6 +287,7 @@ const charts = {
                 targetChild.default[i].configure[j].jsonData = {
                   param: data.value.param,
                   methods: data.value.methods,
+                  select: data.value.select,
                 }
                 targetChild.default[i].configure[j].value = data.value.value
               } else {

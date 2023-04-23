@@ -65,6 +65,7 @@ export default {
     this.canvasData =
       this.$store.state.other.actualReadingCanvas ||
       this.$ls.get('SET_ACTUAL_READING_CANVAS')
+    this.$ls.set(`DATA_FROM_PARAM`, {})
   },
   beforeDestroy() {
     this.set_actualReading(false)

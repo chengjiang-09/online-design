@@ -39,12 +39,14 @@
 import ConfigureList from './components/configureList.vue'
 import ItemListTitle from './components/itemListTitle.vue'
 import DataFromList from './components/dataFromList.vue'
+import DataFromPanelList from './components/dataFromPanelList.vue'
 export default {
   name: 'CustomConfigurationList',
   components: {
     ConfigureList,
     ItemListTitle,
     DataFromList,
+    DataFromPanelList,
   },
   props: {
     configure: {

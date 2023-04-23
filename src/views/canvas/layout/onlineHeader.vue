@@ -62,6 +62,9 @@ export default {
       delete_chart: 'charts/delete_chart',
       gobackCoverage: 'charts/gobackCoverage',
       set_configureList: 'charts/set_configureList',
+      delete_coverageArray: 'charts/delete_coverageArray',
+      delete_dataFromAll: 'charts/delete_dataFromAll',
+      delete_goBcakArray: 'charts/delete_goBcakArray',
     }),
     choice(e, type) {
       //限制只有阅览模式和编辑模式按钮拥有激活状态的style
@@ -165,6 +168,9 @@ export default {
       })
         .then(() => {
           this.add_canvasDataChild([])
+          this.delete_coverageArray()
+          this.delete_goBcakArray()
+          this.delete_dataFromAll()
         })
         .catch(() => {})
     },

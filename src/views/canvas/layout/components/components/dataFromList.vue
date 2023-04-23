@@ -82,9 +82,22 @@ export default {
     },
     methods: {
       handler: function () {
-        this.dynamicDataFormUpdate()
+        this.dynamicDataFormUpdate(true)
       },
       deep: true,
+    },
+    radio: {
+      handler: function (newRadio, oldRadio) {
+        if (newRadio && newRadio !== oldRadio && newRadio == 'dynamicDataUrl') {
+          this.dynamicDataFormUpdate(true)
+        } else if (
+          newRadio &&
+          newRadio !== oldRadio &&
+          newRadio == 'staticData'
+        ) {
+          this.dynamicDataFormUpdate(false, 'dynamicDataUrl')
+        }
+      },
     },
   },
   computed: {
@@ -168,6 +181,10 @@ export default {
             obj.jsonData && obj.jsonData.param ? obj.jsonData.param : {}
           this.methods =
             obj.jsonData && obj.jsonData.methods ? obj.jsonData.methods : 'GET'
+          this.radio =
+            obj.jsonData && obj.jsonData.select
+              ? 'dynamicDataUrl'
+              : 'staticData'
         }
       })
       this.id = this.configure.id
@@ -205,19 +222,24 @@ export default {
     },
     changeParamData({ value }) {
       this.editParamJson = value
-      this.dynamicDataFormUpdate()
+      this.dynamicDataFormUpdate(true)
     },
     async blur() {
-      this.dynamicDataFormUpdate()
+      if (this.urlPath) {
+        this.dynamicDataFormUpdate(true)
+      } else {
+        this.dynamicDataFormUpdate(false)
+      }
     },
-    dynamicDataFormUpdate() {
-      this.set_goBcakArray({
+    async dynamicDataFormUpdate(select, key) {
+      await this.set_goBcakArray({
         fatherId: this.fatherId,
         id: this.id,
         data: [
           {
-            key: this.radio,
+            key: key ? key : this.radio,
             value: {
+              select,
               param: this.originParam,
               value: this.originValue,
               methods: this.originMethods,
@@ -227,12 +249,13 @@ export default {
         defaultType: this.type,
         type: goBackListType.update,
       })
-      this.modify_canvasDataChild({
+      await this.modify_canvasDataChild({
         fatherId: this.fatherId,
         id: this.id,
         data: {
-          key: this.radio,
+          key: key ? key : this.radio,
           value: {
+            select,
             param: this.editParamJson,
             value: this.urlPath,
             methods: this.methods,

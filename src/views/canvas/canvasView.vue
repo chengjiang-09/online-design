@@ -38,6 +38,7 @@ export default {
     this.delete_coverageArray()
     this.delete_goBcakArray()
     this.delete_dataFromAll()
+    this.$ls.set(`DATA_FROM_PARAM`, {})
     if (id) {
       this.set_canvasData({})
       this.set_editCanvasOpened(false)

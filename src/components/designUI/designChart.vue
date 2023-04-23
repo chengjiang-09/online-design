@@ -53,6 +53,9 @@
           height: `${positionData.height}px`,
         }"
       ></div>
+      <div class="loading" v-if="loading">
+        <i class="el-icon-loading"></i>
+      </div>
     </div>
   </div>
 </template>
@@ -95,23 +98,10 @@ export default {
       },
       deep: true,
     },
-    staticValue: {
+    dataFrom: {
       //配置数据修改后，重新渲染eCharts
       handler: function () {
-        this.myChart && this.myChart.setOption(this.staticValue, false)
-      },
-      deep: true,
-    },
-    dataFrom: {
-      handler: function () {
-        this.myChart &&
-          this.myChart.setOption(
-            {
-              ...this.dataFrom,
-              ...this.styleValue,
-            },
-            false,
-          )
+        this.myChart && this.myChart.setOption(this.dataFrom, false)
       },
       deep: true,
     },
@@ -135,7 +125,19 @@ export default {
     },
     dataFrom: {
       get() {
-        return this.dataFromAll[this.propsData.id]
+        let dataFrom = {}
+        if (this.dataFromFlag) {
+          dataFrom = {
+            ...this.dynamicData,
+            ...this.styleValue,
+          }
+        } else {
+          dataFrom = {
+            ...this.staticValue,
+            ...this.styleValue,
+          }
+        }
+        return dataFrom
       },
     },
   },
@@ -151,7 +153,7 @@ export default {
   },
   mounted() {
     this.myChart = this.$echarts.init(this.$refs.container, null)
-    this.myChart.setOption(this.staticValue, false)
+    this.myChart.setOption(this.dataFrom, false)
 
     switch (this.operatingMode) {
       case 'editMode':
@@ -177,7 +179,8 @@ export default {
         top: 0,
       },
       dataSourceType: '',
-      dataSourceValue: {},
+      dataFromFlag: false,
+      dynamicData: {},
       staticValue: {},
       styleValue: {},
       edit: true, //是否进入编辑模式
@@ -194,6 +197,7 @@ export default {
         maxLeft: 0,
         maxTop: 0,
       },
+      loading: false,
     }
   },
   methods: {
@@ -417,46 +421,56 @@ export default {
             if (config.type === 'staticData') {
               this.dataSourceType = config.type
               this.staticValue = config.jsonData
-            } else {
-              try {
-                const param = this.$ls.get(
-                  `DATA_FROM_PARAM_${this.propsData.id}`,
-                )
-                if (
-                  config.value &&
-                  (!param ||
-                    JSON.stringify(param) !==
-                      JSON.stringify({
-                        url: config.value,
-                        methods: config.jsonData.methods,
-                        param: config.jsonData.param,
-                      }) ||
-                    !this.dataFromAll[this.propsData.id])
-                ) {
-                  this.$ls.set(
-                    `DATA_FROM_PARAM_${this.propsData.id}`,
-                    {
-                      url: config.value,
-                      methods: config.jsonData.methods,
-                      param: config.jsonData.param,
-                    },
-                    DATA_FROM_EX_TIME,
-                  )
-                  console.log('请求啦')
-                  const { data, code } = await dataFromApi(
-                    config.value,
-                    config.jsonData.methods ? config.jsonData.methods : 'GET',
-                    config.jsonData.param ? config.jsonData.param : {},
-                  )
-                  if (code === 1) {
-                    await this.set_dataFromAll({
-                      key: this.propsData.id,
-                      data,
-                    })
+            } else if (config.jsonData) {
+              this.dataFromFlag = config.jsonData.select
+                ? config.jsonData.select
+                : false
+              //下面一系列判断用于限制请求次数，避免多次请求
+              if (config.jsonData.select) {
+                try {
+                  const param = this.$ls.get(`DATA_FROM_PARAM`)
+                  if (
+                    config.value &&
+                    (!param[this.propsData.id] ||
+                      JSON.stringify(param[this.propsData.id]) !==
+                        JSON.stringify({
+                          url: config.value,
+                          methods: config.jsonData.methods,
+                          param: config.jsonData.param,
+                        }) ||
+                      !this.dataFromAll[this.propsData.id])
+                  ) {
+                    this.$ls.set(
+                      `DATA_FROM_PARAM`,
+                      {
+                        ...param,
+                        [this.propsData.id]: {
+                          url: config.value,
+                          methods: config.jsonData.methods,
+                          param: config.jsonData.param,
+                        },
+                      },
+                      DATA_FROM_EX_TIME,
+                    )
+                    this.loading = true
+                    const { data, code } = await dataFromApi(
+                      config.value,
+                      config.jsonData.methods ? config.jsonData.methods : 'GET',
+                      config.jsonData.param ? config.jsonData.param : {},
+                    )
+                    if (code === 1) {
+                      this.loading = false
+                      await this.set_dataFromAll({
+                        key: this.propsData.id,
+                        data,
+                      })
+
+                      this.dynamicData = data
+                    }
                   }
-                }
-                // eslint-disable-next-line no-empty
-              } catch (e) {}
+                  // eslint-disable-next-line no-empty
+                } catch (e) {}
+              }
             }
           })
         } else if (obj.type === 'configure') {
@@ -478,11 +492,6 @@ export default {
           })
         }
       })
-
-      this.staticValue = {
-        ...this.staticValue,
-        ...this.styleValue,
-      }
     },
   },
 }
@@ -498,6 +507,21 @@ export default {
 
     .edit {
       pointer-events: none !important;
+    }
+
+    .loading {
+      position: absolute;
+      left: 0;
+      top: 0;
+      width: 100%;
+      height: 100%;
+      display: flex;
+      justify-content: center;
+      align-items: center;
+      i {
+        font-size: 100px;
+        color: #ffffff;
+      }
     }
   }
 }
