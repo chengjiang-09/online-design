@@ -12,6 +12,7 @@
           <h5 class="label">{{ route.label }}</h5>
         </li>
       </ul>
+      <div class="nav-user"></div>
     </div>
   </div>
 </template>
@@ -46,9 +47,10 @@ export default {
   .container {
     width: 100%;
     height: 100%;
+    display: flex;
     .nav-body {
       display: flex;
-      width: 100%;
+      width: 80%;
       height: 100%;
       padding: 8px;
       box-shadow: 5px 0px 10px 0px rgba(0, 0, 0, 0.5);
@@ -85,6 +87,12 @@ export default {
       .action {
         background-color: #eeeeee;
       }
+    }
+
+    .nav-user {
+      width: 20%;
+      height: 100%;
+      background-color: #000000;
     }
   }
 }

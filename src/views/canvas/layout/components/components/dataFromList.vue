@@ -82,18 +82,26 @@ export default {
     },
     methods: {
       handler: function () {
-        this.dynamicDataFormUpdate(true)
+        if (!this.initFlag) {
+          this.dynamicDataFormUpdate(true)
+        }
       },
       deep: true,
     },
     radio: {
       handler: function (newRadio, oldRadio) {
-        if (newRadio && newRadio !== oldRadio && newRadio == 'dynamicDataUrl') {
+        if (
+          newRadio &&
+          newRadio !== oldRadio &&
+          newRadio == 'dynamicDataUrl' &&
+          !this.initFlag
+        ) {
           this.dynamicDataFormUpdate(true)
         } else if (
           newRadio &&
           newRadio !== oldRadio &&
-          newRadio == 'staticData'
+          newRadio == 'staticData' &&
+          !this.initFlag
         ) {
           this.dynamicDataFormUpdate(false, 'dynamicDataUrl')
         }
@@ -136,9 +144,14 @@ export default {
   },
   created() {
     this.update()
+
+    this.$nextTick(() => {
+      this.initFlag = false
+    })
   },
   data: function () {
     return {
+      initFlag: true, //防止组件初始化时，进行非必要的更新
       configureList: [], //目标组件的所有样式数组
       id: 0, //目标组件id，用于修改时递归找到渲染树对应的子节点
       type: '', //样式名称，例如修改opacity：1。type = opacity

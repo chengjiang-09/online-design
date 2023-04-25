@@ -23,7 +23,6 @@
 </template>
 
 <script>
-// import html2canvas from 'html2canvas'
 import { mapActions, mapState } from 'vuex'
 import { styleMixin } from '@/mixins/styleControl'
 import { deepCopy } from '@/utils/utils'
@@ -116,7 +115,6 @@ export default {
           case goBackListType.update:
             if (goBackData.fatherId) {
               goBackData.data.forEach(async (value) => {
-                console.log(value)
                 await this.modify_canvasDataChild({
                   fatherId: goBackData.fatherId,
                   id: goBackData.id,

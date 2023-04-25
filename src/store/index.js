@@ -6,6 +6,7 @@ import charts from './modules/charts'
 import other from './modules/other'
 import routerStore from './modules/routerStore'
 import templateList from './modules/templateList'
+import systemManage from './modules/systemManage'
 
 Vue.use(Vuex)
 
@@ -14,5 +15,5 @@ export default new Vuex.Store({
   getters: {},
   mutations: {},
   actions: {},
-  modules: { app, charts, routerStore, templateList, other },
+  modules: { app, charts, routerStore, templateList, systemManage, other },
 })

@@ -1,10 +1,10 @@
 <template>
-  <div id="adminManage"></div>
+  <div id="routerManager"></div>
 </template>
 
 <script>
 export default {
-  name: 'AdminManage',
+  name: 'RouterManager',
 }
 </script>
 

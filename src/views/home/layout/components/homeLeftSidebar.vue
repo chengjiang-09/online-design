@@ -31,7 +31,13 @@ export default {
   computed: {
     ...mapState({
       routesGroup: (state) => state.routerStore.routesGroup,
+      targetRouteId: (state) => state.routerStore.targetRouteId,
     }),
+  },
+  created() {
+    const routeId = this.$ls.get('SET_TARGET_ROUTE_ID')
+    this.update_routesGroup_action({ id: routeId })
+    this.set_routes({ id: routeId })
   },
   methods: {
     ...mapActions({

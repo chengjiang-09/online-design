@@ -1,8 +1,11 @@
+import Vue from 'vue'
+
 const routerStore = {
   namespaced: true,
   state: {
     routes: [], //动态路由列表
     routesGroup: [],
+    targetRouteId: '', //用来保证页面刷新，侧边栏的样式正常
   },
   mutations: {
     SET_ROUTES(state, { index }) {
@@ -18,6 +21,10 @@ const routerStore = {
     },
     SET_ROUTES_GROUP(state, value) {
       state.routesGroup = value
+    },
+    SET_TARGET_ROUTE_ID(state, value) {
+      state.targetRouteId = value
+      Vue.ls.set('SET_TARGET_ROUTE_ID', value)
     },
     UPDATE_ROUTES_GROUP(state, value) {
       state.routesGroup = value
@@ -44,6 +51,7 @@ const routerStore = {
         }
         return data
       })
+      commit('SET_TARGET_ROUTE_ID', id)
       commit('UPDATE_ROUTES_GROUP', newRoutesGroup)
     },
     update_routes: ({ commit, state }, { name }) => {

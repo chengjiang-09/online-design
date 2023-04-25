@@ -5,7 +5,7 @@
       @current-change="handleCurrentChange"
       :current-page="currentPage"
       background
-      :page-size="9"
+      :page-size="pageSize"
       layout="total, prev, pager, next, jumper"
       :total="total"
     >
@@ -20,6 +20,10 @@ export default {
     total: {
       type: Number,
       default: 10,
+    },
+    pageSize: {
+      type: Number,
+      default: 9,
     },
   },
   data: function () {
