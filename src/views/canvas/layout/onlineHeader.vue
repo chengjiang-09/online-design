@@ -27,6 +27,7 @@ import { mapActions, mapState } from 'vuex'
 import { styleMixin } from '@/mixins/styleControl'
 import { deepCopy } from '@/utils/utils'
 import goBackListType from '@/utils/goBackListType'
+import { deleteChart } from '@/apis/chartsApi'
 export default {
   name: 'OnlineHeader',
   mixins: [styleMixin],
@@ -42,6 +43,7 @@ export default {
       canvasData: (state) => state.charts.canvasData,
       canvasConfigureList: (state) => state.charts.canvasConfigureList,
       goBcakArray: (state) => state.charts.goBcakArray,
+      targetCanvasDefault: (state) => state.charts.targetCanvasDefault,
     }),
   },
   methods: {
@@ -91,6 +93,9 @@ export default {
           break
         case 'complete':
           this.complete()
+          break
+        case 'delete':
+          this.deleteTemplate()
           break
         default:
           console.log(type, '该实现方法未存在')
@@ -173,21 +178,29 @@ export default {
         .catch(() => {})
     },
     async actualReading() {
-      this.$confirm(
-        '如果未保存，执行此操作修改将不会被记录, 是否继续?',
-        '提示',
-        {
-          confirmButtonText: '确定',
-          cancelButtonText: '取消',
-          type: 'warning',
-        },
-      )
-        .then(async () => {
-          await this.set_actualReadingCanvas(deepCopy(this.canvasData))
+      let user = this.$ls.get('user')
+      let token = this.$ls.get('token')
+      if (user && token) {
+        this.$confirm(
+          '如果未保存，执行此操作修改将不会被记录, 是否继续?',
+          '提示',
+          {
+            confirmButtonText: '确定',
+            cancelButtonText: '取消',
+            type: 'warning',
+          },
+        )
+          .then(async () => {
+            await this.set_actualReadingCanvas(deepCopy(this.canvasData))
 
-          this.$router.push('/actualReading')
-        })
-        .catch(() => {})
+            this.$router.push('/actualReading')
+          })
+          .catch(() => {})
+      } else {
+        await this.set_actualReadingCanvas(deepCopy(this.canvasData))
+
+        this.$router.push('/actualReading')
+      }
     },
     editCanvas() {
       this.set_editCanvasOpened(true)
@@ -203,6 +216,34 @@ export default {
     },
     onlineHeaderControl() {
       this.set_onlineHeader(!this.onlineHeaderOpened)
+    },
+    deleteTemplate() {
+      this.$confirm('此操作将永久删除该模版, 是否继续?', '提示', {
+        confirmButtonText: '确定',
+        cancelButtonText: '取消',
+        type: 'warning',
+      })
+        .then(async () => {
+          const { code } = await deleteChart({
+            id: this.targetCanvasDefault.id,
+            authorId: this.targetCanvasDefault.authorId,
+          })
+          if (code == 1) {
+            this.$ls.set('TEMPLATE_LIST_ALL', {
+              templateList: {},
+              currentPage: 1,
+              total: 0,
+              totalPage: 0,
+            })
+            this.$router.push('/home')
+            this.$message({
+              showClose: true,
+              type: 'success',
+              message: '删除成功',
+            })
+          }
+        })
+        .catch(() => {})
     },
   },
 }

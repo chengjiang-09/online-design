@@ -39,7 +39,9 @@ export default (url, method, requestData, options) => {
   return request({
     url,
     method,
-    [method.toLowerCase() === 'get' ? 'params' : 'data']: requestData,
+    [method.toLowerCase() === 'get' || method.toLowerCase() === 'delete'
+      ? 'params'
+      : 'data']: requestData,
     ...options,
   })
 }

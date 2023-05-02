@@ -28,3 +28,7 @@ export const getChartById = (id) => {
     id,
   })
 }
+
+export const deleteChart = (chartData) => {
+  return request('/design/template', 'delete', chartData)
+}

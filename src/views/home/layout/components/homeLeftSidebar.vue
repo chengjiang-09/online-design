@@ -31,7 +31,6 @@ export default {
   computed: {
     ...mapState({
       routesGroup: (state) => state.routerStore.routesGroup,
-      targetRouteId: (state) => state.routerStore.targetRouteId,
     }),
   },
   created() {

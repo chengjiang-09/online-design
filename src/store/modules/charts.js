@@ -414,6 +414,17 @@ const charts = {
       state.coverageArray.array = array
       targetChild.children = array
     },
+    UPDATE_COVERAGE_ARRAY_GO_TOP(state, { id, fatherId }) {
+      let targetChild = findChildChart(state.canvasData.children, fatherId)
+
+      let targetIndex = targetChild.children.findIndex((chart) => {
+        return chart.id == id
+      })
+
+      let chart = targetChild.children[targetIndex]
+      targetChild.children.splice(targetIndex, 1)
+      targetChild.children.unshift(chart)
+    },
     DELETE_COVERAGE_ARRAY(state) {
       state.coverageArray = {}
     },
@@ -580,6 +591,9 @@ const charts = {
     },
     update_coverageArray({ commit }, array) {
       commit('UPDATE_COVERAGE_ARRAY', array)
+    },
+    update_coverageArrayGoTop({ commit }, payload) {
+      commit('UPDATE_COVERAGE_ARRAY_GO_TOP', payload)
     },
     delete_coverageArray({ commit }) {
       commit('DELETE_COVERAGE_ARRAY')

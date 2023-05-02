@@ -12,7 +12,15 @@
           <h5 class="label">{{ route.label }}</h5>
         </li>
       </ul>
-      <div class="nav-user"></div>
+      <div class="nav-user">
+        <div class="user" v-if="user">
+          <div class="title">用户：{{ user.username }}</div>
+          <el-button round @click="loginOut">退出</el-button>
+        </div>
+        <div v-else class="go-login">
+          <div @click="login">登录 | 注册</div>
+        </div>
+      </div>
     </div>
   </div>
 </template>
@@ -26,15 +34,44 @@ export default {
       routes: (state) => state.routerStore.routes,
     }),
   },
+  mounted() {
+    this.user = this.$ls.get('user')
+  },
+  data: function () {
+    return {
+      user: null,
+    }
+  },
   methods: {
     ...mapActions({
       update_routes: 'routerStore/update_routes',
+      set_authMove: 'app/set_authMove',
     }),
     selectThis(route) {
       this.update_routes({ name: route.name })
       this.$router.push({
         name: route.name,
       })
+    },
+    login() {
+      this.set_authMove(true)
+      this.$router.push({
+        path: '/',
+      })
+    },
+    loginOut() {
+      this.$confirm('是否确定退出？', '提示', {
+        confirmButtonText: '确定',
+        cancelButtonText: '取消',
+        type: 'warning',
+      })
+        .then(() => {
+          this.$ls.set('token', null)
+          this.$ls.set('user', null)
+          this.user = null
+          this.$router.go(0)
+        })
+        .catch(() => {})
     },
   },
 }
@@ -92,7 +129,31 @@ export default {
     .nav-user {
       width: 20%;
       height: 100%;
-      background-color: #000000;
+      display: flex;
+      justify-content: center;
+      align-items: center;
+      margin-left: 25px;
+      box-shadow: -5px 0px 10px 0px rgba(0, 0, 0, 0.5);
+
+      .user {
+        display: flex;
+        align-items: center;
+
+        .title {
+          overflow: hidden;
+          text-overflow: ellipsis;
+          white-space: nowrap;
+          width: 200px;
+          font-size: 18px;
+        }
+      }
+
+      .go-login {
+        cursor: pointer;
+        color: #000000;
+        font-size: 18px;
+        font-weight: 800;
+      }
     }
   }
 }

@@ -425,7 +425,7 @@ export default {
               this.dataFromFlag = config.jsonData.select
                 ? config.jsonData.select
                 : false
-              //下面一系列判断用于限制请求次数，避免多次请求
+              //下面一系列判断用于限制数据源请求次数，避免多次请求
               if (config.jsonData.select) {
                 try {
                   const param = this.$ls.get(`DATA_FROM_PARAM`)

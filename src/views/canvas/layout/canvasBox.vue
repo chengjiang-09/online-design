@@ -107,6 +107,7 @@ import { mapState, mapActions } from 'vuex'
 import { styleMixin } from '@/mixins/styleControl'
 import { deepCopy } from '@/utils/utils'
 import SaveCanvasDialogVue from './components/saveCanvasDialog.vue'
+
 export default {
   name: 'CanvasBox',
   components: {
@@ -164,6 +165,7 @@ export default {
       editCanvasOpened: (state) => state.app.editCanvasOpened,
       templateData: (state) => state.other.templateData,
       canvasConfigureList: (state) => state.charts.canvasConfigureList,
+      menuControl: (state) => state.app.menuControl,
     }),
     //根据缩放值修改画布比例
     scaleData: {
@@ -193,7 +195,37 @@ export default {
       set_configureList: 'charts/set_configureList',
       set_scaling: 'other/set_scaling',
       set_targetFather: 'other/set_targetFather',
+      update_coverageArrayGoTop: 'charts/update_coverageArrayGoTop',
+      delete_chart: 'charts/delete_chart',
+      set_menuControl: 'app/set_menuControl',
     }),
+    menuClick({ key }) {
+      let targetChartId = this.menuControl.targetChartId
+      let targetChartFatherId = this.menuControl.targetChartFatherId
+      switch (key) {
+        case 'goTop':
+          this.update_coverageArrayGoTop({
+            id: targetChartId,
+            fatherId: targetChartFatherId,
+          })
+          break
+        case 'delete':
+          this.delete_chart({
+            id: targetChartId,
+            fatherId: targetChartFatherId,
+          })
+          break
+        default:
+          break
+      }
+      this.set_menuControl({
+        opened: false,
+        top: 0,
+        left: 0,
+        targetChartId: '',
+        targetChartFatherId: '',
+      })
+    },
     mousedown() {
       this.set_targetChart('canvas')
       this.set_targetFather(null)

@@ -7,6 +7,7 @@ const permissions = {
   actualReading: 16,
   editCanvas: 32,
   complete: 64,
+  delete: 128,
 }
 
 //定义画布权限规则
@@ -19,6 +20,7 @@ export const rulesToChart = {
     'actualReading',
     'editCanvas',
     'complete',
+    'delete',
   ],
   notAuthor: ['actualReading'],
 }
