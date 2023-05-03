@@ -66,6 +66,7 @@ export default {
       delete_coverageArray: 'charts/delete_coverageArray',
       delete_dataFromAll: 'charts/delete_dataFromAll',
       delete_goBcakArray: 'charts/delete_goBcakArray',
+      insert_chart: 'charts/insert_chart',
     }),
     choice(e, type) {
       //限制只有阅览模式和编辑模式按钮拥有激活状态的style
@@ -154,6 +155,10 @@ export default {
             console.log(goBackData.type)
             break
           case goBackListType.delete:
+            this.insert_chart({
+              fatherId: goBackData.fatherId,
+              data: goBackData.data,
+            })
             console.log(goBackData.type)
             break
           default:
@@ -214,9 +219,6 @@ export default {
       await this.set_targetFather(null)
       this.set_submitCanvasOpened(true)
     },
-    onlineHeaderControl() {
-      this.set_onlineHeader(!this.onlineHeaderOpened)
-    },
     deleteTemplate() {
       this.$confirm('此操作将永久删除该模版, 是否继续?', '提示', {
         confirmButtonText: '确定',
@@ -244,6 +246,9 @@ export default {
           }
         })
         .catch(() => {})
+    },
+    onlineHeaderControl() {
+      this.set_onlineHeader(!this.onlineHeaderOpened)
     },
   },
 }

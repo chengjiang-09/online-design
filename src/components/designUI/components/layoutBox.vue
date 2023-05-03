@@ -138,12 +138,14 @@ export default {
           this.set_targetChart(this.templateData[data].type + date)
         } else {
           this.$message({
+            showClose: true,
             message: `${this.templateData[data].label}插入错误，，${this.templateData[data].label}可能已插入，请勿重复操作`,
             type: 'warning',
           })
         }
       } else {
         this.$message({
+          showClose: true,
           message:
             '请先使用容器盒子（统一管理数据源的功能）进行布局后，再使用普通组件',
           type: 'warning',

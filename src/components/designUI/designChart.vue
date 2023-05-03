@@ -467,6 +467,8 @@ export default {
 
                       this.dynamicData = data
                     }
+                  } else {
+                    this.dynamicData = this.dataFromAll[this.propsData.id]
                   }
                   // eslint-disable-next-line no-empty
                 } catch (e) {}

@@ -20,7 +20,7 @@ export const getDataFromDemo1 = (Mock) => {
 export const postDataFromDemo2 = (Mock) => {
   return Mock.mock('http://127.0.0.1:8001/dataFrom/demo1', 'post', (data) => {
     let a = {
-      tom: [400, 450, 460, 300, 200, 147, 260],
+      tom: [50, 450, 460, 300, 200, 147, 260],
       jerry: [100, 200, 460, 300, 200, 147, 260],
     }
     return {
@@ -32,7 +32,14 @@ export const postDataFromDemo2 = (Mock) => {
           type: 'category',
         },
         yAxis: { type: 'value' },
-        series: [{ data: a[JSON.parse(data.body).name], type: 'line' }],
+        series: [
+          {
+            data: a[
+              JSON.parse(data.body).name ? JSON.parse(data.body).name : 'tom'
+            ],
+            type: 'line',
+          },
+        ],
       },
     }
   })

@@ -233,6 +233,7 @@ export default {
           this.set_coverageArray(this.propsData.id)
         } else {
           this.$message({
+            showClose: true,
             message: `${this.templateData[this.data].label}插入错误，${
               this.templateData[this.data].label
             }可能已插入，请勿重复操作`,
@@ -242,11 +243,13 @@ export default {
       } else {
         if (this.layoutMode) {
           this.$message({
+            showClose: true,
             message: `当已插入布局组件后，将不能插入普通组件`,
             type: 'warning',
           })
         } else {
           this.$message({
+            showClose: true,
             message: `当已插入普通组件后，将不能插入布局组件`,
             type: 'warning',
           })

@@ -338,7 +338,12 @@ const charts = {
       }
       Vue.ls.set('CANVAS_DATA', state.canvasData)
     },
-    DELETE_CHART(state, { id, fatherId }) {
+    INSERT_CHART(state, { fatherId, data }) {
+      let targetChild = findChildChart(state.canvasData.children, fatherId)
+
+      targetChild.children.splice(data.index, 0, data.chart)
+    },
+    DELETE_CHART(state, { id, fatherId, type }) {
       let targetChild =
         fatherId === 'canvas'
           ? state.canvasData
@@ -347,6 +352,24 @@ const charts = {
       const index = targetChild.children.findIndex((chart) => {
         return chart.id == id
       })
+
+      //在回退功能的添加组件中会调用此方法来移除添加的步骤，这里使用type是否存在来区分是用户点击删除还是回退功能删除组件
+      if (type && type === 'deleteChart') {
+        //向回退数据添加节点标识,只记录最近30条操作
+        if (state.goBcakArray.length >= 30) {
+          state.goBcakArray.shift()
+        }
+        state.goBcakArray.push({
+          fatherId: fatherId,
+          id: null,
+          data: {
+            chart: targetChild.children[index],
+            index: index,
+          },
+          defaultType: null,
+          type: goBackListType.delete,
+        })
+      }
 
       targetChild.children.splice(index, 1)
     },
@@ -416,6 +439,20 @@ const charts = {
     },
     UPDATE_COVERAGE_ARRAY_GO_TOP(state, { id, fatherId }) {
       let targetChild = findChildChart(state.canvasData.children, fatherId)
+
+      //向回退数据添加节点标识,只记录最近30条操作
+      if (state.goBcakArray.length >= 30) {
+        state.goBcakArray.shift()
+      }
+      state.goBcakArray.push({
+        fatherId: state.coverageArray.fatherId,
+        id: null,
+        data: targetChild.children.map((chart) => {
+          return chart.id
+        }),
+        defaultType: null,
+        type: goBackListType.coverage,
+      })
 
       let targetIndex = targetChild.children.findIndex((chart) => {
         return chart.id == id
@@ -562,6 +599,9 @@ const charts = {
     },
     delete_chart({ commit }, payload) {
       commit('DELETE_CHART', payload)
+    },
+    insert_chart({ commit }, payload) {
+      commit('INSERT_CHART', payload)
     },
     async set_completeChart({ commit }, chartData) {
       const { data, code, msg } = await saveChart(chartData)

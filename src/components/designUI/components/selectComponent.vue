@@ -30,6 +30,12 @@
       class="show"
       :class="[{ action: action }, { enter: enterFlag }, { down: downFlag }]"
     ></div>
+    <SmallMenu
+      class="menu"
+      :menuItems="smallmenu"
+      :class="[{ 'menu-action': action }]"
+      @clickMenuItem="clickMenuItem"
+    />
   </div>
 </template>
 
@@ -37,8 +43,13 @@
 //组件大小四角四边控制组件
 import { mapState, mapActions } from 'vuex'
 import goBackListType from '@/utils/goBackListType'
+import SmallMenu from '@/components/publicUI/common/smallMenu.vue'
+import menuList from '@/utils/menuList'
 export default {
   name: 'SelectComponent',
+  components: {
+    SmallMenu,
+  },
   props: {
     props: {
       type: Object,
@@ -106,6 +117,7 @@ export default {
   },
   data: function () {
     return {
+      smallmenu: menuList,
       propsData: {
         id: 0,
       },
@@ -213,7 +225,28 @@ export default {
       set_inputValue: 'other/set_inputValue',
       modify_canvasDataChild: 'charts/modify_canvasDataChild',
       set_goBcakArray: 'charts/set_goBcakArray',
+      update_coverageArrayGoTop: 'charts/update_coverageArrayGoTop',
+      delete_chart: 'charts/delete_chart',
     }),
+    clickMenuItem({ type }) {
+      switch (type) {
+        case 'goTop':
+          this.update_coverageArrayGoTop({
+            fatherId: this.propsData.fatherId,
+            id: this.propsData.id,
+          })
+          break
+        case 'delete':
+          this.delete_chart({
+            fatherId: this.propsData.fatherId,
+            id: this.propsData.id,
+            type: 'deleteChart',
+          })
+          break
+        default:
+          break
+      }
+    },
     update() {
       this.propsData = this.props
       this.positionData = this.positionProps
@@ -580,6 +613,23 @@ export default {
 <style lang="less" scoped>
 .select-component {
   position: relative;
+
+  .menu {
+    position: absolute;
+    opacity: 0;
+    pointer-events: none;
+    left: calc(100% + 70px);
+    top: 50%;
+    transform: translate(0, -50%) scale(1, 0);
+    transition: transform 0.8s, opacity.5s;
+  }
+
+  .menu-action {
+    pointer-events: all;
+    opacity: 1;
+    transform: translate(0, -50%) scale(1, 1);
+  }
+
   span {
     position: absolute;
     background-color: transparent;

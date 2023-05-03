@@ -102,6 +102,7 @@ export default {
       this.timer = setTimeout(() => {
         if (!this.isJSON(value)) {
           this.$message({
+            showClose: true,
             message: 'json格式错误',
             type: 'warning',
           })

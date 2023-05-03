@@ -158,6 +158,7 @@ export default {
         this.set_submitCanvasOpened(false)
         this.loading = false
         this.$message({
+          showClose: true,
           type: 'success',
           message: '保存成功',
         })
@@ -208,6 +209,7 @@ export default {
               this.set_submitCanvasOpened(false)
               this.loading = false
               this.$message({
+                showClose: true,
                 type: 'success',
                 message: '保存成功',
               })
@@ -297,6 +299,7 @@ export default {
               await this.onloadImg()
             } else if (first && !this.canvasIsNotEmpty) {
               this.$message({
+                showClose: true,
                 message: '画布为空不允许上传',
                 type: 'warning',
               })
@@ -304,6 +307,7 @@ export default {
               this.set_submitCanvasOpened(false)
               this.loading = false
               this.$message({
+                showClose: true,
                 type: 'success',
                 message: '保存成功',
               })

@@ -6,6 +6,7 @@
       height: `${canvasData.height}px`,
     }"
   >
+    <ActualReadingHeader />
     <div
       class="container"
       :style="{
@@ -15,6 +16,7 @@
     >
       <div
         class="canvas"
+        id="ActualReadingViewCanvas"
         :style="{
           width: `${canvasData.width}px`,
           height: `${canvasData.height}px`,
@@ -47,8 +49,12 @@
 
 <script>
 import { mapActions } from 'vuex'
+import ActualReadingHeader from './layout/actualReadingHeader.vue'
 export default {
   name: 'ActualReadingView',
+  components: {
+    ActualReadingHeader,
+  },
   data: function () {
     return {
       canvasData: {},

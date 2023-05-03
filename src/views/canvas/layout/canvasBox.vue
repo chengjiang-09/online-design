@@ -196,36 +196,7 @@ export default {
       set_scaling: 'other/set_scaling',
       set_targetFather: 'other/set_targetFather',
       update_coverageArrayGoTop: 'charts/update_coverageArrayGoTop',
-      delete_chart: 'charts/delete_chart',
-      set_menuControl: 'app/set_menuControl',
     }),
-    menuClick({ key }) {
-      let targetChartId = this.menuControl.targetChartId
-      let targetChartFatherId = this.menuControl.targetChartFatherId
-      switch (key) {
-        case 'goTop':
-          this.update_coverageArrayGoTop({
-            id: targetChartId,
-            fatherId: targetChartFatherId,
-          })
-          break
-        case 'delete':
-          this.delete_chart({
-            id: targetChartId,
-            fatherId: targetChartFatherId,
-          })
-          break
-        default:
-          break
-      }
-      this.set_menuControl({
-        opened: false,
-        top: 0,
-        left: 0,
-        targetChartId: '',
-        targetChartFatherId: '',
-      })
-    },
     mousedown() {
       this.set_targetChart('canvas')
       this.set_targetFather(null)
@@ -341,6 +312,7 @@ export default {
         this.newHeight = ''
       } else {
         this.$message({
+          showClose: true,
           message: '请先使用布局组件进行布局后，再使用普通组件',
           type: 'warning',
         })
