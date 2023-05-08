@@ -81,7 +81,7 @@ export default {
     .enter {
       position: absolute;
       left: 50%;
-      bottom: 15%;
+      bottom: 8%;
       transform: translate(-50%, -50%);
       div {
         span {

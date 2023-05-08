@@ -28,7 +28,7 @@ export default {
   name: 'JsonEditView',
   props: {
     jsonDataProp: {
-      type: Object,
+      type: [Object, Array],
       default: () => {},
     },
     title: {
@@ -130,6 +130,7 @@ export default {
   background-color: #ffffff;
   border-radius: 20px;
   padding: 50px 10px 20px;
+  z-index: 9999;
   .container {
     width: 100%;
     height: 100%;
