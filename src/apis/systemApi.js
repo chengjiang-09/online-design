@@ -13,3 +13,7 @@ export const updateSystemUser = ({ id, username }) => {
     username,
   })
 }
+
+export const updateSystemTemplate = (data) => {
+  return request('design/system/template', 'put', data)
+}

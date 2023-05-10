@@ -60,7 +60,7 @@ import SelectComponent from '@/components/designUI/components/selectComponent.vu
 import { mapActions, mapState, mapMutations } from 'vuex'
 import goBackListType from '@/utils/goBackListType'
 export default {
-  name: 'DesginFont',
+  name: 'DesignFont',
   components: {
     SelectComponent,
   },
@@ -131,7 +131,11 @@ export default {
   },
   created() {
     //限制初始化大小不超过这个父盒子宽高
-    const fatherNode = document.querySelector(`#${this.fatherNodeId}`)
+    let fatherNode = null
+    if (this.fatherNodeId) {
+      fatherNode = document.querySelector(`#${this.fatherNodeId}`)
+    }
+
     if (fatherNode) {
       this.update(fatherNode.offsetWidth, fatherNode.offsetHeight)
     } else {

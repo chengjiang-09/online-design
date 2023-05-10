@@ -1,6 +1,6 @@
 <template>
   <div id="ComponentManager">
-    <div class="container" @blur="blur">
+    <div class="container" v-loading="loading">
       <div class="classify">
         <h2 class="title">请选择组件分类信息</h2>
         <el-select v-model="componentList" filterable placeholder="请选择">
@@ -24,7 +24,7 @@
         <el-button type="info" round @click.native="addNewTemplate"
           >添加新分类</el-button
         >
-        <el-button type="primary" round @click.native="addNewTemplate"
+        <el-button type="primary" round @click.native="uploadEdit"
           >上传修改</el-button
         >
       </div>
@@ -58,7 +58,9 @@
             ></el-input>
           </el-form-item>
           <el-form-item>
-            <el-button type="primary" round>保存修改</el-button>
+            <el-button type="primary" round @click="saveEdit('template')"
+              >保存修改</el-button
+            >
           </el-form-item>
         </el-form>
       </div>
@@ -131,7 +133,9 @@
                 ></el-input>
               </el-form-item>
               <el-form-item>
-                <el-button type="primary" round>保存修改</el-button>
+                <el-button type="primary" round @click="saveEdit('component')"
+                  >保存修改</el-button
+                >
               </el-form-item>
             </el-form>
           </div>
@@ -196,7 +200,9 @@
                 ></el-input>
               </el-form-item>
               <el-form-item>
-                <el-button type="primary" round>保存修改</el-button>
+                <el-button type="primary" round @click="saveEdit('default')"
+                  >保存修改</el-button
+                >
               </el-form-item>
             </el-form>
           </div>
@@ -311,7 +317,9 @@
                 >
               </el-form-item>
               <el-form-item>
-                <el-button type="primary" round>保存修改</el-button>
+                <el-button type="primary" round @click="saveEdit('configure')"
+                  >保存修改</el-button
+                >
               </el-form-item>
             </el-form>
           </div>
@@ -349,6 +357,7 @@ import { getTemplateClassification } from '@/apis/chartsApi'
 import DesignDialog from './components/designDialog.vue'
 import { mapActions } from 'vuex'
 import { deepCopy } from '@/utils/utils'
+import { updateSystemTemplate } from '@/apis/systemApi'
 const templateClassifyData = {
   rules: {
     label: [{ required: true, message: '请输入名称', trigger: 'blur' }],
@@ -596,6 +605,7 @@ export default {
   },
   data: function () {
     return {
+      loading: false,
       template: [],
       componentList: null,
       defaultList: null,
@@ -653,15 +663,18 @@ export default {
       jsonDataProp: {},
       component: null,
       chart: null,
+      editData: {
+        template: [],
+        component: [],
+        default: [],
+        configure: [],
+      },
     }
   },
   methods: {
     ...mapActions({
       set_actualReading: 'other/set_actualReading',
     }),
-    blur() {
-      console.log(123)
-    },
     selectClassify(label, icon, component, type, id) {
       this.templateData.component = component
       this.templateData.icon = icon
@@ -835,6 +848,152 @@ export default {
       this.rules = configureClassifyData.rules
       this.type = configureClassifyData.type
       this.visible = true
+    },
+    async uploadEdit() {
+      this.loading = true
+      const { code, message } = await updateSystemTemplate(this.editData)
+      if (code == 1) {
+        console.log(message)
+      }
+      this.loading = false
+    },
+    saveEdit(key) {
+      switch (key) {
+        case 'template':
+          this.editData.template.push(this.templateData)
+
+          try {
+            if (!this.templateData.id) {
+              this.template.push(this.templateData)
+            } else {
+              this.template.forEach((template, index) => {
+                if (template.id === this.templateData.id) {
+                  this.template[index] = {
+                    ...template,
+                    ...this.templateData,
+                  }
+                  throw new Error()
+                }
+              })
+            }
+            // eslint-disable-next-line no-empty
+          } catch (e) {}
+          break
+        case 'component':
+          this.editData.component.push(this.componentData)
+
+          try {
+            this.template.forEach((template, templateIndex) => {
+              if (template.id === this.templateData.id) {
+                if (!this.componentData.id) {
+                  this.template[templateIndex].items.push(this.componentData)
+                } else {
+                  template.items.forEach((component, index) => {
+                    if (component.id === this.componentData.id) {
+                      this.template[templateIndex].items[index] = {
+                        ...component,
+                        ...this.componentData,
+                      }
+                      throw new Error()
+                    }
+                  })
+                }
+              }
+            })
+            // eslint-disable-next-line no-empty
+          } catch (e) {}
+          break
+        case 'default':
+          this.editData.default.push(this.defaultData)
+
+          try {
+            this.template.forEach((template, templateIndex) => {
+              if (template.id === this.templateData.id) {
+                template.items.forEach((component, componentIndex) => {
+                  if (component.id === this.componentData.id) {
+                    if (!this.defaultdata.id) {
+                      this.template[templateIndex].items[
+                        componentIndex
+                      ].default.push(this.defaultdata)
+                      throw new Error()
+                    } else {
+                      component.default.forEach((defaultdata, index) => {
+                        if (defaultdata.id === this.defaultdata.id) {
+                          this.template[templateIndex].items[
+                            componentIndex
+                          ].default[index] = {
+                            ...defaultdata,
+                            ...this.defaultdata,
+                          }
+                          throw new Error()
+                        }
+                      })
+                    }
+                  }
+                })
+              }
+            })
+            // eslint-disable-next-line no-empty
+          } catch (e) {}
+          break
+        case 'configure':
+          this.editData.configure.push(this.configureData)
+          try {
+            this.template.forEach((template, templateIndex) => {
+              if (template.id === this.templateData.id) {
+                template.items.forEach((component, componentIndex) => {
+                  if (component.id === this.componentData.id) {
+                    component.default.forEach(
+                      (defaultData, defaultDataIndex) => {
+                        if (defaultData.id === this.defaultData.id) {
+                          if (!this.configureData.id) {
+                            this.template[templateIndex].items[
+                              componentIndex
+                            ].default[defaultDataIndex].configure.push(
+                              this.configureData,
+                            )
+                            this.chart = deepCopy(
+                              this.template[templateIndex].items[
+                                componentIndex
+                              ],
+                            )
+
+                            throw new Error()
+                          } else {
+                            defaultData.configure.forEach(
+                              (configure, index) => {
+                                if (configure.id === this.configureData.id) {
+                                  this.template[templateIndex].items[
+                                    componentIndex
+                                  ].default[defaultDataIndex].configure[index] =
+                                    {
+                                      ...configure,
+                                      ...this.configureData,
+                                    }
+
+                                  this.chart = deepCopy(
+                                    this.template[templateIndex].items[
+                                      componentIndex
+                                    ],
+                                  )
+                                  throw new Error()
+                                }
+                              },
+                            )
+                          }
+                        }
+                      },
+                    )
+                  }
+                })
+              }
+            })
+            // eslint-disable-next-line no-empty
+          } catch (e) {}
+          break
+        default:
+          break
+      }
     },
     putForm({ type, form }) {
       switch (type) {

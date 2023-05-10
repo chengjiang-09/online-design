@@ -12,8 +12,8 @@
       { drag: isDrag },
     ]"
     :style="{
-      width: `${positionData.width}px`,
-      height: `${positionData.height}px`,
+      width: `${manager ? 300 : positionData.width}px`,
+      height: `${manager ? 300 : positionData.height}px`,
       left: `${positionData.left}px`,
       top: `${positionData.top}px`,
     }"
@@ -21,8 +21,8 @@
     <div
       class="box"
       :style="{
-        width: `${positionData.width}px`,
-        height: `${positionData.height}px`,
+        width: `${manager ? 300 : positionData.width}px`,
+        height: `${manager ? 300 : positionData.height}px`,
       }"
     >
       <!-- 组件的四角缩放功能，组件 -->
@@ -48,15 +48,15 @@
         v-else
         class="imge"
         :style="{
-          width: `${positionData.width}px`,
-          height: `${positionData.height}px`,
+          width: `${manager ? 300 : positionData.width}px`,
+          height: `${manager ? 300 : positionData.height}px`,
         }"
       >
         <img
           class="imge"
           :style="{
-            width: `${positionData.width}px`,
-            height: `${positionData.height}px`,
+            width: `${manager ? 300 : positionData.width}px`,
+            height: `${manager ? 300 : positionData.height}px`,
           }"
           :src="imgUrl"
         />
@@ -83,6 +83,11 @@ export default {
     fatherNodeId: {
       type: String,
       default: '',
+      required: false,
+    },
+    manager: {
+      type: Boolean,
+      default: false,
       required: false,
     },
   },
@@ -141,7 +146,11 @@ export default {
   },
   created() {
     //限制初始化大小不超过这个父盒子宽高
-    const fatherNode = document.querySelector(`#${this.fatherNodeId}`)
+    let fatherNode = null
+    if (this.fatherNodeId) {
+      fatherNode = document.querySelector(`#${this.fatherNodeId}`)
+    }
+
     if (fatherNode) {
       this.update(fatherNode.offsetWidth, fatherNode.offsetHeight)
     } else {

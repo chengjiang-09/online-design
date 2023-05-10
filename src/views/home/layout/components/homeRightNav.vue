@@ -94,7 +94,7 @@ export default {
 
       li {
         position: relative;
-        width: 120px;
+        width: 140px;
         height: 100%;
         background-color: #ffffff;
         transition: background-color 0.5s;
