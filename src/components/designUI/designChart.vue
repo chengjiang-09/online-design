@@ -385,6 +385,7 @@ export default {
     //初始化函数
     update(parentNodeWidth, parentNodeHeight) {
       this.propsData = this.props
+      this.styleValue = {}
       this.propsData.default.forEach((obj) => {
         if (obj.type === 'position') {
           obj.configure.forEach((style) => {

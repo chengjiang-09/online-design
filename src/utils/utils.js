@@ -4,29 +4,41 @@
  * @param {*} obj
  * @returns
  */
-export const deepCopy = (obj) => {
+export const deepCopy = (obj, isNotChart = false) => {
   const copyObj = {}
   Object.keys(obj).forEach((key) => {
     if (Array.isArray(obj[key])) {
       copyObj[key] = []
       obj[key].forEach((val) => {
-        if (Object.prototype.toString.call(val) === '[object Object]') {
-          copyObj[key].push(deepCopy(val))
+        if (
+          Object.prototype.toString.call(val) === '[object Object]' &&
+          val !== null
+        ) {
+          copyObj[key].push(deepCopy(val, isNotChart))
         } else {
           copyObj[key].push(val)
         }
       })
-      if (key === 'values' && !copyObj['value'] && copyObj[key].length > 0) {
+      if (
+        key === 'values' &&
+        !copyObj['value'] &&
+        copyObj[key].length > 0 &&
+        !isNotChart
+      ) {
         copyObj['value'] = copyObj[key]
       }
-    } else if (Object.prototype.toString.call(obj[key]) === '[object Object]') {
-      copyObj[key] = deepCopy(obj[key])
+    } else if (
+      Object.prototype.toString.call(obj[key]) === '[object Object]' &&
+      obj[key] !== null
+    ) {
+      copyObj[key] = deepCopy(obj[key], isNotChart)
     } else {
       copyObj[key] = obj[key]
       if (
         key === 'value' &&
         copyObj['values'] &&
-        copyObj['values'].length > 0
+        copyObj['values'].length > 0 &&
+        !isNotChart
       ) {
         copyObj[key] = copyObj['values']
       }

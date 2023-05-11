@@ -851,26 +851,33 @@ export default {
     },
     async uploadEdit() {
       this.loading = true
-      const { code, message } = await updateSystemTemplate(this.editData)
+      const { code, msg } = await updateSystemTemplate(this.editData)
       if (code == 1) {
-        console.log(message)
+        console.log(msg)
+        this.editData = {
+          template: [],
+          component: [],
+          default: [],
+          configure: [],
+        }
       }
       this.loading = false
     },
     saveEdit(key) {
       switch (key) {
         case 'template':
-          this.editData.template.push(this.templateData)
-
           try {
-            if (!this.templateData.id) {
-              this.template.push(this.templateData)
+            let templateDataCopy = deepCopy(this.templateData)
+            this.editData.template.push(templateDataCopy)
+
+            if (!templateDataCopy.id) {
+              this.template.push(templateDataCopy)
             } else {
               this.template.forEach((template, index) => {
-                if (template.id === this.templateData.id) {
+                if (template.id === templateDataCopy.id) {
                   this.template[index] = {
                     ...template,
-                    ...this.templateData,
+                    ...templateDataCopy,
                   }
                   throw new Error()
                 }
@@ -880,19 +887,19 @@ export default {
           } catch (e) {}
           break
         case 'component':
-          this.editData.component.push(this.componentData)
-
           try {
+            let componentDataCopy = deepCopy(this.componentData)
+            this.editData.component.push(componentDataCopy)
             this.template.forEach((template, templateIndex) => {
               if (template.id === this.templateData.id) {
-                if (!this.componentData.id) {
-                  this.template[templateIndex].items.push(this.componentData)
+                if (!componentDataCopy.id) {
+                  this.template[templateIndex].items.push(componentDataCopy)
                 } else {
                   template.items.forEach((component, index) => {
-                    if (component.id === this.componentData.id) {
+                    if (component.id === componentDataCopy.id) {
                       this.template[templateIndex].items[index] = {
                         ...component,
-                        ...this.componentData,
+                        ...componentDataCopy,
                       }
                       throw new Error()
                     }
@@ -904,26 +911,26 @@ export default {
           } catch (e) {}
           break
         case 'default':
-          this.editData.default.push(this.defaultData)
-
           try {
+            let defaultDataCopy = deepCopy(this.defaultData)
+            this.editData.default.push(defaultDataCopy)
             this.template.forEach((template, templateIndex) => {
               if (template.id === this.templateData.id) {
                 template.items.forEach((component, componentIndex) => {
                   if (component.id === this.componentData.id) {
-                    if (!this.defaultdata.id) {
+                    if (!defaultDataCopy.id) {
                       this.template[templateIndex].items[
                         componentIndex
-                      ].default.push(this.defaultdata)
+                      ].default.push(defaultDataCopy)
                       throw new Error()
                     } else {
                       component.default.forEach((defaultdata, index) => {
-                        if (defaultdata.id === this.defaultdata.id) {
+                        if (defaultdata.id === defaultDataCopy.id) {
                           this.template[templateIndex].items[
                             componentIndex
                           ].default[index] = {
                             ...defaultdata,
-                            ...this.defaultdata,
+                            ...defaultDataCopy,
                           }
                           throw new Error()
                         }
@@ -937,8 +944,9 @@ export default {
           } catch (e) {}
           break
         case 'configure':
-          this.editData.configure.push(this.configureData)
           try {
+            let configureDataCopy = deepCopy(this.configureData, true)
+            this.editData.configure.push(configureDataCopy)
             this.template.forEach((template, templateIndex) => {
               if (template.id === this.templateData.id) {
                 template.items.forEach((component, componentIndex) => {
@@ -946,11 +954,11 @@ export default {
                     component.default.forEach(
                       (defaultData, defaultDataIndex) => {
                         if (defaultData.id === this.defaultData.id) {
-                          if (!this.configureData.id) {
+                          if (!configureDataCopy.id) {
                             this.template[templateIndex].items[
                               componentIndex
                             ].default[defaultDataIndex].configure.push(
-                              this.configureData,
+                              configureDataCopy,
                             )
                             this.chart = deepCopy(
                               this.template[templateIndex].items[
@@ -962,13 +970,13 @@ export default {
                           } else {
                             defaultData.configure.forEach(
                               (configure, index) => {
-                                if (configure.id === this.configureData.id) {
+                                if (configure.id === configureDataCopy.id) {
                                   this.template[templateIndex].items[
                                     componentIndex
                                   ].default[defaultDataIndex].configure[index] =
                                     {
                                       ...configure,
-                                      ...this.configureData,
+                                      ...configureDataCopy,
                                     }
 
                                   this.chart = deepCopy(
