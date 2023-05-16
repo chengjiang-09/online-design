@@ -153,6 +153,8 @@ export default {
       height: 100%;
 
       &-body {
+        overflow: hidden;
+        overflow-y: scroll;
         position: absolute;
         left: 0;
         top: 0;

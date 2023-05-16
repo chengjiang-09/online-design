@@ -157,6 +157,7 @@
                     item.type,
                     item.id,
                     item.components_id,
+                    item.configure,
                   )
                 "
               >
@@ -210,12 +211,16 @@
         <div class="config-configure">
           <div class="configure" v-if="configureList || isCreateDefault">
             <h2 class="title">请选择属性配置</h2>
-            <el-select v-model="configureData" filterable placeholder="请选择">
+            <el-select
+              v-model="configureDataNo"
+              filterable
+              placeholder="请选择"
+            >
               <el-option
                 v-for="item in configureList"
                 :key="item.id"
                 :label="item.label"
-                :value="item"
+                :value="item.label"
                 @click.native="
                   selectConfigure(
                     item.component,
@@ -338,6 +343,7 @@
       :title="title"
       :visible="visible"
       :type="type"
+      :titleFlagId="titleFlagId"
       @visibleControl="visible = false"
       @putForm="putForm"
     />
@@ -558,27 +564,27 @@ const configureClassifyData = {
         },
       ],
     },
-    {
-      label: 'jsonData(一些额外的配置信息)',
-      key: 'jsonData',
-      disabled: false,
-      defaultValue: [],
-      type: 'json',
-    },
-    {
-      label: 'values(echarts额外配置信息)',
-      key: 'values',
-      disabled: false,
-      defaultValue: [],
-      type: 'json',
-    },
-    {
-      label: 'default(layout组件额外配置信息)',
-      key: 'default',
-      disabled: false,
-      defaultValue: [],
-      type: 'json',
-    },
+    // {
+    //   label: 'jsonData(一些额外的配置信息)',
+    //   key: 'jsonData',
+    //   disabled: false,
+    //   defaultValue: [],
+    //   type: 'json',
+    // },
+    // {
+    //   label: 'values(echarts额外配置信息)',
+    //   key: 'values',
+    //   disabled: false,
+    //   defaultValue: [],
+    //   type: 'json',
+    // },
+    // {
+    //   label: 'default(layout组件额外配置信息)',
+    //   key: 'default',
+    //   disabled: false,
+    //   defaultValue: [],
+    //   type: 'json',
+    // },
   ],
   title: '新建属性',
   type: 'configure',
@@ -593,11 +599,16 @@ export default {
     //获取所有的模版
     this.set_actualReading(true)
 
-    const { code, message, data } = await getTemplateClassification()
+    const { code, msg, data } = await getTemplateClassification()
     if (code === 1) {
       this.template = data
+
+      this.$message({
+        message: msg,
+        type: 'success',
+      })
     } else {
-      console.log(message)
+      console.log(msg)
     }
   },
   beforeDestroy() {
@@ -616,6 +627,7 @@ export default {
         label: '',
         type: '',
         id: '',
+        items: [],
       },
       componentData: {
         component: '',
@@ -625,6 +637,7 @@ export default {
         icon: '',
         id: '',
         template_id: '',
+        default: [],
       },
       defaultData: {
         icon: '',
@@ -633,6 +646,7 @@ export default {
         type: '',
         id: '',
         components_id: '',
+        configure: [],
       },
       configureData: {
         component: '',
@@ -640,11 +654,12 @@ export default {
         type: '',
         value: '',
         disabled: '',
-        jsonData: '',
+        jsonData: {},
         values: [],
         default: [],
         id: '',
       },
+      configureDataNo: '',
       templateDataRules: templateClassifyData.rules,
       componentDataRules: componentClassifyData.rules,
       defaultDataRules: defaultClassifyData.rules,
@@ -654,6 +669,7 @@ export default {
       rules: {},
       visible: false,
       type: '',
+      titleFlagId: '',
       isCreateClassify: false,
       isCreateComponent: false,
       isCreateDefault: false,
@@ -698,6 +714,7 @@ export default {
         icon: '',
         id: '',
         template_id: '',
+        default: [],
       }
       this.defaultData = {
         icon: '',
@@ -705,6 +722,7 @@ export default {
         label: '',
         type: '',
         id: '',
+        configure: [],
       }
 
       this.configureData = {
@@ -713,7 +731,7 @@ export default {
         type: '',
         value: '',
         disabled: '',
-        jsonData: '',
+        jsonData: {},
         values: [],
         default: [],
         id: '',
@@ -755,6 +773,7 @@ export default {
         label: '',
         type: '',
         id: '',
+        configure: [],
       }
       this.configureData = {
         component: '',
@@ -762,7 +781,7 @@ export default {
         type: '',
         value: '',
         disabled: '',
-        jsonData: '',
+        jsonData: {},
         values: [],
         default: [],
         id: '',
@@ -772,13 +791,14 @@ export default {
 
       this.defaultData.components_id = id
     },
-    selectDefault(label, icon, component, type, id, componentsId) {
+    selectDefault(label, icon, component, type, id, componentsId, configure) {
       this.defaultData.component = component
       this.defaultData.icon = icon
       this.defaultData.label = label
       this.defaultData.type = type
       this.defaultData.id = id
       this.defaultData.components_id = componentsId
+      this.defaultData.configure = configure
 
       this.isCreateDefault = false
 
@@ -788,7 +808,7 @@ export default {
         type: '',
         value: '',
         disabled: '',
-        jsonData: '',
+        jsonData: {},
         values: [],
         default: [],
         id: '',
@@ -826,6 +846,7 @@ export default {
       this.title = templateClassifyData.title
       this.rules = templateClassifyData.rules
       this.type = templateClassifyData.type
+      this.titleFlagId = ''
       this.visible = true
     },
     addNewComponent() {
@@ -833,6 +854,7 @@ export default {
       this.title = componentClassifyData.title
       this.rules = componentClassifyData.rules
       this.type = componentClassifyData.type
+      this.titleFlagId = ''
       this.visible = true
     },
     addNewDefault() {
@@ -840,6 +862,7 @@ export default {
       this.title = defaultClassifyData.title
       this.rules = defaultClassifyData.rules
       this.type = defaultClassifyData.type
+      this.titleFlagId = ''
       this.visible = true
     },
     addNewConfigure() {
@@ -847,21 +870,44 @@ export default {
       this.title = configureClassifyData.title
       this.rules = configureClassifyData.rules
       this.type = configureClassifyData.type
+      this.titleFlagId = this.configureData.id
       this.visible = true
     },
     async uploadEdit() {
-      this.loading = true
-      const { code, msg } = await updateSystemTemplate(this.editData)
-      if (code == 1) {
-        console.log(msg)
-        this.editData = {
-          template: [],
-          component: [],
-          default: [],
-          configure: [],
+      if (
+        this.editData.template.length > 0 ||
+        this.editData.component.length > 0 ||
+        this.editData.configure.length > 0 ||
+        this.editData.default.length > 0
+      ) {
+        this.loading = true
+        const { code, msg } = await updateSystemTemplate(this.editData)
+        if (code == 1) {
+          this.$message({
+            message: msg,
+            type: 'success',
+          })
+          this.editData = {
+            template: [],
+            component: [],
+            default: [],
+            configure: [],
+          }
+          this.$ls.set('ALL_CHARTS', null)
+        } else {
+          this.$message({
+            message: `${msg},数据可能存在格式错误`,
+            type: 'warning',
+          })
+          this.editData = {
+            template: [],
+            component: [],
+            default: [],
+            configure: [],
+          }
         }
+        this.loading = false
       }
-      this.loading = false
     },
     saveEdit(key) {
       switch (key) {
@@ -871,6 +917,7 @@ export default {
             this.editData.template.push(templateDataCopy)
 
             if (!templateDataCopy.id) {
+              templateDataCopy.id = Date.now()
               this.template.push(templateDataCopy)
             } else {
               this.template.forEach((template, index) => {
@@ -893,6 +940,7 @@ export default {
             this.template.forEach((template, templateIndex) => {
               if (template.id === this.templateData.id) {
                 if (!componentDataCopy.id) {
+                  componentDataCopy.id = Date.now()
                   this.template[templateIndex].items.push(componentDataCopy)
                 } else {
                   template.items.forEach((component, index) => {
@@ -912,6 +960,106 @@ export default {
           break
         case 'default':
           try {
+            let now = Date.now()
+
+            if (
+              this.defaultData.type === 'position' &&
+              this.defaultData.configure.length === 0
+            ) {
+              this.defaultData.configure = [
+                {
+                  label: '宽度(px)',
+                  type: 'width',
+                  component: 'configureInput',
+                  value: '500',
+                  disabled: '0',
+                  jsonData: null,
+                  defaults_id: now,
+                  values: [],
+                  default: [],
+                },
+                {
+                  label: '高度(px)',
+                  type: 'height',
+                  component: 'configureInput',
+                  value: '450',
+                  disabled: '0',
+                  jsonData: null,
+                  defaults_id: now,
+                  values: [],
+                  default: [],
+                },
+                {
+                  label: 'top(px)',
+                  type: 'top',
+                  component: 'configureInput',
+                  value: '0',
+                  disabled: '0',
+                  jsonData: null,
+                  defaults_id: now,
+                  values: [],
+                  default: [],
+                },
+                {
+                  label: 'left(px)',
+                  type: 'left',
+                  component: 'configureInput',
+                  value: '0',
+                  disabled: '0',
+                  jsonData: null,
+                  defaults_id: now,
+                  values: [],
+                  default: [],
+                },
+              ]
+
+              this.editData.configure.push(
+                {
+                  label: '宽度(px)',
+                  type: 'width',
+                  component: 'configureInput',
+                  value: '500',
+                  disabled: '0',
+                  jsonData: null,
+                  defaults_id: now,
+                  values: [],
+                  default: [],
+                },
+                {
+                  label: '高度(px)',
+                  type: 'height',
+                  component: 'configureInput',
+                  value: '450',
+                  disabled: '0',
+                  jsonData: null,
+                  defaults_id: now,
+                  values: [],
+                  default: [],
+                },
+                {
+                  label: 'top(px)',
+                  type: 'top',
+                  component: 'configureInput',
+                  value: '0',
+                  disabled: '0',
+                  jsonData: null,
+                  defaults_id: now,
+                  values: [],
+                  default: [],
+                },
+                {
+                  label: 'left(px)',
+                  type: 'left',
+                  component: 'configureInput',
+                  value: '0',
+                  disabled: '0',
+                  jsonData: null,
+                  defaults_id: now,
+                  values: [],
+                  default: [],
+                },
+              )
+            }
             let defaultDataCopy = deepCopy(this.defaultData)
             this.editData.default.push(defaultDataCopy)
             this.template.forEach((template, templateIndex) => {
@@ -919,6 +1067,7 @@ export default {
                 template.items.forEach((component, componentIndex) => {
                   if (component.id === this.componentData.id) {
                     if (!defaultDataCopy.id) {
+                      defaultDataCopy.id = now
                       this.template[templateIndex].items[
                         componentIndex
                       ].default.push(defaultDataCopy)
@@ -955,6 +1104,7 @@ export default {
                       (defaultData, defaultDataIndex) => {
                         if (defaultData.id === this.defaultData.id) {
                           if (!configureDataCopy.id) {
+                            configureDataCopy.id = Date.now()
                             this.template[templateIndex].items[
                               componentIndex
                             ].default[defaultDataIndex].configure.push(
@@ -1017,6 +1167,7 @@ export default {
             icon: '',
             id: '',
             template_id: '',
+            default: [],
           }
           this.defaultData = {
             icon: '',
@@ -1024,6 +1175,7 @@ export default {
             label: '',
             type: '',
             id: '',
+            configure: [],
           }
 
           this.configureData = {
@@ -1032,7 +1184,7 @@ export default {
             type: '',
             value: '',
             disabled: '',
-            jsonData: '',
+            jsonData: {},
             values: [],
             default: [],
             id: '',
@@ -1069,6 +1221,7 @@ export default {
             label: '',
             type: '',
             id: '',
+            configure: [],
           }
           this.configureData = {
             component: '',
@@ -1076,7 +1229,7 @@ export default {
             type: '',
             value: '',
             disabled: '',
-            jsonData: '',
+            jsonData: {},
             values: [],
             default: [],
             id: '',
@@ -1101,7 +1254,7 @@ export default {
             type: '',
             value: '',
             disabled: '',
-            jsonData: '',
+            jsonData: {},
             values: [],
             default: [],
             id: '',
@@ -1133,7 +1286,9 @@ export default {
     },
     edit(key) {
       this.editKey = key
-      this.editTitle = key
+      this.editTitle = this.configureData.id
+        ? `${key}(${this.configureData.id})`
+        : key
       this.jsonDataProp = this.configureData[key]
       this.editShow = true
     },

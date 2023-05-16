@@ -13,11 +13,12 @@
     <span
       v-for="obj in spot"
       v-show="action"
+      @mouseenter.self="mouseenter"
       @mousedown.self="mousedown"
       @mouseup.self="mouseup"
       @mouseleave.self="mouseleave"
       :key="obj.key"
-      :class="[obj.key]"
+      :class="[obj.key, { 'change-spot': changeSpot || moveFlag }]"
       :style="{
         top: `${obj.style.top}px`,
         left: `${obj.style.left}px`,
@@ -216,6 +217,7 @@ export default {
           },
         },
       ],
+      changeSpot: true, //优化缩放按钮的控制
     }
   },
   methods: {
@@ -291,8 +293,12 @@ export default {
         }
       })
     },
+    mouseenter() {
+      this.changeSpot = false
+    },
     mousedown(e) {
       this.set_scaleFlag(true) //开启缩放模式，关闭上层组件的移动功能
+
       e.target.style.zIndex = 99
       let node = e.target
       let position = {
@@ -514,6 +520,8 @@ export default {
     },
     mouseup(e) {
       this.set_scaleFlag(false)
+      this.changeSpot = true
+
       e.target.style.zIndex = 1
       let node = e.target
       node.onmousemove = null
@@ -561,6 +569,8 @@ export default {
     },
     mouseleave(e) {
       this.set_scaleFlag(false)
+      this.changeSpot = true
+
       e.target.style.zIndex = 1
       let node = e.target
       node.onmousemove = null
@@ -647,6 +657,13 @@ export default {
       height: 25%;
       background-color: skyblue;
       opacity: 0.4;
+    }
+  }
+
+  .change-spot {
+    pointer-events: none;
+    &::before {
+      pointer-events: all;
     }
   }
 

@@ -21,8 +21,8 @@
     <div
       class="box"
       :style="{
-        width: `${positionData.width}px`,
-        height: `${positionData.height}px`,
+        width: `${manager ? 400 : positionData.width}px`,
+        height: `${manager ? 300 : positionData.height}px`,
       }"
     >
       <!-- 组件的四角缩放功能，组件 -->
@@ -40,17 +40,31 @@
           :style="{
             width: `${positionData.width}px`,
             height: `${positionData.height}px`,
+            backgroundColor: styleData.backgroundColor,
+            color: styleData.color,
+            fontSize: `${styleData.fontSize}px`,
+            opacity: styleData.opacity,
+            fontFamily: styleData.fontFamily,
           }"
-        ></div>
+        >
+          {{ font }}
+        </div>
       </SelectComponent>
       <div
         v-else
         class="font"
         :style="{
-          width: `${positionData.width}px`,
-          height: `${positionData.height}px`,
+          width: `${manager ? 400 : positionData.width}px`,
+          height: `${manager ? 300 : positionData.height}px`,
+          backgroundColor: styleData.backgroundColor,
+          color: styleData.color,
+          fontSize: `${styleData.fontSize}px`,
+          opacity: styleData.opacity,
+          fontFamily: styleData.fontFamily,
         }"
-      ></div>
+      >
+        {{ font }}
+      </div>
     </div>
   </div>
 </template>
@@ -73,6 +87,11 @@ export default {
     fatherNodeId: {
       type: String,
       default: '',
+      required: false,
+    },
+    manager: {
+      type: Boolean,
+      default: false,
       required: false,
     },
   },
@@ -102,6 +121,13 @@ export default {
         maxHeight: 0,
       },
       font: '',
+      styleData: {
+        backgroundColor: 'rgba(0, 0, 0, 0)',
+        color: '#000000',
+        fontSize: '16',
+        opacity: '1',
+        fontFamily: 'serif',
+      },
     }
   },
   watch: {
@@ -377,6 +403,8 @@ export default {
           obj.configure.forEach((config) => {
             if (config.type === 'font') {
               this.font = config.value
+            } else {
+              this.styleData[config.type] = config.value
             }
           })
         }
@@ -387,7 +415,7 @@ export default {
 </script>
 
 <style lang="less" scoped>
-.design-img {
+.design-font {
   position: absolute;
   z-index: 2;
 
@@ -396,6 +424,10 @@ export default {
 
     .edit {
       pointer-events: none !important;
+    }
+
+    .font {
+      overflow: hidden;
     }
   }
 }

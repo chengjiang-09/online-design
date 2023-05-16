@@ -12,7 +12,7 @@
       { drag: isDrag },
     ]"
     :style="{
-      width: `${manager ? 300 : positionData.width}px`,
+      width: `${manager ? 400 : positionData.width}px`,
       height: `${manager ? 300 : positionData.height}px`,
       left: `${positionData.left}px`,
       top: `${positionData.top}px`,
@@ -21,7 +21,7 @@
     <div
       class="box"
       :style="{
-        width: `${manager ? 300 : positionData.width}px`,
+        width: `${manager ? 400 : positionData.width}px`,
         height: `${manager ? 300 : positionData.height}px`,
       }"
     >
@@ -48,14 +48,14 @@
         v-else
         class="imge"
         :style="{
-          width: `${manager ? 300 : positionData.width}px`,
+          width: `${manager ? 400 : positionData.width}px`,
           height: `${manager ? 300 : positionData.height}px`,
         }"
       >
         <img
           class="imge"
           :style="{
-            width: `${manager ? 300 : positionData.width}px`,
+            width: `${manager ? 400 : positionData.width}px`,
             height: `${manager ? 300 : positionData.height}px`,
           }"
           :src="imgUrl"

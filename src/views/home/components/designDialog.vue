@@ -96,6 +96,10 @@ export default {
       type: String,
       default: '',
     },
+    titleFlagId: {
+      type: [Number, String],
+      default: '',
+    },
   },
   computed: {
     dialogFormVisible: {
@@ -178,7 +182,7 @@ export default {
     },
     edit(key) {
       this.editKey = key
-      this.editTitle = key
+      this.editTitle = this.titleFlagId ? `${key}(${this.titleFlagId})` : key
       this.jsonDataProp = this.form[key]
       this.editShow = true
     },

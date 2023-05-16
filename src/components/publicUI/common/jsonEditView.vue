@@ -9,7 +9,9 @@
         @mouseleave="mouseleave"
         @mouseup="mouseup"
       >
-        {{ title }}
+        <h1 @click.self="copyText">
+          {{ title }}
+        </h1>
       </div>
       <b-code-editor
         :value="jsonData"
@@ -52,9 +54,19 @@ export default {
       offsetX: 0,
       offsetY: 0,
       start: false,
+      copy: true,
     }
   },
   methods: {
+    copyText() {
+      let text = this.title.match(/\d+/g)[0]
+      if (this.copy && text) {
+        navigator.clipboard
+          .writeText(text)
+          .then(() => alert('已复制到剪贴板'))
+          .catch((error) => console.error(error))
+      }
+    },
     isJSON(str) {
       if (typeof str == 'string') {
         try {
@@ -82,6 +94,8 @@ export default {
     },
     mousemove(e) {
       if (this.start) {
+        this.copy = false
+
         let left = e.offsetX - this.offsetX
         let top = e.offsetY - this.offsetY
 
@@ -91,6 +105,7 @@ export default {
     },
     mouseleave() {
       this.start = false
+      this.copy = true
     },
     mouseup() {
       this.start = false
@@ -153,14 +168,18 @@ export default {
       top: -45px;
       width: 100%;
       height: 50px;
-      font-size: 24px;
       cursor: move;
 
       display: flex;
       justify-content: center;
       align-items: center;
-      font-weight: 800;
       padding-left: 20px;
+
+      h1 {
+        cursor: pointer;
+        font-size: 24px;
+        font-weight: 800;
+      }
     }
   }
 }

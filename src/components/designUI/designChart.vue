@@ -12,7 +12,7 @@
       { drag: isDrag },
     ]"
     :style="{
-      width: `${manager ? 300 : positionData.width}px`,
+      width: `${manager ? 400 : positionData.width}px`,
       height: `${manager ? 300 : positionData.height}px`,
       left: `${positionData.left}px`,
       top: `${positionData.top}px`,
@@ -21,7 +21,7 @@
     <div
       class="box"
       :style="{
-        width: `${manager ? 300 : positionData.width}px`,
+        width: `${manager ? 400 : positionData.width}px`,
         height: `${manager ? 300 : positionData.height}px`,
       }"
     >
@@ -49,7 +49,7 @@
         class="container"
         ref="container"
         :style="{
-          width: `${manager ? 300 : positionData.width}px`,
+          width: `${manager ? 400 : positionData.width}px`,
           height: `${manager ? 300 : positionData.height}px`,
         }"
       ></div>
@@ -422,11 +422,10 @@ export default {
                 type: 'position',
               })
             } else {
-              if (
-                this.manager &&
-                (style.type == 'height' || style.type == 'width')
-              ) {
+              if (this.manager && style.type == 'height') {
                 this.positionData[style.type] = 300
+              } else if (this.manager && style.type == 'width') {
+                this.positionData[style.type] = 400
               } else {
                 this.positionData[style.type] = style.value
               }

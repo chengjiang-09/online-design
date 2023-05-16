@@ -36,25 +36,27 @@ export default {
     configureArray: {
       get() {
         return this.coverageArrayStore.array
-          ? this.coverageArrayStore.array.map((chart) => {
-              let configure = {}
-              let type = ''
-              let isChart = /chart/.test(chart.type.toLowerCase())
-              chart.default.forEach((defaultData) => {
-                if (defaultData.label == '数据源配置') {
-                  configure = defaultData.configure
-                  type = defaultData.type
+          ? this.coverageArrayStore.array
+              .map((chart) => {
+                let configure = {}
+                let type = ''
+                let isChart = /chart/.test(chart.type.toLowerCase())
+                chart.default.forEach((defaultData) => {
+                  if (defaultData.label == '数据源配置') {
+                    configure = defaultData.configure
+                    type = defaultData.type
+                  }
+                })
+                return {
+                  list: configure,
+                  fatherId: this.fatherId,
+                  id: chart.id,
+                  type,
+                  componentType: chart.type,
+                  isChart,
                 }
               })
-              return {
-                list: configure,
-                fatherId: this.fatherId,
-                id: chart.id,
-                type,
-                componentType: chart.type,
-                isChart,
-              }
-            })
+              .filter((chart) => chart.list.length > 0)
           : []
       },
     },
