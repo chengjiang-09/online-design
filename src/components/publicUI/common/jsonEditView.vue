@@ -21,6 +21,11 @@
         height="700px"
         theme="material-darker"
       />
+      <div class="formate">
+        <el-button class="button" type="primary" plain @click="formate"
+          >手动格式化</el-button
+        >
+      </div>
     </div>
   </div>
 </template>
@@ -58,6 +63,9 @@ export default {
     }
   },
   methods: {
+    formate() {
+      this.$refs['editor'].formatCode()
+    },
     copyText() {
       let text = this.title.match(/\d+/g)[0]
       if (this.copy && text) {
@@ -179,6 +187,16 @@ export default {
         cursor: pointer;
         font-size: 24px;
         font-weight: 800;
+      }
+    }
+
+    .formate {
+      display: flex;
+      justify-content: center;
+      align-items: center;
+      margin-top: 5px;
+      .button {
+        width: 100%;
       }
     }
   }

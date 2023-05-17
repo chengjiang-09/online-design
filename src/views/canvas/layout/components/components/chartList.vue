@@ -2,7 +2,7 @@
   <div id="ChartList">
     <div class="container">
       <div class="container-box">
-        <div v-for="obj in itemsList" :key="obj.type">
+        <div v-for="(obj, index) in itemsList" :key="`${obj.type}${index}`">
           <div
             class="item"
             draggable="true"

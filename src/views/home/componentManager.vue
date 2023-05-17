@@ -336,6 +336,7 @@
         </div>
       </div>
     </div>
+    <DecorationClock class="decoration-clock" v-if="!templateData.component" />
     <DesignDialog
       v-if="visible"
       :dataList="dataList"
@@ -1203,6 +1204,7 @@ export default {
           console.log(this.templateData)
           break
         case 'component':
+          this.componentData.default = []
           this.componentData = {
             ...this.componentData,
             ...form,
@@ -1240,6 +1242,7 @@ export default {
           console.log(this.componentData)
           break
         case 'default':
+          this.defaultData.configure = []
           this.defaultData = {
             ...this.defaultData,
             ...form,
@@ -1300,6 +1303,8 @@ export default {
 #ComponentManager {
   width: 100%;
   height: 100%;
+  padding: 10px 20px;
+  position: relative;
   .container {
     position: relative;
     width: 100%;
@@ -1353,6 +1358,13 @@ export default {
   .edit {
     left: unset;
     right: 50%;
+  }
+
+  .decoration-clock {
+    position: absolute;
+    left: 50%;
+    top: 50%;
+    transform: translate(-50%, -50%);
   }
 }
 </style>
