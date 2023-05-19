@@ -597,20 +597,7 @@ export default {
     DesignDialog,
   },
   async created() {
-    //获取所有的模版
-    this.set_actualReading(true)
-
-    const { code, msg, data } = await getTemplateClassification()
-    if (code === 1) {
-      this.template = data
-
-      this.$message({
-        message: msg,
-        type: 'success',
-      })
-    } else {
-      console.log(msg)
-    }
+    this.getTemplate()
   },
   beforeDestroy() {
     this.set_actualReading(false)
@@ -692,6 +679,22 @@ export default {
     ...mapActions({
       set_actualReading: 'other/set_actualReading',
     }),
+    async getTemplate() {
+      //获取所有的模版
+      this.set_actualReading(true)
+
+      const { code, msg, data } = await getTemplateClassification()
+      if (code === 1) {
+        this.template = data
+
+        this.$message({
+          message: msg,
+          type: 'success',
+        })
+      } else {
+        console.log(msg)
+      }
+    },
     selectClassify(label, icon, component, type, id) {
       this.templateData.component = component
       this.templateData.icon = icon
@@ -895,6 +898,8 @@ export default {
             configure: [],
           }
           this.$ls.set('ALL_CHARTS', null)
+
+          this.getTemplate()
         } else {
           this.$message({
             message: `${msg},数据可能存在格式错误`,
@@ -1268,6 +1273,9 @@ export default {
           console.log(this.defaultData)
           break
         case 'configure':
+          this.configureData.values = []
+          this.configureData.default = []
+          this.configureData.jsonData = []
           this.configureData = {
             ...this.configureData,
             ...form,

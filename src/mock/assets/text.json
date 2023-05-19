@@ -5,7 +5,7 @@
       "component": "configureChartList",
       "value": null,
       "jsonData": null,
-      "configures_id": 15,
+      "configures_id": 1684374582763,
       "values": [
       ]
     },
@@ -15,7 +15,7 @@
       "component": "configureInput",
       "value": null,
       "jsonData": null,
-      "configures_id": 15,
+      "configures_id": 1684374582763,
       "values": []
     },
     {
@@ -24,7 +24,7 @@
       "component": "configureSwitch",
       "value": "1",
       "jsonData": null,
-      "configures_id": 15,
+      "configures_id": 1684374582763,
       "values": []
     },
     {
@@ -33,7 +33,7 @@
       "component": "configureInput",
       "value": "饼图标题qwe",
       "jsonData": null,
-      "configures_id": 15,
+      "configures_id": 1684374582763,
       "values": []
     },
     {
@@ -42,7 +42,7 @@
       "component": "configureInput",
       "value": "饼图副标题",
       "jsonData": null,
-      "configures_id": 15,
+      "configures_id": 1684374582763,
       "values": []
     },
     {
@@ -51,7 +51,7 @@
       "component": "configureInput",
       "value": "饼图副标题",
       "jsonData": null,
-      "configures_id": 15,
+      "configures_id": 1684374582763,
       "values": []
     },
     {
@@ -63,7 +63,7 @@
         "self",
         "blank"
       ],
-      "configures_id": 15,
+      "configures_id": 1684374582763,
       "values": []
     },
     {
@@ -72,7 +72,7 @@
       "component": "configureChartList",
       "value": null,
       "jsonData": null,
-      "configures_id": 15,
+      "configures_id": 1684374582763,
       "values": [
        
       ]
@@ -88,7 +88,7 @@
         "right",
         "center"
       ],
-      "configures_id": 15,
+      "configures_id": 1684374582763,
       "values": []
     },
     {
@@ -101,7 +101,7 @@
         "center",
         "right"
       ],
-      "configures_id": 15,
+      "configures_id": 1684374582763,
       "values": []
     },
     {
@@ -114,7 +114,7 @@
         "middle",
         "bottom"
       ],
-      "configures_id": 15,
+      "configures_id": 1684374582763,
       "values": []
     },
     {
@@ -130,7 +130,7 @@
         "rgb(255, 120, 0)",
         "hsv(51, 100, 98)"
       ],
-      "configures_id": 15,
+      "configures_id": 1684374582763,
       "values": []
     },
     {
@@ -146,7 +146,7 @@
         "rgb(255, 120, 0)",
         "hsv(51, 100, 98)"
       ],
-      "configures_id": 15,
+      "configures_id": 1684374582763,
       "values": []
     },
     {
@@ -155,7 +155,7 @@
       "component": "configureInput",
       "value": "0",
       "jsonData": [],
-      "configures_id": 15,
+      "configures_id": 1684374582763,
       "values": []
     }
   ]
@@ -169,7 +169,7 @@
             "value": "0",
             "component": "configureInput",
             "jsonData": null,
-            "value_id": 5
+            "value_id": 172
           },
           {
             "label": "字体阴影X偏移",
@@ -177,7 +177,7 @@
             "value": "0",
             "component": "configureInput",
             "jsonData": null,
-            "value_id": 5
+            "value_id": 172
           },
           {
             "label": "字体阴影长度",
@@ -185,7 +185,7 @@
             "value": "0",
             "component": "configureInput",
             "jsonData": null,
-            "value_id": 5
+            "value_id": 172
           },
           {
             "label": "字体阴影",
@@ -200,7 +200,7 @@
               "rgb(255, 120, 0)",
               "hsv(51, 100, 98)"
             ],
-            "value_id": 5
+            "value_id": 172
           },
           {
             "label": "字体描边颜色",
@@ -215,7 +215,7 @@
               "rgb(255, 120, 0)",
               "hsv(51, 100, 98)"
             ],
-            "value_id": 5
+            "value_id": 172
           },
           {
             "label": "字体大小",
@@ -223,7 +223,7 @@
             "value": "18",
             "component": "configureInput",
             "jsonData": null,
-            "value_id": 5
+            "value_id": 172
           },
           {
             "label": "字体宽度",
@@ -245,7 +245,7 @@
               800,
               900
             ],
-            "value_id": 5
+            "value_id": 172
           },
           {
             "label": "字体样式",
@@ -257,7 +257,7 @@
               "italic",
               "oblique"
             ],
-            "value_id": 5
+            "value_id": 172
           },
           {
             "label": "字体颜色",
@@ -272,7 +272,7 @@
               "rgb(255, 120, 0)",
               "hsv(51, 100, 98)"
             ],
-            "value_id": 5
+            "value_id": 172
           }
     },
     "副标题":{
@@ -282,7 +282,7 @@
             "value": "0",
             "component": "configureInput",
             "jsonData": null,
-            "value_id": 154
+            "value_id": 179
           },
           {
             "label": "字体阴影X偏移",
@@ -290,7 +290,7 @@
             "value": "0",
             "component": "configureInput",
             "jsonData": null,
-            "value_id": 154
+            "value_id": 179
           },
           {
             "label": "字体阴影长度",
@@ -298,7 +298,7 @@
             "value": "0",
             "component": "configureInput",
             "jsonData": null,
-            "value_id": 154
+            "value_id": 179
           },
           {
             "label": "字体阴影",
@@ -313,7 +313,7 @@
               "rgb(255, 120, 0)",
               "hsv(51, 100, 98)"
             ],
-            "value_id": 154
+            "value_id": 179
           },
           {
             "label": "字体描边颜色",
@@ -328,7 +328,7 @@
               "rgb(255, 120, 0)",
               "hsv(51, 100, 98)"
             ],
-            "value_id": 154
+            "value_id": 179
           },
           {
             "label": "字体大小",
@@ -336,7 +336,7 @@
             "value": "18",
             "component": "configureInput",
             "jsonData": null,
-            "value_id": 154
+            "value_id": 179
           },
           {
             "label": "字体宽度",
@@ -358,7 +358,7 @@
               800,
               900
             ],
-            "value_id": 154
+            "value_id": 179
           },
           {
             "label": "字体样式",
@@ -370,7 +370,7 @@
               "italic",
               "oblique"
             ],
-            "value_id": 154
+            "value_id": 179
           },
           {
             "label": "字体颜色",
@@ -385,7 +385,7 @@
               "rgb(255, 120, 0)",
               "hsv(51, 100, 98)"
             ],
-            "value_id": 154
+            "value_id": 179
           }
     }
   }
@@ -402,7 +402,7 @@
         "plain",
         "scroll"
       ],
-      "configures_id": 1684304598907,
+      "configures_id": 1684374968971,
       "values": []
     },
     {
@@ -411,7 +411,7 @@
       "component": "configureSwitch",
       "value": "1",
       "jsonData": null,
-      "configures_id": 1684304598907,
+      "configures_id": 1684374968971,
       "values": []
     },
     {
@@ -424,7 +424,7 @@
         "center",
         "right"
       ],
-      "configures_id": 1684304598907,
+      "configures_id": 1684374968971,
       "values": []
     },
     {
@@ -437,7 +437,7 @@
         "middle",
         "bottom"
       ],
-      "configures_id": 1684304598907,
+      "configures_id": 1684374968971,
       "values": []
     },
     {
@@ -449,7 +449,7 @@
         "horizontal",
         "vertical"
       ],
-      "configures_id": 1684304598907,
+      "configures_id": 1684374968971,
       "values": []
     },
     {
@@ -462,7 +462,7 @@
         "left",
         "right"
       ],
-      "configures_id": 1684304598907,
+      "configures_id": 1684374968971,
       "values": []
     },
     {
@@ -471,7 +471,7 @@
       "component": "configureChartList",
       "value": null,
       "jsonData": null,
-      "configures_id": 1684304598907,
+      "configures_id": 1684374968971,
       "values": [
         
       ]
@@ -486,7 +486,7 @@
             "value": "0",
             "component": "configureInput",
             "jsonData": null,
-            "value_id": 171
+            "value_id": 192
           },
           {
             "label": "字体阴影X偏移",
@@ -494,7 +494,7 @@
             "value": "0",
             "component": "configureInput",
             "jsonData": null,
-            "value_id": 171
+            "value_id": 192
           },
           {
             "label": "字体阴影长度",
@@ -502,7 +502,7 @@
             "value": "0",
             "component": "configureInput",
             "jsonData": null,
-            "value_id": 171
+            "value_id": 192
           },
           {
             "label": "字体阴影",
@@ -517,7 +517,7 @@
               "rgb(255, 120, 0)",
               "hsv(51, 100, 98)"
             ],
-            "value_id": 171
+            "value_id": 192
           },
           {
             "label": "字体描边颜色",
@@ -532,7 +532,7 @@
               "rgb(255, 120, 0)",
               "hsv(51, 100, 98)"
             ],
-            "value_id": 171
+            "value_id": 192
           },
           {
             "label": "字体大小",
@@ -540,7 +540,7 @@
             "value": "18",
             "component": "configureInput",
             "jsonData": null,
-            "value_id": 171
+            "value_id": 192
           },
           {
             "label": "字体宽度",
@@ -562,7 +562,7 @@
               800,
               900
             ],
-            "value_id": 171
+            "value_id": 192
           },
           {
             "label": "字体样式",
@@ -574,7 +574,7 @@
               "italic",
               "oblique"
             ],
-            "value_id": 171
+            "value_id": 192
           },
           {
             "label": "字体颜色",
@@ -589,7 +589,209 @@
               "rgb(255, 120, 0)",
               "hsv(51, 100, 98)"
             ],
-            "value_id": 171
+            "value_id": 192
           }
     ]
+  }
+
+
+  //x轴Y轴
+
+  [
+    {
+      "label": "显示",
+      "type": "show",
+      "component": "configureSwitch",
+      "value": "1",
+      "jsonData": null,
+      "configures_id": 1684380708065,
+      "values": []
+    },
+    {
+      "label": "坐标轴类型",
+      "type": "category",
+      "component": "configureSelect",
+      "value": "1",
+      "jsonData": null,
+      "configures_id": 1684380708065,
+      "values": [],
+      "jsonData":[
+        "value",
+        "category",
+        "time",
+        "log"
+      ]
+    },
+    {
+      "label": "坐标轴名称",
+      "type": "name",
+      "component": "configureInput",
+      "value": "X坐标轴",
+      "jsonData": null,
+      "configures_id": 1684380708065,
+      "values": []
+    },
+    {
+      "label": "名称位置",
+      "type": "nameLocation",
+      "component": "configureSelect",
+      "value": "end",
+      "jsonData": null,
+      "configures_id": 1684380708065,
+      "values": [],
+      "jsonData":[
+        "start",
+        "middle",
+        "end"
+      ]
+    },
+    {
+      "label": "名称样式",
+      "type": "nameTextStyle",
+      "component": "configureChartList",
+      "value": null,
+      "jsonData": null,
+      "configures_id": 1684380708065,
+      "values": []
+    },
+    {
+      "label": "刻度样式",
+      "type": "axisLabel",
+      "component": "configureChartList",
+      "value": null,
+      "jsonData": null,
+      "configures_id": 1684380708065,
+      "values": []
+    }
+  ]
+
+  {
+    "名称样式":{
+      {
+        "label": "字体颜色",
+        "type": "color",
+        "value": "#000000",
+        "component": "configureColor",
+        "jsonData": [
+          "#00ced1",
+          "#1e90ff",
+          "#c71585",
+          "rgba(255, 69, 0, 0.68)",
+          "rgb(255, 120, 0)",
+          "hsv(51, 100, 98)"
+        ],
+        "value_id": 239
+      },
+      {
+        "label": "字体风格",
+        "type": "fontStyle",
+        "value": "normal",
+        "component": "configureSelect",
+        "jsonData": [
+          "normal",
+          "italic",
+          "oblique"
+        ],
+        "value_id": 239
+      },
+      {
+        "label": "字体宽度",
+        "type": "fontWeight",
+        "value": "normal",
+        "component": "configureSelect",
+        "jsonData": [
+          "normal",
+          "bold",
+          "bolder",
+          "lighter",
+          "100",
+          "200",
+          "300",
+          "400",
+          "500",
+          "600",
+          "700",
+          "800",
+          "900"
+        ],
+        "value_id": 239
+      },      {
+        "label": "字体大小",
+        "type": "fontSize",
+        "value": "12",
+        "component": "configureInput",
+        "value_id": 239
+      },
+      {
+        "label": "名称与轴距离",
+        "type": "nameGap",
+        "value": "15",
+        "component": "configureInput",
+        "value_id": 239
+      }
+    }
+    "刻度样式":{
+      {
+        "label": "显示刻度",
+        "type": "show",
+        "value": "1",
+        "component": "configureSwitch",
+        "value_id": 240
+      },
+      {
+        "label": "刻度字体颜色",
+        "type": "color",
+        "value": "#000000",
+        "component": "configureColor",
+        "jsonData": [
+          "#00ced1",
+          "#1e90ff",
+          "#c71585",
+          "rgba(255, 69, 0, 0.68)",
+          "rgb(255, 120, 0)",
+          "hsv(51, 100, 98)"
+        ],
+        "value_id": 240
+      },
+      {
+        "label": "字体风格",
+        "type": "fontStyle",
+        "value": "normal",
+        "component": "configureSelect",
+        "jsonData": [
+          "normal",
+          "italic",
+          "oblique"
+        ],
+        "value_id": 240
+      },
+      {
+        "label": "字体宽度",
+        "type": "fontWeight",
+        "value": "normal",
+        "component": "configureSelect",
+        "jsonData": [
+          "normal",
+          "bold",
+          "bolder",
+          "lighter",
+          "100",
+          "200",
+          "300",
+          "400",
+          "500",
+          "600",
+          "700",
+          "800",
+          "900"
+        ],
+        "value_id": 240
+      },      {
+        "label": "字体大小",
+        "type": "fontSize",
+        "value": "12",
+        "component": "configureInput",
+        "value_id": 240
+      }
+    }
   }

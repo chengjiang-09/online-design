@@ -1,6 +1,6 @@
 <template>
   <div
-    class="design-chart"
+    class="design-table"
     :id="propsData.id"
     @mouseenter="mouseenter"
     @mouseleave="mouseleave"
@@ -34,41 +34,59 @@
         :enter="enter"
         :down="down"
       >
-        <div
-          class="container"
-          ref="container"
-          :class="[{ edit: edit }]"
-          :style="{
-            width: `${positionData.width}px`,
-            height: `${positionData.height}px`,
-          }"
-        ></div>
+        <div>
+          <el-table
+            :height="positionData.height"
+            class="table"
+            ref="table"
+            :class="[{ edit: edit }]"
+            :data="tableData"
+            :style="{
+              width: `${positionData.width}px`,
+              '--header-color': styleData.headerColor,
+              '--tr-color': styleData.trColor,
+              '--tr-bg-color': styleData.trBgColor,
+              '--header-bg-color': styleData.headerBgColor,
+            }"
+          >
+            <el-table-column prop="date" label="日期"> </el-table-column>
+            <el-table-column prop="name" label="姓名"> </el-table-column>
+            <el-table-column prop="address" label="地址"> </el-table-column>
+          </el-table>
+        </div>
       </SelectComponent>
-      <div
+      <el-table
         v-else
-        class="container"
-        ref="container"
+        :height="positionData.height"
+        class="table"
+        ref="table"
+        :data="tableData"
         :style="{
           width: `${manager ? 400 : positionData.width}px`,
-          height: `${manager ? 300 : positionData.height}px`,
+          '--header-color': styleData.headerColor,
+          '--tr-color': styleData.trColor,
+          '--tr-bg-color': styleData.trBgColor,
+          '--header-bg-color': styleData.headerBgColor,
         }"
-      ></div>
-      <div class="loading" v-if="loading">
-        <i class="el-icon-loading"></i>
-      </div>
+      >
+        <el-table-column prop="date" label="日期" width="180">
+        </el-table-column>
+        <el-table-column prop="name" label="姓名" width="180">
+        </el-table-column>
+        <el-table-column prop="address" label="地址"> </el-table-column>
+      </el-table>
     </div>
   </div>
 </template>
 
 <script>
-import { mapActions, mapState, mapMutations } from 'vuex'
-import { isEmpty } from '@/utils/utils'
 import SelectComponent from '@/components/designUI/components/selectComponent.vue'
+import { mapActions, mapState, mapMutations } from 'vuex'
 import goBackListType from '@/utils/goBackListType'
-import { dataFromApi } from '@/apis/publicApi'
-import { DATA_FROM_EX_TIME } from '@/utils/expirationTime'
+
+const BASE_TIME = 1000
 export default {
-  name: 'DesignChart',
+  name: 'DesignTable',
   components: {
     SelectComponent,
   },
@@ -76,7 +94,7 @@ export default {
     props: {
       type: Object,
       default: () => {},
-      required: false,
+      require: false,
     },
     fatherNodeId: {
       type: String,
@@ -87,94 +105,6 @@ export default {
       type: Boolean,
       default: false,
       required: false,
-    },
-  },
-  watch: {
-    props: {
-      handler: function () {
-        this.update()
-      },
-      deep: true,
-    },
-    positionData: {
-      handler: function () {
-        //size数据修改后，重新渲染eCharts
-        this.myChart && this.myChart.resize(this.positionData)
-      },
-      deep: true,
-    },
-    dataFrom: {
-      //配置数据修改后，重新渲染eCharts
-      handler: function () {
-        this.myChart && this.myChart.setOption(this.dataFrom, false)
-      },
-      deep: true,
-    },
-  },
-  computed: {
-    ...mapState({
-      targetChart: (state) => state.other.targetChart, //鼠标点击到的组件
-      actualReading: (state) => state.other.actualReading, //是否处于,实际阅览模式
-      operatingMode: (state) => state.app.operatingMode, //编辑模式与阅览模式标识
-      targetParent: (state) => state.other.targetParent, //鼠标点击到的组件的父组件
-      scaling: (state) => state.other.scaling, //缩放比例
-      scaleFlag: (state) => state.other.scaleFlag, //是否处于缩放模式，用于关闭移动功能
-      moveFlag: (state) => state.other.moveFlag,
-      isDrag: (state) => state.other.isDrag,
-      dataFromAll: (state) => state.charts.dataFromAll,
-    }),
-    action: {
-      get() {
-        return this.targetChart === this.propsData.id
-      },
-    },
-    dataFrom: {
-      get() {
-        let dataFrom = {}
-        if (this.dataFromFlag) {
-          dataFrom = {
-            ...this.styleValue,
-            xAxis: null,
-            yAxis: null,
-            ...this.dynamicData,
-          }
-          if (this.styleValue.xAxis && this.dynamicData.xAxis) {
-            dataFrom.xAxis = {
-              ...this.styleValue.xAxis,
-              ...this.dynamicData.xAxis,
-            }
-          }
-          if (this.styleValue.yAxis && this.dynamicData.yAxis) {
-            dataFrom.yAxis = {
-              ...this.styleValue.yAxis,
-              ...this.dynamicData.yAxis,
-            }
-          }
-        } else {
-          dataFrom = {
-            ...this.styleValue,
-            xAxis: null,
-            yAxis: null,
-            ...this.staticValue,
-          }
-          if (this.styleValue.xAxis && this.staticValue.xAxis) {
-            dataFrom.xAxis = {
-              ...this.styleValue.xAxis,
-              ...this.staticValue.xAxis,
-            }
-          }
-          if (this.styleValue.yAxis && this.staticValue.yAxis) {
-            dataFrom.yAxis = {
-              ...this.styleValue.yAxis,
-              ...this.staticValue.yAxis,
-            }
-          }
-        }
-        return dataFrom
-      },
-      set(value) {
-        return value
-      },
     },
   },
   created() {
@@ -191,9 +121,6 @@ export default {
     }
   },
   mounted() {
-    this.myChart = this.$echarts.init(this.$refs.container, null)
-    this.myChart.setOption(this.dataFrom, false)
-
     switch (this.operatingMode) {
       case 'editMode':
         this.edit = true //这三个值都是为了在编辑模式以及阅览模式中限制组件的某些功能，例如mousedown事件
@@ -206,9 +133,183 @@ export default {
       default:
         break
     }
+    this.startInterval()
+  },
+  beforeDestroy() {
+    this.bodyWrapper.removeEventListener('mouseenter', this.enterWrapper)
+    this.bodyWrapper.removeEventListener('mouseleave', this.leaveWrapper)
+  },
+  watch: {
+    props: {
+      handler: function () {
+        this.update()
+      },
+      deep: true,
+    },
+  },
+  computed: {
+    ...mapState({
+      targetChart: (state) => state.other.targetChart, //鼠标点击到的组件
+      actualReading: (state) => state.other.actualReading, //是否处于,实际阅览模式
+      operatingMode: (state) => state.app.operatingMode, //编辑模式与阅览模式标识
+      targetParent: (state) => state.other.targetParent, //鼠标点击到的组件的父组件
+      scaling: (state) => state.other.scaling, //缩放比例
+      scaleFlag: (state) => state.other.scaleFlag, //是否处于缩放模式，用于关闭移动功能
+      moveFlag: (state) => state.other.moveFlag,
+      isDrag: (state) => state.other.isDrag,
+    }),
+    action: {
+      get() {
+        return this.targetChart === this.propsData.id
+      },
+    },
   },
   data: function () {
     return {
+      stopScroll: false,
+      bodyWrapper: null,
+      tableData: [
+        {
+          date: '2016-05-03',
+          name: '王小虎',
+          address: '上海市普陀区金沙江路 1518 弄',
+        },
+        {
+          date: '2016-05-02',
+          name: '王小虎',
+          address: '上海市普陀区金沙江路 1518 弄',
+        },
+        {
+          date: '2016-05-04',
+          name: '王小虎',
+          address: '上海市普陀区金沙江路 1518 弄',
+        },
+        {
+          date: '2016-05-01',
+          name: '王小虎',
+          address: '上海市普陀区金沙江路 1518 弄',
+        },
+        {
+          date: '2016-05-08',
+          name: '王小虎',
+          address: '上海市普陀区金沙江路 1518 弄',
+        },
+        {
+          date: '2016-05-06',
+          name: '王小虎',
+          address: '上海市普陀区金沙江路 1518 弄',
+        },
+        {
+          date: '2016-05-07',
+          name: '王小虎',
+          address: '上海市普陀区金沙江路 1518 弄',
+        },
+        {
+          date: '2016-05-03',
+          name: '王小虎',
+          address: '上海市普陀区金沙江路 1518 弄',
+        },
+        {
+          date: '2016-05-02',
+          name: '王小虎',
+          address: '上海市普陀区金沙江路 1518 弄',
+        },
+        {
+          date: '2016-05-04',
+          name: '王小虎',
+          address: '上海市普陀区金沙江路 1518 弄',
+        },
+        {
+          date: '2016-05-01',
+          name: '王小虎',
+          address: '上海市普陀区金沙江路 1518 弄',
+        },
+        {
+          date: '2016-05-08',
+          name: '王小虎',
+          address: '上海市普陀区金沙江路 1518 弄',
+        },
+        {
+          date: '2016-05-06',
+          name: '王小虎',
+          address: '上海市普陀区金沙江路 1518 弄',
+        },
+        {
+          date: '2016-05-07',
+          name: '王小虎',
+          address: '上海市普陀区金沙江路 1518 弄',
+        },
+        {
+          date: '2016-05-03',
+          name: '王小虎',
+          address: '上海市普陀区金沙江路 1518 弄',
+        },
+        {
+          date: '2016-05-02',
+          name: '王小虎',
+          address: '上海市普陀区金沙江路 1518 弄',
+        },
+        {
+          date: '2016-05-04',
+          name: '王小虎',
+          address: '上海市普陀区金沙江路 1518 弄',
+        },
+        {
+          date: '2016-05-01',
+          name: '王小虎',
+          address: '上海市普陀区金沙江路 1518 弄',
+        },
+        {
+          date: '2016-05-08',
+          name: '王小虎',
+          address: '上海市普陀区金沙江路 1518 弄',
+        },
+        {
+          date: '2016-05-06',
+          name: '王小虎',
+          address: '上海市普陀区金沙江路 1518 弄',
+        },
+        {
+          date: '2016-05-07',
+          name: '王小虎',
+          address: '上海市普陀区金沙江路 1518 弄',
+        },
+        {
+          date: '2016-05-03',
+          name: '王小虎',
+          address: '上海市普陀区金沙江路 1518 弄',
+        },
+        {
+          date: '2016-05-02',
+          name: '王小虎',
+          address: '上海市普陀区金沙江路 1518 弄',
+        },
+        {
+          date: '2016-05-04',
+          name: '王小虎',
+          address: '上海市普陀区金沙江路 1518 弄',
+        },
+        {
+          date: '2016-05-01',
+          name: '王小虎',
+          address: '上海市普陀区金沙江路 1518 弄',
+        },
+        {
+          date: '2016-05-08',
+          name: '王小虎',
+          address: '上海市普陀区金沙江路 1518 弄',
+        },
+        {
+          date: '2016-05-06',
+          name: '王小虎',
+          address: '上海市普陀区金沙江路 1518 弄',
+        },
+        {
+          date: '2016-05-07',
+          name: '王小虎',
+          address: '上海市普陀区金沙江路 1518 弄',
+        },
+      ],
       propsData: {},
       //需要给定初始值，才能保证样式的动态渲染
       positionData: {
@@ -217,13 +318,7 @@ export default {
         left: 0,
         top: 0,
       },
-      dataSourceType: '',
-      dataFromFlag: false,
-      dynamicData: {},
-      staticValue: {},
-      styleValue: {},
       edit: true, //是否进入编辑模式
-      myChart: null, //eCharts初始化对象
       enter: false, ///这两个值是为了在编辑模式以及阅览模式中限制组件的某些功能，例如mousedown事件,show遮盖层的显示
       down: false,
       target: {
@@ -235,10 +330,21 @@ export default {
         //用于组件移动
         maxLeft: 0,
         maxTop: 0,
+        maxWidth: 0,
+        maxHeight: 0,
       },
-      loading: false,
+      font: '',
+      styleData: {
+        headerColor: '#000000',
+        trColor: '#000000',
+        headerBgColor: 'rgba(0, 0, 0, 0)',
+        trBgColor: 'rgba(0, 0, 0, 0)',
+        fontSize: '16',
+        opacity: '1',
+      },
     }
   },
+
   methods: {
     ...mapMutations({
       SET_MOVE_FLAG: 'other/SET_MOVE_FLAG',
@@ -252,7 +358,6 @@ export default {
       set_coverageArray: 'charts/set_coverageArray',
       set_goBcakArray: 'charts/set_goBcakArray',
       set_targetFather: 'other/set_targetFather',
-      set_dataFromAll: 'charts/set_dataFromAll',
     }),
     //选中时，修改目标chart，修改有侧边栏属性表（id的作用是在修改时，动态找到渲染树的对应节点）
     selectThis() {
@@ -277,6 +382,7 @@ export default {
         if (this.moveFlag) {
           this.SET_MOVE_FLAG(false)
         }
+
         try {
           this.targetParent.removeEventListener('mousemove', this.mousemove)
           //拖拽结束后，更新渲染树在store中的数据
@@ -381,15 +487,16 @@ export default {
           },
           type: 'position',
         })
-        this.down = false
+
         this.targetParent.removeEventListener('mousemove', this.mousemove)
+        this.down = false
       }
     },
     mousemove(e) {
+      //计算鼠标移动后，当前组件新的left和top
       if (!this.moveFlag) {
         this.SET_MOVE_FLAG(true)
       }
-      //计算鼠标移动后，当前组件新的left和top
       let left =
         this.positionData.left + e.offsetX - this.target.offsetX <= 0
           ? 0
@@ -416,7 +523,6 @@ export default {
     //初始化函数
     update(parentNodeWidth, parentNodeHeight) {
       this.propsData = this.props
-      this.styleValue = {}
       this.propsData.default.forEach((obj) => {
         if (obj.type === 'position') {
           obj.configure.forEach((style) => {
@@ -453,126 +559,125 @@ export default {
                 type: 'position',
               })
             } else {
-              if (this.manager && style.type == 'height') {
-                this.positionData[style.type] = 300
-              } else if (this.manager && style.type == 'width') {
-                this.positionData[style.type] = 400
-              } else {
-                this.positionData[style.type] = style.value
-              }
-            }
-          })
-        } else if (obj.type === 'dataFrom') {
-          obj.configure.forEach(async (config) => {
-            if (config.type === 'staticData') {
-              this.dataSourceType = config.type
-              this.staticValue = config.jsonData
-            } else if (config.jsonData) {
-              this.dataFromFlag = config.jsonData.select
-                ? config.jsonData.select
-                : false
-              //下面一系列判断用于限制数据源请求次数，避免多次请求
-              if (config.jsonData.select) {
-                try {
-                  const param = this.$ls.get(`DATA_FROM_PARAM`)
-                  if (
-                    config.value &&
-                    (!param[this.propsData.id] ||
-                      JSON.stringify(param[this.propsData.id]) !==
-                        JSON.stringify({
-                          url: config.value,
-                          methods: config.jsonData.methods,
-                          param: config.jsonData.param,
-                        }) ||
-                      !this.dataFromAll[this.propsData.id])
-                  ) {
-                    this.$ls.set(
-                      `DATA_FROM_PARAM`,
-                      {
-                        ...param,
-                        [this.propsData.id]: {
-                          url: config.value,
-                          methods: config.jsonData.methods,
-                          param: config.jsonData.param,
-                        },
-                      },
-                      DATA_FROM_EX_TIME,
-                    )
-                    this.loading = true
-                    const { data, code } = await dataFromApi(
-                      config.value,
-                      config.jsonData.methods ? config.jsonData.methods : 'GET',
-                      config.jsonData.param ? config.jsonData.param : {},
-                    )
-                    if (code === 1) {
-                      this.loading = false
-                      await this.set_dataFromAll({
-                        key: this.propsData.id,
-                        data,
-                      })
-
-                      this.dynamicData = data
-                    }
-                  } else {
-                    this.dynamicData = this.dataFromAll[this.propsData.id]
-                  }
-                  // eslint-disable-next-line no-empty
-                } catch (e) {}
-              }
+              this.positionData[style.type] = style.value
             }
           })
         } else if (obj.type === 'configure') {
-          obj.configure.forEach((style) => {
-            if (!isEmpty(style)) {
-              let styleObj = {}
-              style.value.forEach((obj) => {
-                if (Array.isArray(obj.value)) {
-                  styleObj[obj.type] = {}
-                  obj.value.forEach((detilData) => {
-                    styleObj[obj.type][detilData.type] = detilData.value
-                  })
-                } else {
-                  styleObj[obj.type] = obj.value
-                }
-              })
-              this.styleValue[style.type] = styleObj
+          obj.configure.forEach((config) => {
+            if (config.type === 'font') {
+              this.font = config.value
+            } else {
+              this.styleData[config.type] = config.value
             }
           })
         }
+      })
+    },
+    startInterval() {
+      try {
+        this.$nextTick(() => {
+          if (!this.bodyWrapper) {
+            this.bodyWrapper = this.$refs['table'].$el.querySelector(
+              '.el-table__body-wrapper',
+            )
+            this.bodyWrapper.addEventListener('mouseenter', this.enterWrapper)
+
+            this.bodyWrapper.addEventListener('mouseleave', this.leaveWrapper)
+          }
+
+          this.start()
+        })
+        // eslint-disable-next-line no-empty
+      } catch (e) {}
+    },
+    enterWrapper() {
+      this.stopScroll = true
+    },
+    leaveWrapper() {
+      this.stopScroll = false
+    },
+    async start() {
+      for (const data of this.tableData) {
+        await this.tableScrollToRow(this.$refs['table'], data)
+      }
+      this.start()
+    },
+    tableScrollToRow($table, rowData) {
+      return new Promise((resolve) => {
+        try {
+          let rowIndex = $table.data.indexOf(rowData)
+          const tr = this.bodyWrapper.querySelectorAll('tr')[rowIndex]
+          if (!this.bodyWrapper || !tr) {
+            return
+          }
+          this.bodyWrapper.style.scrollBehavior = 'smooth'
+          this.bodyWrapper.scrollTop = tr.offsetTop
+
+          let timer = setInterval(() => {
+            if (!this.stopScroll) {
+              resolve()
+              clearInterval(timer)
+            }
+          }, BASE_TIME)
+          // eslint-disable-next-line no-empty
+        } catch (e) {}
       })
     },
   },
 }
 </script>
 
-<style lang="less" scoped>
-.design-chart {
+<style lang="less">
+.design-table {
   position: absolute;
   z-index: 2;
 
   .box {
     position: relative;
 
+    .table {
+      --header-color: #000000;
+      --tr-color: #000000;
+      --tr-bg-color: transparent;
+      --header-bg-color: transparent;
+
+      .el-table__body-wrapper {
+        background-color: var(--tr-bg-color);
+      }
+
+      .el-table__header-wrapper {
+        background-color: var(--header-bg-color);
+      }
+
+      th {
+        color: var(--header-color);
+      }
+
+      tr {
+        color: var(--tr-color);
+      }
+    }
+
     .edit {
       pointer-events: none !important;
     }
-
-    .loading {
-      position: absolute;
-      left: 0;
-      top: 0;
-      width: 100%;
-      height: 100%;
-      display: flex;
-      justify-content: center;
-      align-items: center;
-      i {
-        font-size: 100px;
-        color: #ffffff;
+    .el-table {
+      background-color: transparent !important;
+      .el-table__body-wrapper {
+        &::-webkit-scrollbar {
+          width: 0;
+          height: 0;
+          background-color: transparent;
+        }
+      }
+      th,
+      tr {
+        background-color: transparent !important;
       }
     }
   }
 }
+
 .edit {
   cursor: move;
 }

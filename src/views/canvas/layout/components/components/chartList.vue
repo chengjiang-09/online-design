@@ -126,6 +126,7 @@ export default {
           height: 110px;
           border-radius: 10px;
           border: 1px solid rgb(245, 245, 245);
+          background-color: #ffffff;
           transition: border 1s;
 
           &:hover {
