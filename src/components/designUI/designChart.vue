@@ -217,7 +217,6 @@ export default {
         left: 0,
         top: 0,
       },
-      dataSourceType: '',
       dataFromFlag: false,
       dynamicData: {},
       staticValue: {},
@@ -465,7 +464,6 @@ export default {
         } else if (obj.type === 'dataFrom') {
           obj.configure.forEach(async (config) => {
             if (config.type === 'staticData') {
-              this.dataSourceType = config.type
               this.staticValue = config.jsonData
             } else if (config.jsonData) {
               this.dataFromFlag = config.jsonData.select

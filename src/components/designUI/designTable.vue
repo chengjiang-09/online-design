@@ -40,7 +40,7 @@
             class="table"
             ref="table"
             :class="[{ edit: edit }]"
-            :data="tableData"
+            :data="dataFrom.tableData"
             :style="{
               width: `${positionData.width}px`,
               '--header-color': styleData.headerColor,
@@ -49,9 +49,13 @@
               '--header-bg-color': styleData.headerBgColor,
             }"
           >
-            <el-table-column prop="date" label="日期"> </el-table-column>
-            <el-table-column prop="name" label="姓名"> </el-table-column>
-            <el-table-column prop="address" label="地址"> </el-table-column>
+            <el-table-column
+              v-for="header in dataFrom.headerData"
+              :key="header.prop"
+              :prop="header.prop"
+              :label="header.label"
+            >
+            </el-table-column>
           </el-table>
         </div>
       </SelectComponent>
@@ -60,7 +64,7 @@
         :height="positionData.height"
         class="table"
         ref="table"
-        :data="tableData"
+        :data="dataFrom.tableData"
         :style="{
           width: `${manager ? 400 : positionData.width}px`,
           '--header-color': styleData.headerColor,
@@ -69,12 +73,17 @@
           '--header-bg-color': styleData.headerBgColor,
         }"
       >
-        <el-table-column prop="date" label="日期" width="180">
+        <el-table-column
+          v-for="header in dataFrom.headerData"
+          :key="header.prop"
+          :prop="header.prop"
+          :label="header.label"
+        >
         </el-table-column>
-        <el-table-column prop="name" label="姓名" width="180">
-        </el-table-column>
-        <el-table-column prop="address" label="地址"> </el-table-column>
       </el-table>
+      <div class="loading" v-if="loading">
+        <i class="el-icon-loading"></i>
+      </div>
     </div>
   </div>
 </template>
@@ -83,6 +92,8 @@
 import SelectComponent from '@/components/designUI/components/selectComponent.vue'
 import { mapActions, mapState, mapMutations } from 'vuex'
 import goBackListType from '@/utils/goBackListType'
+import { dataFromApi } from '@/apis/publicApi'
+import { DATA_FROM_EX_TIME } from '@/utils/expirationTime'
 
 const BASE_TIME = 1000
 export default {
@@ -136,8 +147,11 @@ export default {
     this.startInterval()
   },
   beforeDestroy() {
-    this.bodyWrapper.removeEventListener('mouseenter', this.enterWrapper)
-    this.bodyWrapper.removeEventListener('mouseleave', this.leaveWrapper)
+    try {
+      this.bodyWrapper.removeEventListener('mouseenter', this.enterWrapper)
+      this.bodyWrapper.removeEventListener('mouseleave', this.leaveWrapper)
+      // eslint-disable-next-line no-empty
+    } catch (e) {}
   },
   watch: {
     props: {
@@ -157,10 +171,28 @@ export default {
       scaleFlag: (state) => state.other.scaleFlag, //是否处于缩放模式，用于关闭移动功能
       moveFlag: (state) => state.other.moveFlag,
       isDrag: (state) => state.other.isDrag,
+      dataFromAll: (state) => state.charts.dataFromAll,
     }),
     action: {
       get() {
         return this.targetChart === this.propsData.id
+      },
+    },
+    dataFrom: {
+      get() {
+        if (!this.dataFromFlag) {
+          this.startInterval()
+          return {
+            headerData: this.staticValue.headerData,
+            tableData: this.staticValue.tableData,
+          }
+        } else {
+          this.startInterval()
+          return {
+            headerData: this.dynamicData.headerData,
+            tableData: this.dynamicData.tableData,
+          }
+        }
       },
     },
   },
@@ -168,148 +200,11 @@ export default {
     return {
       stopScroll: false,
       bodyWrapper: null,
-      tableData: [
-        {
-          date: '2016-05-03',
-          name: '王小虎',
-          address: '上海市普陀区金沙江路 1518 弄',
-        },
-        {
-          date: '2016-05-02',
-          name: '王小虎',
-          address: '上海市普陀区金沙江路 1518 弄',
-        },
-        {
-          date: '2016-05-04',
-          name: '王小虎',
-          address: '上海市普陀区金沙江路 1518 弄',
-        },
-        {
-          date: '2016-05-01',
-          name: '王小虎',
-          address: '上海市普陀区金沙江路 1518 弄',
-        },
-        {
-          date: '2016-05-08',
-          name: '王小虎',
-          address: '上海市普陀区金沙江路 1518 弄',
-        },
-        {
-          date: '2016-05-06',
-          name: '王小虎',
-          address: '上海市普陀区金沙江路 1518 弄',
-        },
-        {
-          date: '2016-05-07',
-          name: '王小虎',
-          address: '上海市普陀区金沙江路 1518 弄',
-        },
-        {
-          date: '2016-05-03',
-          name: '王小虎',
-          address: '上海市普陀区金沙江路 1518 弄',
-        },
-        {
-          date: '2016-05-02',
-          name: '王小虎',
-          address: '上海市普陀区金沙江路 1518 弄',
-        },
-        {
-          date: '2016-05-04',
-          name: '王小虎',
-          address: '上海市普陀区金沙江路 1518 弄',
-        },
-        {
-          date: '2016-05-01',
-          name: '王小虎',
-          address: '上海市普陀区金沙江路 1518 弄',
-        },
-        {
-          date: '2016-05-08',
-          name: '王小虎',
-          address: '上海市普陀区金沙江路 1518 弄',
-        },
-        {
-          date: '2016-05-06',
-          name: '王小虎',
-          address: '上海市普陀区金沙江路 1518 弄',
-        },
-        {
-          date: '2016-05-07',
-          name: '王小虎',
-          address: '上海市普陀区金沙江路 1518 弄',
-        },
-        {
-          date: '2016-05-03',
-          name: '王小虎',
-          address: '上海市普陀区金沙江路 1518 弄',
-        },
-        {
-          date: '2016-05-02',
-          name: '王小虎',
-          address: '上海市普陀区金沙江路 1518 弄',
-        },
-        {
-          date: '2016-05-04',
-          name: '王小虎',
-          address: '上海市普陀区金沙江路 1518 弄',
-        },
-        {
-          date: '2016-05-01',
-          name: '王小虎',
-          address: '上海市普陀区金沙江路 1518 弄',
-        },
-        {
-          date: '2016-05-08',
-          name: '王小虎',
-          address: '上海市普陀区金沙江路 1518 弄',
-        },
-        {
-          date: '2016-05-06',
-          name: '王小虎',
-          address: '上海市普陀区金沙江路 1518 弄',
-        },
-        {
-          date: '2016-05-07',
-          name: '王小虎',
-          address: '上海市普陀区金沙江路 1518 弄',
-        },
-        {
-          date: '2016-05-03',
-          name: '王小虎',
-          address: '上海市普陀区金沙江路 1518 弄',
-        },
-        {
-          date: '2016-05-02',
-          name: '王小虎',
-          address: '上海市普陀区金沙江路 1518 弄',
-        },
-        {
-          date: '2016-05-04',
-          name: '王小虎',
-          address: '上海市普陀区金沙江路 1518 弄',
-        },
-        {
-          date: '2016-05-01',
-          name: '王小虎',
-          address: '上海市普陀区金沙江路 1518 弄',
-        },
-        {
-          date: '2016-05-08',
-          name: '王小虎',
-          address: '上海市普陀区金沙江路 1518 弄',
-        },
-        {
-          date: '2016-05-06',
-          name: '王小虎',
-          address: '上海市普陀区金沙江路 1518 弄',
-        },
-        {
-          date: '2016-05-07',
-          name: '王小虎',
-          address: '上海市普陀区金沙江路 1518 弄',
-        },
-      ],
+      staticValue: { headerData: [], tableData: [] },
+      dynamicData: {
+        headerData: [],
+        tableData: [],
+      },
       propsData: {},
       //需要给定初始值，才能保证样式的动态渲染
       positionData: {
@@ -342,6 +237,8 @@ export default {
         fontSize: '16',
         opacity: '1',
       },
+      dataFromFlag: false,
+      loading: false,
     }
   },
 
@@ -358,6 +255,7 @@ export default {
       set_coverageArray: 'charts/set_coverageArray',
       set_goBcakArray: 'charts/set_goBcakArray',
       set_targetFather: 'other/set_targetFather',
+      set_dataFromAll: 'charts/set_dataFromAll',
     }),
     //选中时，修改目标chart，修改有侧边栏属性表（id的作用是在修改时，动态找到渲染树的对应节点）
     selectThis() {
@@ -564,10 +462,64 @@ export default {
           })
         } else if (obj.type === 'configure') {
           obj.configure.forEach((config) => {
-            if (config.type === 'font') {
-              this.font = config.value
-            } else {
-              this.styleData[config.type] = config.value
+            this.styleData[config.type] = config.value
+          })
+        } else if (obj.type === 'dataFrom') {
+          obj.configure.forEach(async (config) => {
+            if (config.type === 'staticData') {
+              this.staticValue = config.jsonData
+            } else if (config.jsonData) {
+              this.dataFromFlag = config.jsonData.select
+                ? config.jsonData.select
+                : false
+              //下面一系列判断用于限制数据源请求次数，避免多次请求
+              if (config.jsonData.select) {
+                try {
+                  const param = this.$ls.get(`DATA_FROM_PARAM`)
+                  if (
+                    config.value &&
+                    (!param[this.propsData.id] ||
+                      JSON.stringify(param[this.propsData.id]) !==
+                        JSON.stringify({
+                          url: config.value,
+                          methods: config.jsonData.methods,
+                          param: config.jsonData.param,
+                        }) ||
+                      !this.dataFromAll[this.propsData.id])
+                  ) {
+                    this.$ls.set(
+                      `DATA_FROM_PARAM`,
+                      {
+                        ...param,
+                        [this.propsData.id]: {
+                          url: config.value,
+                          methods: config.jsonData.methods,
+                          param: config.jsonData.param,
+                        },
+                      },
+                      DATA_FROM_EX_TIME,
+                    )
+                    this.loading = true
+                    const { data, code } = await dataFromApi(
+                      config.value,
+                      config.jsonData.methods ? config.jsonData.methods : 'GET',
+                      config.jsonData.param ? config.jsonData.param : {},
+                    )
+                    if (code === 1) {
+                      this.loading = false
+                      await this.set_dataFromAll({
+                        key: this.propsData.id,
+                        data,
+                      })
+
+                      this.dynamicData = data
+                    }
+                  } else {
+                    this.dynamicData = this.dataFromAll[this.propsData.id]
+                  }
+                  // eslint-disable-next-line no-empty
+                } catch (e) {}
+              }
             }
           })
         }
@@ -576,7 +528,7 @@ export default {
     startInterval() {
       try {
         this.$nextTick(() => {
-          if (!this.bodyWrapper) {
+          if (!this.bodyWrapper && this.$refs['table']) {
             this.bodyWrapper = this.$refs['table'].$el.querySelector(
               '.el-table__body-wrapper',
             )
@@ -597,10 +549,12 @@ export default {
       this.stopScroll = false
     },
     async start() {
-      for (const data of this.tableData) {
-        await this.tableScrollToRow(this.$refs['table'], data)
+      if (this.dataFrom.tableData && this.dataFrom.tableData.length > 0) {
+        for (const data of this.dataFrom.tableData) {
+          await this.tableScrollToRow(this.$refs['table'], data)
+        }
+        this.start()
       }
-      this.start()
     },
     tableScrollToRow($table, rowData) {
       return new Promise((resolve) => {
@@ -615,8 +569,7 @@ export default {
 
           let timer = setInterval(() => {
             if (!this.stopScroll) {
-              resolve()
-              clearInterval(timer)
+              resolve(clearInterval(timer))
             }
           }, BASE_TIME)
           // eslint-disable-next-line no-empty
@@ -661,6 +614,22 @@ export default {
     .edit {
       pointer-events: none !important;
     }
+
+    .loading {
+      position: absolute;
+      left: 0;
+      top: 0;
+      width: 100%;
+      height: 100%;
+      display: flex;
+      justify-content: center;
+      align-items: center;
+      i {
+        font-size: 100px;
+        color: #ffffff;
+      }
+    }
+
     .el-table {
       background-color: transparent !important;
       .el-table__body-wrapper {
