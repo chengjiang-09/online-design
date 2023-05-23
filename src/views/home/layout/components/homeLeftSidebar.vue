@@ -3,7 +3,7 @@
     <div class="container">
       <h2 class="title">
         <img
-          src="http://127.0.0.1:8001/online-design-title.png"
+          src="../../../../assets/online-design-title.png"
           alt="online-design"
         />
       </h2>
