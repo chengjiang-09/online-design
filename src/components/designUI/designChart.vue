@@ -138,16 +138,28 @@ export default {
             yAxis: null,
             ...this.dynamicData,
           }
-          if (this.styleValue.xAxis && this.dynamicData.xAxis) {
+          if (this.dynamicData.xAxis) {
             dataFrom.xAxis = {
               ...this.styleValue.xAxis,
               ...this.dynamicData.xAxis,
             }
           }
-          if (this.styleValue.yAxis && this.dynamicData.yAxis) {
+          if (this.dynamicData.yAxis) {
             dataFrom.yAxis = {
               ...this.styleValue.yAxis,
               ...this.dynamicData.yAxis,
+            }
+          }
+          if (this.dynamicData.title) {
+            dataFrom.title = {
+              ...this.styleValue.title,
+              ...this.dynamicData.title,
+            }
+          }
+          if (this.dynamicData.legend) {
+            dataFrom.legend = {
+              ...this.styleValue.legend,
+              ...this.dynamicData.legend,
             }
           }
         } else {
@@ -157,16 +169,28 @@ export default {
             yAxis: null,
             ...this.staticValue,
           }
-          if (this.styleValue.xAxis && this.staticValue.xAxis) {
+          if (this.staticValue.xAxis) {
             dataFrom.xAxis = {
               ...this.styleValue.xAxis,
               ...this.staticValue.xAxis,
             }
           }
-          if (this.styleValue.yAxis && this.staticValue.yAxis) {
+          if (this.staticValue.yAxis) {
             dataFrom.yAxis = {
               ...this.styleValue.yAxis,
               ...this.staticValue.yAxis,
+            }
+          }
+          if (this.staticValue.title) {
+            dataFrom.title = {
+              ...this.styleValue.title,
+              ...this.staticValue.title,
+            }
+          }
+          if (this.staticValue.legend) {
+            dataFrom.legend = {
+              ...this.styleValue.legend,
+              ...this.staticValue.legend,
             }
           }
         }

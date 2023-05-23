@@ -1,6 +1,6 @@
 <template>
   <div
-    class="design-decoration-border"
+    class="design-carousel"
     :id="propsData.id"
     @mouseenter="mouseenter"
     @mouseleave="mouseleave"
@@ -13,7 +13,7 @@
     ]"
     :style="{
       width: `${manager ? 400 : positionData.width}px`,
-      height: `${manager ? 200 : positionData.height}px`,
+      height: `${manager ? 300 : positionData.height}px`,
       left: `${positionData.left}px`,
       top: `${positionData.top}px`,
     }"
@@ -22,7 +22,7 @@
       class="box"
       :style="{
         width: `${manager ? 400 : positionData.width}px`,
-        height: `${manager ? 200 : positionData.height}px`,
+        height: `${manager ? 300 : positionData.height}px`,
       }"
     >
       <!-- 组件的四角缩放功能，组件 -->
@@ -34,24 +34,58 @@
         :enter="enter"
         :down="down"
       >
-        <div
-          :class="[styleData.class]"
-          :style="{
-            width: `${positionData.width}px`,
-            height: `${positionData.height}px`,
-            opacity: styleData.opacity,
-            backgroundColor: styleData.backgroundColor,
-          }"
-        ></div>
+        <div :class="[{ edit: edit }]">
+          <el-carousel
+            class="carousel"
+            :height="`${
+              (manager ? 400 : positionData.height) -
+              (styleData.direction == 'horizontal' ? 20 : 0)
+            }px`"
+            :autoplay="styleData.autoplay == '1' ? true : false"
+            :interval="Number(styleData.interval)"
+            :type="styleData.type"
+            :direction="styleData.direction"
+            indicator-position="outside"
+          >
+            <el-carousel-item v-for="item in dataFrom" :key="item">
+              <img
+                class="imge"
+                :style="{
+                  width: `${positionData.width}px`,
+                  height: `${positionData.height}px`,
+                }"
+                :src="item"
+              />
+            </el-carousel-item>
+          </el-carousel>
+        </div>
       </SelectComponent>
-      <div
+      <el-carousel
+        class="carousel"
         v-else
-        :class="[styleData.class]"
-        :style="{
-          opacity: styleData.opacity,
-          backgroundColor: styleData.backgroundColor,
-        }"
-      ></div>
+        :height="`${
+          positionData.width - (styleData.direction == 'horizontal' ? 20 : 0)
+        }px`"
+        :autoplay="styleData.autoplay == '1' ? true : false"
+        :interval="Number(styleData.interval)"
+        :type="styleData.type"
+        :direction="styleData.direction"
+        indicator-position="outside"
+      >
+        <el-carousel-item v-for="item in dataFrom" :key="item">
+          <img
+            class="imge"
+            :style="{
+              width: `${positionData.width}px`,
+              height: `${positionData.height}px`,
+            }"
+            :src="item"
+          />
+        </el-carousel-item>
+      </el-carousel>
+      <div class="loading" v-if="loading">
+        <i class="el-icon-loading"></i>
+      </div>
     </div>
   </div>
 </template>
@@ -60,8 +94,11 @@
 import SelectComponent from '@/components/designUI/components/selectComponent.vue'
 import { mapActions, mapState, mapMutations } from 'vuex'
 import goBackListType from '@/utils/goBackListType'
+import { dataFromApi } from '@/apis/publicApi'
+import { DATA_FROM_EX_TIME } from '@/utils/expirationTime'
+
 export default {
-  name: 'DesignDecorationBorder',
+  name: 'DesignCarousel',
   components: {
     SelectComponent,
   },
@@ -80,66 +117,6 @@ export default {
       type: Boolean,
       default: false,
       required: false,
-    },
-  },
-  data: function () {
-    return {
-      propsData: {},
-      //需要给定初始值，才能保证样式的动态渲染
-      positionData: {
-        width: '0',
-        height: '0',
-        left: 0,
-        top: 0,
-      },
-      edit: true, //是否进入编辑模式
-      enter: false, ///这两个值是为了在编辑模式以及阅览模式中限制组件的某些功能，例如mousedown事件,show遮盖层的显示
-      down: false,
-      target: {
-        node: null,
-        offsetX: 0, //鼠标到当前组件的距离
-        offsetY: 0,
-      },
-      parentNode: {
-        //用于组件移动
-        maxLeft: 0,
-        maxTop: 0,
-        maxWidth: 0,
-        maxHeight: 0,
-      },
-      styleData: {
-        opacity: '1',
-        // animationTimeline: '2s',
-        // animationTimingFunction: 'linear',
-        // animationDirection: 'normal',
-        backgroundColor: 'transparent',
-        class: 'border',
-      },
-    }
-  },
-  watch: {
-    props: {
-      handler: function () {
-        this.update()
-      },
-      deep: true,
-    },
-  },
-  computed: {
-    ...mapState({
-      targetChart: (state) => state.other.targetChart, //鼠标点击到的组件
-      actualReading: (state) => state.other.actualReading, //是否处于,实际阅览模式
-      operatingMode: (state) => state.app.operatingMode, //编辑模式与阅览模式标识
-      targetParent: (state) => state.other.targetParent, //鼠标点击到的组件的父组件
-      scaling: (state) => state.other.scaling, //缩放比例
-      scaleFlag: (state) => state.other.scaleFlag, //是否处于缩放模式，用于关闭移动功能
-      moveFlag: (state) => state.other.moveFlag,
-      isDrag: (state) => state.other.isDrag,
-    }),
-    action: {
-      get() {
-        return this.targetChart === this.propsData.id
-      },
     },
   },
   created() {
@@ -169,6 +146,79 @@ export default {
         break
     }
   },
+  watch: {
+    props: {
+      handler: function () {
+        this.update()
+      },
+      deep: true,
+    },
+  },
+  computed: {
+    ...mapState({
+      targetChart: (state) => state.other.targetChart, //鼠标点击到的组件
+      actualReading: (state) => state.other.actualReading, //是否处于,实际阅览模式
+      operatingMode: (state) => state.app.operatingMode, //编辑模式与阅览模式标识
+      targetParent: (state) => state.other.targetParent, //鼠标点击到的组件的父组件
+      scaling: (state) => state.other.scaling, //缩放比例
+      scaleFlag: (state) => state.other.scaleFlag, //是否处于缩放模式，用于关闭移动功能
+      moveFlag: (state) => state.other.moveFlag,
+      isDrag: (state) => state.other.isDrag,
+      dataFromAll: (state) => state.charts.dataFromAll,
+    }),
+    action: {
+      get() {
+        return this.targetChart === this.propsData.id
+      },
+    },
+    dataFrom: {
+      get() {
+        if (!this.dataFromFlag) {
+          return this.staticValue.length > 0 ? this.staticValue : 5
+        } else {
+          return this.dynamicData > 0 ? this.dynamicData : 5
+        }
+      },
+    },
+  },
+  data: function () {
+    return {
+      staticValue: [],
+      dynamicData: [],
+      propsData: {},
+      //需要给定初始值，才能保证样式的动态渲染
+      positionData: {
+        width: '0',
+        height: '0',
+        left: 0,
+        top: 0,
+      },
+      edit: true, //是否进入编辑模式
+      enter: false, ///这两个值是为了在编辑模式以及阅览模式中限制组件的某些功能，例如mousedown事件,show遮盖层的显示
+      down: false,
+      target: {
+        node: null,
+        offsetX: 0, //鼠标到当前组件的距离
+        offsetY: 0,
+      },
+      parentNode: {
+        //用于组件移动
+        maxLeft: 0,
+        maxTop: 0,
+        maxWidth: 0,
+        maxHeight: 0,
+      },
+      font: '',
+      styleData: {
+        autoplay: true,
+        interval: 3000,
+        type: 'card',
+        direction: 'horizontal',
+      },
+      dataFromFlag: false,
+      loading: false,
+    }
+  },
   methods: {
     ...mapMutations({
       SET_MOVE_FLAG: 'other/SET_MOVE_FLAG',
@@ -182,6 +232,7 @@ export default {
       set_coverageArray: 'charts/set_coverageArray',
       set_goBcakArray: 'charts/set_goBcakArray',
       set_targetFather: 'other/set_targetFather',
+      set_dataFromAll: 'charts/set_dataFromAll',
     }),
     //选中时，修改目标chart，修改有侧边栏属性表（id的作用是在修改时，动态找到渲染树的对应节点）
     selectThis() {
@@ -390,6 +441,68 @@ export default {
           obj.configure.forEach((config) => {
             this.styleData[config.type] = config.value
           })
+        } else if (obj.type === 'dataFrom') {
+          obj.configure.forEach(async (config) => {
+            if (config.type === 'staticData') {
+              if (config.jsonData) {
+                this.staticValue = config.jsonData
+              } else if (config.value) {
+                this.staticValue = config.value
+              }
+            } else if (config.jsonData) {
+              this.dataFromFlag = config.jsonData.select
+                ? config.jsonData.select
+                : false
+              //下面一系列判断用于限制数据源请求次数，避免多次请求
+              if (config.jsonData.select) {
+                try {
+                  const param = this.$ls.get(`DATA_FROM_PARAM`)
+                  if (
+                    config.value &&
+                    (!param[this.propsData.id] ||
+                      JSON.stringify(param[this.propsData.id]) !==
+                        JSON.stringify({
+                          url: config.value,
+                          methods: config.jsonData.methods,
+                          param: config.jsonData.param,
+                        }) ||
+                      !this.dataFromAll[this.propsData.id])
+                  ) {
+                    this.$ls.set(
+                      `DATA_FROM_PARAM`,
+                      {
+                        ...param,
+                        [this.propsData.id]: {
+                          url: config.value,
+                          methods: config.jsonData.methods,
+                          param: config.jsonData.param,
+                        },
+                      },
+                      DATA_FROM_EX_TIME,
+                    )
+                    this.loading = true
+                    const { data, code } = await dataFromApi(
+                      config.value,
+                      config.jsonData.methods ? config.jsonData.methods : 'GET',
+                      config.jsonData.param ? config.jsonData.param : {},
+                    )
+                    if (code === 1) {
+                      this.loading = false
+                      await this.set_dataFromAll({
+                        key: this.propsData.id,
+                        data,
+                      })
+
+                      this.dynamicData = data
+                    }
+                  } else {
+                    this.dynamicData = this.dataFromAll[this.propsData.id]
+                  }
+                  // eslint-disable-next-line no-empty
+                } catch (e) {}
+              }
+            }
+          })
         }
       })
     },
@@ -397,146 +510,49 @@ export default {
 }
 </script>
 
-<style lang="less" scoped>
-.design-decoration-border {
+<style lang="less">
+.design-carousel {
   position: absolute;
   z-index: 2;
 
   .box {
     position: relative;
 
+    .carousel {
+      overflow: hidden;
+    }
+
     .edit {
       pointer-events: none !important;
     }
 
-    .no-border {
-      width: 100%;
-      height: 100%;
-    }
-
-    .border {
-      width: 100%;
-      height: 100%;
-      border: 5px solid;
-      border-radius: 10px;
-      animation: borderAnimation 2s linear infinite;
-    }
-
-    .border-two {
-      width: 100%;
-      height: 100%;
-      border: 5px solid cyan;
-      border-radius: 10px;
-      box-shadow: inset 0 0 90px white;
-    }
-
-    .border-three {
-      width: 100%;
-      height: 100%;
-      border: 0px solid cyan;
-      box-shadow: inset 0 0 90px white;
-      position: relative;
-
-      &::before,
-      &::after {
-        content: '';
-        position: absolute;
-        height: 100%;
-        width: 2px;
-        background-color: #5eff00;
-      }
-
-      &::before {
-        left: 0;
-        top: 0;
-      }
-
-      &::after {
-        right: 0;
-        top: 0;
-      }
-    }
-
-    .border-four {
-      width: 100%;
-      height: 100%;
-      border: 5px solid;
-      border-radius: 10px;
-      animation: borderAnimation2 2s linear infinite;
-    }
-
-    .border-five {
-      position: relative;
-      width: 100%;
-      height: 100%;
-    }
-
-    .border-five::before,
-    .border-five::after {
-      content: '';
+    .loading {
       position: absolute;
+      left: 0;
+      top: 0;
       width: 100%;
       height: 100%;
-    }
-
-    .border-five::before {
-      top: 5px;
-      left: 5px;
-      border: 1px solid #ccc;
-      z-index: 1;
-      animation: border-animation 2s infinite alternate;
-    }
-
-    .border-five::after {
-      top: 10px;
-      left: 10px;
-      border: 1px solid #bbb;
-      z-index: 2;
-      animation: border-animation 2s infinite alternate-reverse;
-    }
-
-    @keyframes border-animation {
-      0% {
-        transform: scaleX(1);
-      }
-      100% {
-        transform: scaleX(0);
+      display: flex;
+      justify-content: center;
+      align-items: center;
+      i {
+        font-size: 100px;
+        color: #ffffff;
       }
     }
 
-    @keyframes borderAnimation {
-      0% {
-        border-color: rgb(0, 255, 179);
+    .el-table {
+      background-color: transparent !important;
+      .el-table__body-wrapper {
+        &::-webkit-scrollbar {
+          width: 0;
+          height: 0;
+          background-color: transparent;
+        }
       }
-      25% {
-        border-color: rgb(0, 161, 172);
-      }
-      50% {
-        border-color: rgb(0, 255, 170);
-      }
-      75% {
-        border-color: rgb(0, 141, 160);
-      }
-      100% {
-        border-color: rgb(0, 255, 179);
-      }
-    }
-
-    @keyframes borderAnimation2 {
-      0% {
-        border-color: rgb(0, 39, 27);
-      }
-      25% {
-        border-color: rgb(0, 65, 70);
-      }
-      50% {
-        border-color: rgb(0, 58, 39);
-      }
-      75% {
-        border-color: rgb(0, 51, 58);
-      }
-      100% {
-        border-color: rgb(0, 39, 27);
+      th,
+      tr {
+        background-color: transparent !important;
       }
     }
   }

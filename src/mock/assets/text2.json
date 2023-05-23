@@ -1,15 +1,41 @@
 {
-  "xAxis": {
-    "type": "category",
-    "data": ["Mon", "Tue", "Wed", "Thu", "Fri", "Sat", "Sun"]
-  },
-  "yAxis": {
-    "type": "value"
+  "legend": {
+    "top": "5%",
+    "left": "center"
   },
   "series": [
     {
-      "data": [120, 200, 150, 80, 70, 110, 130],
-      "type": "bar"
+      "name": "Access From",
+      "type": "pie",
+      "radius": ["40%", "70%"],
+      "avoidLabelOverlap": false,
+      "label": {
+        "show": false,
+        "position": "center"
+      },
+      "emphasis": {
+        "label": {
+          "show": true,
+          "fontSize": 40,
+          "fontWeight": "bold"
+        }
+      },
+      "labelLine": {
+        "show": false
+      },
+      "data": [
+        { "value": 1048, "name": "Search Engine" },
+        { "value": 735, "name": "Direct" },
+        { "value": 580, "name": "Email" },
+        { "value": 484, "name": "Union Ads" },
+        { "value": 300, "name": "Video Ads" }
+      ]
     }
   ]
 }
+
+[
+  "https://img1.baidu.com/it/u=1960110688,1786190632&fm=253&app=138&size=w931&n=0&f=JPEG&fmt=auto?sec=1684947600&t=d8735186b9166369665ee7167e10933d",
+  "https://img0.baidu.com/it/u=4162443464,2854908495&fm=253&app=138&size=w931&n=0&f=JPEG&fmt=auto?sec=1684947600&t=ede9fbc095040d91e5a00f3e338c12c8",
+  "https://img2.baidu.com/it/u=567357414,4240886412&fm=253&app=138&size=w931&n=0&f=JPEG&fmt=auto?sec=1684947600&t=3fb8a3b5d5f2a8c533ef6f174f98e09c"
+]

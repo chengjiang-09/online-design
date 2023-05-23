@@ -1158,6 +1158,10 @@ export default {
         default:
           break
       }
+      this.$message({
+        message: '保存成功',
+        type: 'success',
+      })
     },
     putForm({ type, form }) {
       switch (type) {
