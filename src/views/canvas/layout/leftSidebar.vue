@@ -92,6 +92,7 @@ export default {
     ...mapState({
       allCharts: (state) => state.charts.allCharts,
       coverageArrayStore: (state) => state.charts.coverageArray.array,
+      leftSidebarOpened: (state) => state.app.leftSidebar.opened,
     }),
     coverageArray: {
       get() {

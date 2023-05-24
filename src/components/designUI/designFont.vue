@@ -45,6 +45,7 @@
             fontSize: `${styleData.fontSize}px`,
             opacity: styleData.opacity,
             fontFamily: styleData.fontFamily,
+            fontWeight: styleData.fontWeight,
           }"
         >
           {{ font }}
@@ -61,6 +62,7 @@
           fontSize: `${styleData.fontSize}px`,
           opacity: styleData.opacity,
           fontFamily: styleData.fontFamily,
+          fontWeight: styleData.fontWeight,
         }"
       >
         {{ font }}
@@ -127,6 +129,7 @@ export default {
         fontSize: '16',
         opacity: '1',
         fontFamily: 'serif',
+        fontWeight: '400',
       },
     }
   },
@@ -136,6 +139,22 @@ export default {
         this.update()
       },
       deep: true,
+    },
+    operatingMode: {
+      handler: function (newData) {
+        switch (newData) {
+          case 'editMode':
+            this.edit = true //这三个值都是为了在编辑模式以及阅览模式中限制组件的某些功能，例如mousedown事件
+            break
+          case 'readingMode':
+            this.edit = false
+            this.enter = false
+            this.down = false
+            break
+          default:
+            break
+        }
+      },
     },
   },
   computed: {
@@ -169,18 +188,18 @@ export default {
     }
   },
   mounted() {
-    switch (this.operatingMode) {
-      case 'editMode':
-        this.edit = true //这三个值都是为了在编辑模式以及阅览模式中限制组件的某些功能，例如mousedown事件
-        break
-      case 'readingMode':
-        this.edit = false
-        this.enter = false
-        this.down = false
-        break
-      default:
-        break
-    }
+    // switch (this.operatingMode) {
+    //   case 'editMode':
+    //     this.edit = true //这三个值都是为了在编辑模式以及阅览模式中限制组件的某些功能，例如mousedown事件
+    //     break
+    //   case 'readingMode':
+    //     this.edit = false
+    //     this.enter = false
+    //     this.down = false
+    //     break
+    //   default:
+    //     break
+    // }
   },
   methods: {
     ...mapMutations({

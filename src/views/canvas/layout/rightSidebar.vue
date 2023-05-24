@@ -52,6 +52,7 @@ export default {
       configureList: (state) => state.charts.configureList.default,
       id: (state) => state.charts.configureList.id,
       fatherId: (state) => state.charts.configureList.fatherId,
+      rightSidebarOpened: (state) => state.app.rightSidebar.opened,
     }),
   },
   methods: {
@@ -63,7 +64,6 @@ export default {
       if (this.operatingMode !== 'editMode') {
         return this.set_rightSidebar(false)
       }
-
       this.set_rightSidebar(!this.rightSidebarOpened)
     },
   },

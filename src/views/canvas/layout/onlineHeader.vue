@@ -44,6 +44,7 @@ export default {
       canvasConfigureList: (state) => state.charts.canvasConfigureList,
       goBcakArray: (state) => state.charts.goBcakArray,
       targetCanvasDefault: (state) => state.charts.targetCanvasDefault,
+      onlineHeaderOpened: (state) => state.app.onlineHeader.opened,
     }),
   },
   methods: {
@@ -106,7 +107,7 @@ export default {
     edit() {
       this.set_OperatingMode('editMode')
     },
-    reading() {
+    async reading() {
       this.set_targetChart('')
       this.set_targetFather(null)
       this.set_OperatingMode('readingMode')

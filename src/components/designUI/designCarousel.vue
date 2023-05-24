@@ -64,7 +64,7 @@
         class="carousel"
         v-else
         :height="`${
-          positionData.width - (styleData.direction == 'horizontal' ? 20 : 0)
+          positionData.height - (styleData.direction == 'horizontal' ? 20 : 0)
         }px`"
         :autoplay="styleData.autoplay == '1' ? true : false"
         :interval="Number(styleData.interval)"
@@ -133,18 +133,18 @@ export default {
     }
   },
   mounted() {
-    switch (this.operatingMode) {
-      case 'editMode':
-        this.edit = true //这三个值都是为了在编辑模式以及阅览模式中限制组件的某些功能，例如mousedown事件
-        break
-      case 'readingMode':
-        this.edit = false
-        this.enter = false
-        this.down = false
-        break
-      default:
-        break
-    }
+    // switch (this.operatingMode) {
+    //   case 'editMode':
+    //     this.edit = true //这三个值都是为了在编辑模式以及阅览模式中限制组件的某些功能，例如mousedown事件
+    //     break
+    //   case 'readingMode':
+    //     this.edit = false
+    //     this.enter = false
+    //     this.down = false
+    //     break
+    //   default:
+    //     break
+    // }
   },
   watch: {
     props: {
@@ -152,6 +152,22 @@ export default {
         this.update()
       },
       deep: true,
+    },
+    operatingMode: {
+      handler: function (newData) {
+        switch (newData) {
+          case 'editMode':
+            this.edit = true //这三个值都是为了在编辑模式以及阅览模式中限制组件的某些功能，例如mousedown事件
+            break
+          case 'readingMode':
+            this.edit = false
+            this.enter = false
+            this.down = false
+            break
+          default:
+            break
+        }
+      },
     },
   },
   computed: {
@@ -176,7 +192,7 @@ export default {
         if (!this.dataFromFlag) {
           return this.staticValue.length > 0 ? this.staticValue : 5
         } else {
-          return this.dynamicData > 0 ? this.dynamicData : 5
+          return this.dynamicData.length > 0 ? this.dynamicData : 5
         }
       },
     },

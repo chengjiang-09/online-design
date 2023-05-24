@@ -82,6 +82,20 @@ export default {
       },
       deep: true,
     },
+    operatingMode: {
+      handler: function (newData) {
+        switch (newData) {
+          case 'editMode':
+            this.edit = true
+            break
+          case 'readingMode':
+            this.edit = false
+            break
+          default:
+            break
+        }
+      },
+    },
   },
   computed: {
     ...mapState({
@@ -108,16 +122,16 @@ export default {
     this.update()
   },
   mounted() {
-    switch (this.operatingMode) {
-      case 'editMode':
-        this.edit = true
-        break
-      case 'readingMode':
-        this.edit = false
-        break
-      default:
-        break
-    }
+    // switch (this.operatingMode) {
+    //   case 'editMode':
+    //     this.edit = true
+    //     break
+    //   case 'readingMode':
+    //     this.edit = false
+    //     break
+    //   default:
+    //     break
+    // }
   },
   data: function () {
     return {

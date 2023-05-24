@@ -110,6 +110,22 @@ export default {
       },
       deep: true,
     },
+    operatingMode: {
+      handler: function (newData) {
+        switch (newData) {
+          case 'editMode':
+            this.edit = true //这三个值都是为了在编辑模式以及阅览模式中限制组件的某些功能，例如mousedown事件
+            break
+          case 'readingMode':
+            this.edit = false
+            this.enter = false
+            this.down = false
+            break
+          default:
+            break
+        }
+      },
+    },
   },
   computed: {
     ...mapState({
@@ -138,25 +154,25 @@ export default {
             yAxis: null,
             ...this.dynamicData,
           }
-          if (this.dynamicData.xAxis) {
+          if (this.dynamicData && this.dynamicData.xAxis) {
             dataFrom.xAxis = {
               ...this.styleValue.xAxis,
               ...this.dynamicData.xAxis,
             }
           }
-          if (this.dynamicData.yAxis) {
+          if (this.dynamicData && this.dynamicData.yAxis) {
             dataFrom.yAxis = {
               ...this.styleValue.yAxis,
               ...this.dynamicData.yAxis,
             }
           }
-          if (this.dynamicData.title) {
+          if (this.dynamicData && this.dynamicData.title) {
             dataFrom.title = {
               ...this.styleValue.title,
               ...this.dynamicData.title,
             }
           }
-          if (this.dynamicData.legend) {
+          if (this.dynamicData && this.dynamicData.legend) {
             dataFrom.legend = {
               ...this.styleValue.legend,
               ...this.dynamicData.legend,
@@ -169,25 +185,25 @@ export default {
             yAxis: null,
             ...this.staticValue,
           }
-          if (this.staticValue.xAxis) {
+          if (this.staticValue && this.staticValue.xAxis) {
             dataFrom.xAxis = {
               ...this.styleValue.xAxis,
               ...this.staticValue.xAxis,
             }
           }
-          if (this.staticValue.yAxis) {
+          if (this.staticValue && this.staticValue.yAxis) {
             dataFrom.yAxis = {
               ...this.styleValue.yAxis,
               ...this.staticValue.yAxis,
             }
           }
-          if (this.staticValue.title) {
+          if (this.staticValue && this.staticValue.title) {
             dataFrom.title = {
               ...this.styleValue.title,
               ...this.staticValue.title,
             }
           }
-          if (this.staticValue.legend) {
+          if (this.staticValue && this.staticValue.legend) {
             dataFrom.legend = {
               ...this.styleValue.legend,
               ...this.staticValue.legend,
@@ -218,18 +234,18 @@ export default {
     this.myChart = this.$echarts.init(this.$refs.container, null)
     this.myChart.setOption(this.dataFrom, false)
 
-    switch (this.operatingMode) {
-      case 'editMode':
-        this.edit = true //这三个值都是为了在编辑模式以及阅览模式中限制组件的某些功能，例如mousedown事件
-        break
-      case 'readingMode':
-        this.edit = false
-        this.enter = false
-        this.down = false
-        break
-      default:
-        break
-    }
+    // switch (this.operatingMode) {
+    //   case 'editMode':
+    //     this.edit = true //这三个值都是为了在编辑模式以及阅览模式中限制组件的某些功能，例如mousedown事件
+    //     break
+    //   case 'readingMode':
+    //     this.edit = false
+    //     this.enter = false
+    //     this.down = false
+    //     break
+    //   default:
+    //     break
+    // }
   },
   data: function () {
     return {
