@@ -33,6 +33,10 @@ const headerMenuList = [
     type: 'loadImg',
     name: '下载成图',
   },
+  {
+    type: 'goHome',
+    name: '去首页',
+  },
 ]
 
 export default {
@@ -50,6 +54,11 @@ export default {
       switch (type) {
         case 'loadImg':
           this.loadImg()
+          break
+        case 'goHome':
+          this.$router.push({
+            name: 'templateList',
+          })
           break
         default:
           console.log(type, '该实现方法未存在')
