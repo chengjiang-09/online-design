@@ -40,7 +40,8 @@ const templateList = {
       //这里是保证能够获取新数据
       if (
         templateListAll.templateList[page] &&
-        templateListAll.templateList[page].length === 9
+        templateListAll.templateList[page].length === 9 &&
+        templateListAll.templateList[page].length !== templateListAll.total
       ) {
         commit('SET_TEMPLATE_LIST', templateListAll.templateList[page])
         commit('SET_CURRENT_PAGE', templateListAll.currentPage)
