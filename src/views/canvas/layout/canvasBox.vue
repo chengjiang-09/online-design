@@ -166,6 +166,7 @@ export default {
       templateData: (state) => state.other.templateData,
       canvasConfigureList: (state) => state.charts.canvasConfigureList,
       menuControl: (state) => state.app.menuControl,
+      rightSidebarOpened: (state) => state.app.rightSidebar.opened,
     }),
     //根据缩放值修改画布比例
     scaleData: {
