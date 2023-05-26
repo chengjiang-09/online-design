@@ -41,7 +41,7 @@ const templateList = {
       if (
         templateListAll.templateList[page] &&
         templateListAll.templateList[page].length === 9 &&
-        templateListAll.templateList[page].length !== templateListAll.total
+        page !== templateListAll.totalPage
       ) {
         commit('SET_TEMPLATE_LIST', templateListAll.templateList[page])
         commit('SET_CURRENT_PAGE', templateListAll.currentPage)
